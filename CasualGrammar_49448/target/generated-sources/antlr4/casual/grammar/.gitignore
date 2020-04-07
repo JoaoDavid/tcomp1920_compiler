@@ -4,3 +4,5 @@
 /CasualLexer.tokens
 /CasualListener.java
 /CasualParser.java
+/Casual.interp
+/CasualLexer.interp
