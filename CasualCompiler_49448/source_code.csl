@@ -1,6 +1,16 @@
 def min (a:Int, b:Int):Int {
 	if a > b {
 		return a;
+	} else {
+		#batata:String = "3r3rr3";
+		batata:Float = 463____43634;
+		batata:Bool = "3r\3rJHr3";
+		assada = 223;
+	}
+	while 234==324 {
+		assada = 223;
+		srsg = a[9] ;
+		#a[9]  = srsg;
 	}
 	return b;
 }
