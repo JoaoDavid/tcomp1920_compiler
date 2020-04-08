@@ -71,7 +71,7 @@ index_access: (VAR | func_inv) '[' expr ']' ;
 TYPE	: 'Bool' | 'Int' | 'Float' | 'String' ;
 BOOL    : 'true' | 'false' ;
 INT     : [0-9]('_'*[0-9])* ;
-FLOAT   : [0-9]?'.'?[0-9]+ ;
+FLOAT   : [0-9]*'.'?[0-9]+ ;
 STRING  : '"'[A-z0-9\\]*'"' ;
 
 // BINARY OPERATORS

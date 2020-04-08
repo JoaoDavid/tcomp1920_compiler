@@ -9,6 +9,9 @@ def min (a:Int, b:Int):Int {
 	}
 	while 234==324 {
 		assada = 223;
+		assada = f(223);
+		assada = func();
+		assada = func_ok(223,"dssdg34",453.3,.5);
 		srsg = a[9] ;
 		#a[9]  = srsg;
 	}
