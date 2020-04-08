@@ -37,11 +37,11 @@ public class CasualListener implements ParseTreeListener {
 	public void visitTerminal(TerminalNode arg0) {
 		
 		int index = arg0.getSymbol().getType();
-		/*String type = CasualLexer.VOCABULARY.getDisplayName(index);
+		String type = CasualLexer.VOCABULARY.getDisplayName(index);
 		
 		System.out.println("Found literal:" + arg0.getText());
 		System.out.println("Type:" + type);
-		System.out.println("....");*/
+		System.out.println("....");
 	}
 
 }

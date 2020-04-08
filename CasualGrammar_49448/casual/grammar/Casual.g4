@@ -4,13 +4,15 @@ grammar Casual;
 @header{
 	package casual.grammar;
 }
+WS : [ \r\t\n]+ -> skip ; //whitespace insensitive
 
 prog     : func_decl prog*
-         | func_def prog*
+		 | func_def prog* 
+		 | EOF
          ;
-
+         
 func_args: VAR '(' (var_decl (',' var_decl)*)?   ')' ':' (TYPE | 'Void') ;
-func_decl: 'decl' func_args;
+func_decl: 'decl' func_args ';';
 func_def: 'def' func_args '{' NEWLINE
 				(statement* NEWLINE)*
 		  '}' ;
@@ -71,7 +73,7 @@ TYPE	: 'Bool' | 'Int' | 'Float' | 'String' ;
 BOOL    : 'true' | 'false' ;
 INT     : [0-9]('_'*[0-9])* ;
 FLOAT   : [0-9]?'.'?[0-9]+ ;
-STRING  : '"'[a-z'\']*'"' ;
+STRING  : '"'[a-z]*'"' ;
 
 // BINARY OPERATORS
 binary_ope  : '&&' 

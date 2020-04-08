@@ -1,1 +1,6 @@
-declmax(a:Int):Int
+def min (a:Int, b:Int):Int {
+	if a > b {
+		return a;
+	}
+	return b;
+}
