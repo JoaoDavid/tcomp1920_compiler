@@ -1,0 +1,5 @@
+def main(ar:[String]):Int {
+	printLine("Hello World");
+	printInt(1 + 2 * 3);
+	return 0;
+}

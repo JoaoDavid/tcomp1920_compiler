@@ -30,7 +30,7 @@ public class CasualListener implements ParseTreeListener {
 	@Override
 	public void visitErrorNode(ErrorNode arg0) {
 		// TODO Auto-generated method stub
-
+		System.out.println("ERROR ON PARSING");
 	}
 
 	@Override
