@@ -29,7 +29,9 @@ statement: if_stat
 
 return_stat: 'return' expr? ';' ;
 
-var_decl         : ID ':' ID ;
+data_type    : ID
+             | '[' data_type ']' ;
+var_decl         : ID ':' data_type ;
 var_decl_assign_stat  : var_decl '=' expr ';' ;
 var_assign_stat  : (ID | arr_l_value) '=' expr ';' ;
 
@@ -63,8 +65,8 @@ expr:	expr binary_ope expr
     
 // ------------------------- ARRAYS -------------------------
 
-arr_r_value : (ID | func_inv) '[' expr ']' ;
-arr_l_value  : ID '[' expr ']' ;
+arr_r_value : (ID | func_inv) ('[' expr ']')+ ;
+arr_l_value  : ID ('[' expr ']')+ ;
 
 
 // ------------------------- DATA TYPES -------------------------
