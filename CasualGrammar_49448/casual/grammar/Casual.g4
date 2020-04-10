@@ -4,34 +4,34 @@ grammar Casual;
 @header{
 	package casual.grammar;
 }
-WS : [ \r\t\n]+ -> skip ; //whitespace insensitive
 
-prog     : func_decl prog*
-		 | func_def prog* 
-		 | EOF
-         ;
+
+prog: (func_decl | func_def)+ EOF ;
          
-func_args: VAR '(' (var_decl (',' var_decl)*)?   ')' ':' (TYPE | 'Void') ;
+// ------------------------- FUNCTIONS -------------------------
+
+func_args: ID '(' (var_decl (',' var_decl)*)?   ')' ':' ID ;
 func_decl: 'decl' func_args ';';
 func_def: 'def' func_args '{'
 				statement*
 		  '}' ;
-
+func_inv: ID '(' (expr (',' expr)*)?   ')' ;
 
 // ------------------------- STATEMENTEMENTS -------------------------
 
 statement: if_stat 
 		 | while_stat
 		 | return_stat 
-		 | var_decl_assign 
+		 | var_decl_assign_stat 
 		 | var_assign_stat
+		 | expr ';'
 		 ;
 
 return_stat: 'return' expr? ';' ;
 
-var_decl         : VAR ':' TYPE ;
-var_decl_assign  : var_decl '=' expr ';' ;
-var_assign_stat  : VAR '=' expr ';' ;
+var_decl         : ID ':' ID ;
+var_decl_assign_stat  : var_decl '=' expr ';' ;
+var_assign_stat  : (ID | arr_l_value) '=' expr ';' ;
 
 if_stat: 'if' expr '{'
 				statement*
@@ -43,8 +43,6 @@ if_stat: 'if' expr '{'
 while_stat:	'while' expr '{'
 				statement*
 			'}' ;
-			
-// -------------------------------------------------------------------
 
 
 
@@ -53,28 +51,31 @@ while_stat:	'while' expr '{'
 expr:	expr binary_ope expr
     |	unary_ope expr
     |   func_inv
-    |   index_access
+    |   arr_r_value
+    |   arr_l_value
     |	BOOL
     |	INT
     |	FLOAT
     |	STRING
-    |	VAR
+    |	ID
     |	'(' expr ')'
     ;
     
-func_inv: VAR '(' (expr (',' expr)*)?   ')' ;
+// ------------------------- ARRAYS -------------------------
 
-index_access: (VAR | func_inv) '[' expr ']' ;
+arr_r_value : (ID | func_inv) '[' expr ']' ;
+arr_l_value  : ID '[' expr ']' ;
 
 
-//TYPES
-TYPE	: 'Bool' | 'Int' | 'Float' | 'String' ;
+// ------------------------- DATA TYPES -------------------------
 BOOL    : 'true' | 'false' ;
 INT     : [0-9]('_'*[0-9])* ;
 FLOAT   : [0-9]*'.'?[0-9]+ ;
-STRING  : '"'[A-z0-9\\]*'"' ;
+STRING  : '"'(~[\\"]| '\\'[btnfr"'\\] | ' ')*'"' ;
+        
+   
 
-// BINARY OPERATORS
+// ------------------------- OPERATORS -------------------------
 binary_ope  : '&&' 
             | '||'
 		 	| '=='
@@ -92,6 +93,13 @@ binary_ope  : '&&'
 			
 unary_ope   : '!' ;
 
+// ------------------------- ARRAYS -------------------------
 
-VAR     : [a-z_][a-z0-9_]* ;
-COMMENT : '#' ~( '\r' | '\n' )* -> skip ;
+//Identifier
+ID     : [a-zA-Z_][a-zA-Z0-9_]* ;
+
+//whitespace insensitive
+WS : [ \r\t\n]+ -> skip ;
+
+//comment line
+COMMENT : '#' ~( '\r' | '\n' )* -> skip ; 
