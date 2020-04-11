@@ -21,20 +21,7 @@ WHILE  : 'while' ;
 RETURN : 'return' ;
 
 
-
-
-         
-// ------------------------- FUNCTIONS -------------------------
-
-func_args: ID L_RND_BR (var_type (COMMA var_type)*)? R_RND_BR COLON datatype ;
-func_decl: DECL func_args;
-func_def: DEF func_args L_CRL_BR
-				statement*
-		  R_CRL_BR ;
-func_inv: ID L_RND_BR (expr (COMMA expr)*)? R_RND_BR ;
-
-
-// ------------------------- STATEMENTEMENTS -------------------------
+// ------------------------- STATEMENTS -------------------------
 
 statement: if_stat 
 		 | while_stat
@@ -70,6 +57,16 @@ while_stat:	WHILE expr L_CRL_BR
 			R_CRL_BR ;
 
 
+// ------------------------- FUNCTIONS -------------------------
+
+func_args: ID L_RND_BR (var_type (COMMA var_type)*)? R_RND_BR COLON datatype ;
+func_decl: DECL func_args;
+func_def: DEF func_args L_CRL_BR
+				statement*
+		  R_CRL_BR ;
+func_inv: ID L_RND_BR (expr (COMMA expr)*)? R_RND_BR ;
+
+
 // ------------------------- EXPRESSIONS -------------------------
 			
 expr:	expr binary_ope expr
@@ -94,8 +91,8 @@ arr_l_value  : ID (L_SQR_BR expr R_SQR_BR)+ ;
 
 // ------------------------- DATA TYPES -------------------------
 BOOL    : 'true' | 'false' ;
-INT     : '-'?[0-9]('_'*[0-9])* ;
-FLOAT   : '-'?[0-9]*'.'?[0-9]+ ;
+INT     : [0-9]('_'*[0-9])* ;
+FLOAT   : [0-9]*'.'?[0-9]+ ;
 STRING  : '"'(~[\\"]| '\\'[btnfr"'\\] | ' ')*'"' ;
         
         
@@ -157,7 +154,8 @@ binary_ope  : AND
 		 	| MOD
 			;
 			
-unary_ope   : NOT ;
+unary_ope   : NOT 
+            | MINUS;
 
 
 // ------------------------- ARRAYS -------------------------
