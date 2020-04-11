@@ -27,7 +27,7 @@ public class CasualC {
 
 			parser.setBuildParseTree(true);
 			parser.addParseListener(new CasualListener());
-			ParseTree p = parser.prog();
+			ParseTree p = parser.program();
 			System.out.println(p.toStringTree(parser));
 			System.out.println(p.getText());
 		}else {
