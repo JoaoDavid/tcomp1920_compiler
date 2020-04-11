@@ -19,6 +19,7 @@ IF     : 'if' ;
 ELSE   : 'else' ;
 WHILE  : 'while' ;
 RETURN : 'return' ;
+NEW    : 'new' ;
 
 
 // ------------------------- STATEMENTS -------------------------
@@ -74,6 +75,7 @@ expr:	expr binary_ope expr
     |   func_inv
     |   arr_r_value
     |   arr_l_value
+    |   object_init
     |	BOOL
     |	INT
     |	FLOAT
@@ -87,6 +89,7 @@ expr:	expr binary_ope expr
 
 arr_r_value : (ID | func_inv) (L_SQR_BR expr R_SQR_BR)+ ;
 arr_l_value  : ID (L_SQR_BR expr R_SQR_BR)+ ;
+object_init     : NEW (func_inv | arr_l_value) ;
 
 
 // ------------------------- DATA TYPES -------------------------
