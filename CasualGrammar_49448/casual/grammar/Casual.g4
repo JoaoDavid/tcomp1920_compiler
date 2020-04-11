@@ -20,6 +20,9 @@ K_ELSE   : 'else' ;
 K_WHILE  : 'while' ;
 K_RETURN : 'return' ;
 
+
+
+
          
 // ------------------------- FUNCTIONS -------------------------
 
@@ -94,22 +97,43 @@ STRING  : '"'(~[\\"]| '\\'[btnfr"'\\] | ' ')*'"' ;
         
 
 // ------------------------- OPERATORS -------------------------
-binary_ope  : '&&' 
-            | '||'
-		 	| '=='
-		 	| '!='
-		 	| '>='
-		 	| '>'
-		 	| '<='
-		 	| '<'
-		 	| '+'
-		 	| '-'
-		 	| '*'
-		 	| '/'
-		 	| '%'
+
+//Arithmetic
+PLUS       :  '+';
+MINUS      :  '-';
+TIMES      :  '*';
+DIV        :  '/';
+MOD        :  '%';
+
+//Logical
+AND        :  '&&';
+OR         :  '||';
+NOT        :  '!';
+
+//Comparison
+EQUAL      :  '==';
+NOT_EQUAL  :  '!=';
+GREATER_EQ :  '>=';
+GREATER    :  '>';
+LESS_EQ    :  '<=';
+LESS       :  '<';
+
+binary_ope  : AND 
+            | OR
+		 	| EQUAL
+		 	| NOT_EQUAL
+		 	| GREATER_EQ
+		 	| GREATER
+		 	| LESS_EQ
+		 	| LESS
+		 	| PLUS
+		 	| MINUS
+		 	| TIMES
+		 	| DIV
+		 	| MOD
 			;
 			
-unary_ope   : '!' ;
+unary_ope   : NOT ;
 
 
 // ------------------------- ARRAYS -------------------------
