@@ -6,46 +6,62 @@ grammar Casual;
 }
 
 
+// ------------------------- PROGRAM -------------------------
+
 prog: (func_decl | func_def)+ EOF ;
+
+
+// ------------------------- KEYWORDS -------------------------
+
+K_DECL   : 'decl';
+K_DEF    : 'def';
+K_IF     : 'if' ;
+K_ELSE   : 'else' ;
+K_WHILE  : 'while' ;
+K_RETURN : 'return' ;
+
          
 // ------------------------- FUNCTIONS -------------------------
 
-func_args: ID '(' (var_decl (',' var_decl)*)?   ')' ':' ID ;
-func_decl: 'decl' func_args ';';
-func_def: 'def' func_args '{'
+func_args: ID '(' (var_type (',' var_type)*)?   ')' ':' datatype ;
+func_decl: K_DECL func_args;
+func_def: K_DEF func_args '{'
 				statement*
 		  '}' ;
 func_inv: ID '(' (expr (',' expr)*)?   ')' ;
+
 
 // ------------------------- STATEMENTEMENTS -------------------------
 
 statement: if_stat 
 		 | while_stat
-		 | return_stat 
-		 | var_decl_assign_stat 
+		 | return_stat
+		 | var_decl_stat 
 		 | var_assign_stat
 		 | expr ';'
 		 ;
 
-return_stat: 'return' expr? ';' ;
+return_stat: K_RETURN expr? ';' ;
 
-data_type    : ID
-             | '[' data_type ']' ;
-var_decl         : ID ':' data_type ;
-var_decl_assign_stat  : var_decl '=' expr ';' ;
-var_assign_stat  : (ID | arr_l_value) '=' expr ';' ;
+datatype    : ID
+             | '[' datatype ']' ;
+             
+var_decl_stat  : var_type ('=' expr)? ';' ;
+var_assign_stat  : (ID | arr_l_value) '=' expr ';' ;            
+             
+var_type         : ID ':' datatype ;
 
-if_stat: 'if' expr '{'
+
+
+if_stat: K_IF expr '{'
 				statement*
-		 '}'
-			('else' '{'
+		 '}' (K_ELSE '{'
 				statement*
 		  '}')? ;
 			
-while_stat:	'while' expr '{'
+while_stat:	K_WHILE expr '{'
 				statement*
 			'}' ;
-
 
 
 // ------------------------- EXPRESSIONS -------------------------
@@ -63,6 +79,7 @@ expr:	expr binary_ope expr
     |	'(' expr ')'
     ;
     
+    
 // ------------------------- ARRAYS -------------------------
 
 arr_r_value : (ID | func_inv) ('[' expr ']')+ ;
@@ -71,11 +88,10 @@ arr_l_value  : ID ('[' expr ']')+ ;
 
 // ------------------------- DATA TYPES -------------------------
 BOOL    : 'true' | 'false' ;
-INT     : [0-9]('_'*[0-9])* ;
-FLOAT   : [0-9]*'.'?[0-9]+ ;
+INT     : '-'?[0-9]('_'*[0-9])* ;
+FLOAT   : '-'?[0-9]*'.'?[0-9]+ ;
 STRING  : '"'(~[\\"]| '\\'[btnfr"'\\] | ' ')*'"' ;
         
-   
 
 // ------------------------- OPERATORS -------------------------
 binary_ope  : '&&' 
@@ -94,6 +110,7 @@ binary_ope  : '&&'
 			;
 			
 unary_ope   : '!' ;
+
 
 // ------------------------- ARRAYS -------------------------
 
