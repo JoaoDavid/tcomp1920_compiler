@@ -1,4 +1,4 @@
-package casual;
+package listeners;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -12,7 +12,6 @@ public class CasualListener implements ParseTreeListener {
 
 	@Override
 	public void enterEveryRule(ParserRuleContext arg0) {
-		
 		int ruleIndex = arg0.getRuleIndex();
 		String ruleName = CasualParser.ruleNames[ruleIndex];
 		
@@ -23,19 +22,16 @@ public class CasualListener implements ParseTreeListener {
 
 	@Override
 	public void exitEveryRule(ParserRuleContext arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void visitErrorNode(ErrorNode arg0) {
-		// TODO Auto-generated method stub
-		System.out.println("ERROR ON PARSING");
+		System.err.println("ERROR parsing: " + arg0.toString());
 	}
 
 	@Override
 	public void visitTerminal(TerminalNode arg0) {
-		
 		int index = arg0.getSymbol().getType();
 		String type = CasualLexer.VOCABULARY.getDisplayName(index);
 		

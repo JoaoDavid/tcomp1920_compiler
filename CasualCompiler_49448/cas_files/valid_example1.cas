@@ -1,0 +1,16 @@
+decl new_int_array(n:Int):[Int]
+
+def main(ar:[String]):Int {
+	if (len(ar) == 1) {
+		myArray:[Int] = new_int_array(ar[0]);
+		i:Int = 0;
+		while i < ar[0] {	
+			myArray[i] = i;
+			i = i + 1;
+		}
+		return 0;
+	} else {
+		print("Invalid Args");
+		return -1;
+	}	
+}

@@ -1,0 +1,17 @@
+decl aFunctionMissingReturnType() {
+
+
+}
+
+
+def anotherFunction():Void {
+	get_array()[34][24] = "ola";
+	
+	# escape '\' must be followed  by b, t, n, f, r, ", ' or \
+	myString:String = "olasfefa\hfawf";
+	
+	
+
+}
+
+

@@ -5,14 +5,16 @@ import java.io.IOException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;
+import listeners.CasualErrorListener;
+import listeners.CasualListener;
 
 public class CasualC {
 	public static void main(String[] args) {
 		if(args.length == 1) {
+			System.out.println("Analysing " + args[0]);
 			CharStream inputFromFile;
 			try {
 				inputFromFile = CharStreams.fromFileName(args[0]);
@@ -21,24 +23,19 @@ public class CasualC {
 				return;
 			}
 			CasualLexer lexer = new CasualLexer(inputFromFile);
-
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			CasualParser parser = new CasualParser(tokens);
-
+			
 			parser.setBuildParseTree(true);
-			parser.addParseListener(new CasualListener());
-			ParseTree p = parser.program();
-			System.out.println(p.toStringTree(parser));
-			System.out.println(p.getText());
+			//parser.addParseListener(new CasualListener()); //debug
+			//parser.addErrorListener(new CasualErrorListener());
+			parser.program();
+			System.out.println("\nFinished Execution");
 		}else {
 			System.out.println("Your args are not correct");
 			System.out.println("Valid args: <sourceFile>");
 			System.out.println("example: .\\files\\HelloWorld.cas");
 		}
-
-
-
-
 	}
 
 }
