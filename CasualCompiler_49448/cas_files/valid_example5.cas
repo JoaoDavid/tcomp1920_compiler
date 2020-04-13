@@ -13,7 +13,7 @@ def someFun34ction234     (ola:[Float], adeus:[[Int]], batata:[[[Bool]]])    :St
 	
 	var7:String = "\b \t \n \f \r \" \' \\"; #escape symbols
 	var8:String = "!#$%&/()=";
-	var8:String = "1234567890«»-.,<zxc~~;;::";
+	var8:String = "1234567890«»-.,<zxc~~;;:://";
 	
 	var9:Bool  = !(53==35 && true!=false && !(3==3));
 	var10:Bool = true;	
@@ -26,5 +26,11 @@ def someFun34ction234     (ola:[Float], adeus:[[Int]], batata:[[[Bool]]])    :St
 	var14:datatype46__e53 = datatype46__e53("gsgeg",45);
 	var15:[[Square]] = get_matrix(56,45,56,345);
 	
+	
+	var16:Int;
+	var17:Float;
+	var18:String;
+	var19:Bool;
+	var20:myType;
 
 }

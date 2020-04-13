@@ -1,0 +1,17 @@
+#invalid variable names (reserved keywords)
+
+def someFunc     ()    :String {
+
+	
+	34invalidVarName:String = "ola";	
+	VarName:35invalidDataType = "ola";
+	
+	if     :Int = 24;
+	else   :String = "3gd";
+	while  :Bool = false;
+	return :Float = 35.3;
+	def    :Int = 0;
+	decl   :Float = -3.3;
+	
+	
+}

@@ -1,0 +1,25 @@
+#invalid if, else while blocks
+	
+def someFun34ction234     (ola:[Float], adeus:[[Int]], batata:[[[Bool]]])    :String {
+
+	#missing condition
+	while {
+	
+	}
+	
+	#missing condition
+	if {
+	
+	}
+	var:Int = 35;
+	
+	#else block without if
+	else {
+	
+		print("hey");
+	}
+	
+	
+	
+
+}

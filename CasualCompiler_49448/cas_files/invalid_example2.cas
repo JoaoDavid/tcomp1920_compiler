@@ -1,4 +1,52 @@
-decl a_Function_With_invalid_args(varName:  , varName2:String):Float {
 
 
+decl a_Function_With_invalid_args(varName:  , varName2String):Float 
+
+decl 234invalidFunctionName(varName:Int  , varName2:String):Float
+
+decl validFunctionName(varName:Int  , varName2:String):35invalidType
+
+
+def a_Function_With_invalid_args(varName:  , varName2String):Float {
+
+	
+}
+
+
+def 234invalidFunctionName(varName:Int  , varName2:String):Float {
+
+	
+}
+
+def validFunctionName(varName:Int  , varName2:String):35invalidType {
+
+	
+}
+
+
+
+#def and decl keyworsd swapped
+
+
+def a_Function_With_invalid_args(varName:  , varName2String):Float 
+
+def 234invalidFunctionName(varName:Int  , varName2:String):Float
+
+def validFunctionName(varName:Int  , varName2:String):35invalidType
+
+
+decl a_Function_With_invalid_args(varName:  , varName2String):Float {
+
+	
+}
+
+
+decl 234invalidFunctionName(varName:Int  , varName2:String):Float {
+
+	
+}
+
+decl validFunctionName(varName:Int  , varName2:String):35invalidType {
+
+	
 }
