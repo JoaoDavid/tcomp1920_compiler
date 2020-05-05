@@ -43,7 +43,7 @@ public class CasualParseTreeVisitor {
 			System.out.println("egeg "  + currVarTypeCtx.getText());
 			parameters.add(new FunctionParameter(currVarTypeCtx.ID().getText(), currVarTypeCtx.datatype().getText(), null));
 		}
-		for (VarDeclarationStatement curr : parameters) {
+		for (FunctionParameter curr : parameters) {
 			System.out.println(curr.getVarName() +" --- " + curr.getDatatype());
 		}
 		System.out.println("funcName " + funcName);
