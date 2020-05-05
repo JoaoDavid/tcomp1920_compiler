@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import ast.CasualFile;
 import ast.DefDecl;
 import ast.FunctionDeclaration;
+import ast.FunctionParameter;
 import ast.statement.VarDeclarationStatement;
 import casual.grammar.CasualParser.Func_declContext;
 import casual.grammar.CasualParser.Func_defContext;
@@ -37,14 +38,16 @@ public class CasualParseTreeVisitor {
 	private FunctionDeclaration visitFunctionDeclaration(Func_declContext ctx) {
 		String funcName = ctx.func_args().ID().getText();
 		String retType = ctx.func_args().datatype().getText();
-		List<VarDeclarationStatement> parameters = new ArrayList<>();
-		List<Var_typeContext> varTypeCtx = ctx.func_args().var_type();
-		for (Var_typeContext currVarTypeCtx : varTypeCtx) {
-			System.out.println(currVarTypeCtx.getText());
-			parameters.add(new VarDeclarationStatement(currVarTypeCtx.ID().getText(), currVarTypeCtx.datatype().getText(), null));
+		List<FunctionParameter> parameters = new ArrayList<>();
+		for (Var_typeContext currVarTypeCtx : ctx.func_args().var_type()) {
+			System.out.println("egeg "  + currVarTypeCtx.getText());
+			parameters.add(new FunctionParameter(currVarTypeCtx.ID().getText(), currVarTypeCtx.datatype().getText(), null));
 		}
-		System.out.println(funcName);
-		System.out.println(retType);
+		for (VarDeclarationStatement curr : parameters) {
+			System.out.println(curr.getVarName() +" --- " + curr.getDatatype());
+		}
+		System.out.println("funcName " + funcName);
+		System.out.println("retType " + retType);
 		return new FunctionDeclaration(funcName, parameters, retType);
 	}
 	

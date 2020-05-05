@@ -2,20 +2,18 @@ package ast;
 
 import java.util.List;
 
-import ast.statement.VarDeclarationStatement;
-
 public class FunctionDeclaration implements DefDecl {
 	
 	private String funcName;
-	private List<VarDeclarationStatement> parameters;
+	private List<FunctionParameter> parameters;
 	private String returnType;
 	private Position pos;
 	
-	public FunctionDeclaration(String funcName, List<VarDeclarationStatement> parameters, String returnType) {
+	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, String returnType) {
 		new FunctionDeclaration(funcName, parameters, returnType, null);
 	}
 	
-	public FunctionDeclaration(String funcName, List<VarDeclarationStatement> parameters, String returnType,
+	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, String returnType,
 			Position pos) {
 		this.funcName = funcName;
 		this.parameters = parameters;
@@ -27,7 +25,7 @@ public class FunctionDeclaration implements DefDecl {
 		return funcName;
 	}
 
-	public List<VarDeclarationStatement> getParameters() {
+	public List<FunctionParameter> getParameters() {
 		return parameters;
 	}
 
