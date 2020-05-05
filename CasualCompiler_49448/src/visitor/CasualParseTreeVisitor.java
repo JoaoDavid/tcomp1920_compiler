@@ -69,28 +69,34 @@ public class CasualParseTreeVisitor {
 			parameters.add(visitFunctionParameter(currVarTypeCtx));
 		}
 		for (StatementContext currStatementCtx : ctx.statement()) {
-			if(currStatementCtx.if_stat() != null) {
-				statements.add(visitIfStatement(currStatementCtx.if_stat()));
-			} else if(currStatementCtx.while_stat() != null) {
-				statements.add(visitWhileStatement(currStatementCtx.while_stat()));
-			} else if(currStatementCtx.return_stat() != null) {
-				statements.add(visitReturnStatement(currStatementCtx.return_stat()));
-			} else if(currStatementCtx.var_decl_stat() != null) {
-				statements.add(visitVarDeclarationStatement(currStatementCtx.var_decl_stat()));
-			} else if(currStatementCtx.var_assign_stat() != null) {
-				statements.add(visitVarAssignStatement(currStatementCtx.var_assign_stat()));
-			} else if(currStatementCtx.expr_stat() != null) {
-				statements.add(visitExprStatement(currStatementCtx.expr_stat()));
-			}
-		}
-		
-		for (FunctionParameter curr : parameters) {
-			System.out.println(curr.getVarName() +" --- " + curr.getDatatype());
+			statements.add(visitStatement(currStatementCtx));
 		}
 		return new FunctionDefinition(funcName, parameters, retType, null);
 	}
 	
+	private Statement visitStatement(StatementContext ctx) {
+		if(ctx.if_stat() != null) {
+			return visitIfStatement(ctx.if_stat());
+		} else if(ctx.while_stat() != null) {
+			return visitWhileStatement(ctx.while_stat());
+		} else if(ctx.return_stat() != null) {
+			return visitReturnStatement(ctx.return_stat());
+		} else if(ctx.var_decl_stat() != null) {
+			return visitVarDeclarationStatement(ctx.var_decl_stat());
+		} else if(ctx.var_assign_stat() != null) {
+			return visitVarAssignStatement(ctx.var_assign_stat());
+		} else if(ctx.expr_stat() != null) {
+			return visitExprStatement(ctx.expr_stat());
+		}
+		return null;
+	}
 	
+	/**
+	 * Visits the casual def/decl function's parameter context
+	 * 
+	 * @param ctx
+	 * @return FunctionParameter Node
+	 */
 	private FunctionParameter visitFunctionParameter(Var_typeContext ctx) {
 		return new FunctionParameter(ctx.ID().getText(), ctx.datatype().getText());
 	}
