@@ -12,7 +12,10 @@ import ast.DefDecl;
 import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
+import ast.expression.ArrayAcessFuncExpression;
+import ast.expression.ArrayAcessVarExpression;
 import ast.expression.Expression;
+import ast.expression.FunctionInvocationExpression;
 import ast.expression.VarReferenceExpression;
 import ast.expression.binary.AndExpression;
 import ast.expression.binary.BinaryExpression;
@@ -32,6 +35,9 @@ import ast.expression.literal.BoolLit;
 import ast.expression.literal.FloatLit;
 import ast.expression.literal.IntLit;
 import ast.expression.literal.StringLit;
+import ast.expression.unary.NegativeExpression;
+import ast.expression.unary.NotExpression;
+import ast.expression.unary.UnaryExpression;
 import ast.statement.ExprStatement;
 import ast.statement.IfElseStatement;
 import ast.statement.IfStatement;
@@ -41,11 +47,14 @@ import ast.statement.VarAssignArrayStatement;
 import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
+import casual.grammar.CasualParser.Arr_l_valueContext;
+import casual.grammar.CasualParser.Arr_r_valueContext;
 import casual.grammar.CasualParser.Binary_opeContext;
 import casual.grammar.CasualParser.ExprContext;
 import casual.grammar.CasualParser.Expr_statContext;
 import casual.grammar.CasualParser.Func_declContext;
 import casual.grammar.CasualParser.Func_defContext;
+import casual.grammar.CasualParser.Func_invContext;
 import casual.grammar.CasualParser.If_statContext;
 import casual.grammar.CasualParser.ProgramContext;
 import casual.grammar.CasualParser.Return_statContext;
@@ -97,7 +106,7 @@ public class CasualParseTreeVisitor {
 		for (StatementContext currStatementCtx : ctx.statement()) {
 			statements.add(visitStatement(currStatementCtx));
 		}
-		return new FunctionDefinition(funcName, parameters, retType, null);
+		return new FunctionDefinition(funcName, parameters, retType, statements);
 	}
 	
 	/**
@@ -192,14 +201,17 @@ public class CasualParseTreeVisitor {
 		if(ctx.binary_ope() != null) {
 			return visitBinaryExpression(ctx);
 		} else if(ctx.unary_ope() != null) {
-			System.out.println("unary" + ctx.expr().size() + "\n");
-			//return visitWhileStatement(ctx.while_stat());
+			return visitUnaryExpression(ctx);
 		} else if(ctx.func_inv() != null) {
-			//return visitReturnStatement(ctx.return_stat());
+			return visitFunctionInvocation(ctx.func_inv());
 		} else if(ctx.arr_r_value() != null) {
-			//return visitVarDeclarationStatement(ctx.var_decl_stat());
+			if (ctx.arr_r_value().arr_l_value() != null) {
+				return visitArrayAcessVarExpression(ctx.arr_r_value().arr_l_value());
+			} else {
+				return visitArrayAcessFuncExpression(ctx.arr_r_value());
+			}
 		} else if(ctx.arr_l_value() != null) {
-			//return visitVarAssignStatement(ctx.var_assign_stat());
+			return visitArrayAcessVarExpression(ctx.arr_l_value());
 		} else if(ctx.BOOL() != null) {
 			return new BoolLit(ctx.BOOL().getText());
 		}else if(ctx.INT() != null) {
@@ -247,6 +259,46 @@ public class CasualParseTreeVisitor {
 			return new ModuloExpression(left, right);
 		}
 		return null;
+	}
+	
+	private UnaryExpression visitUnaryExpression(ExprContext ctx) {
+		Expression expr = visitExpression(ctx.expr(0));
+		if(ctx.unary_ope().NOT() != null) {
+			return new NotExpression(expr);
+		} else if(ctx.unary_ope().MINUS() != null) {
+			return new NegativeExpression(expr);
+		} 
+		return null;
+	}
+	
+	private FunctionInvocationExpression visitFunctionInvocation(Func_invContext ctx) {
+		String funcName = ctx.ID().getText();
+		List<Expression> arguments = new ArrayList<>(ctx.expr().size());
+		
+		for (ExprContext currExpr : ctx.expr()) {
+			arguments.add(visitExpression(currExpr));
+		}
+		return new FunctionInvocationExpression(funcName, arguments);
+	}
+	
+	private ArrayAcessVarExpression visitArrayAcessVarExpression(Arr_l_valueContext ctx) {
+		List<Expression> indexes = new ArrayList<>(ctx.expr().size());
+		for (ExprContext currIndex : ctx.expr()) {
+			indexes.add(visitExpression((currIndex)));
+		}
+		return new ArrayAcessVarExpression(ctx.ID().getText(),indexes);
+	}
+	
+	private ArrayAcessFuncExpression visitArrayAcessFuncExpression(Arr_r_valueContext ctx) {
+		List<Expression> indexes = new ArrayList<>(ctx.expr().size());
+		for (ExprContext currIndex : ctx.expr()) {
+			indexes.add(visitExpression((currIndex)));
+		}
+		List<Expression> arguments = new ArrayList<>(ctx.func_inv().expr().size());
+		for (ExprContext currArg : ctx.expr()) {
+			arguments.add(visitExpression(currArg));
+		}
+		return new ArrayAcessFuncExpression(ctx.func_inv().ID().getText(), indexes, arguments);
 	}
 
 }

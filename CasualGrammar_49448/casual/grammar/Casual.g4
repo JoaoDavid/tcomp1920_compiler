@@ -85,8 +85,8 @@ expr:	expr binary_ope expr
     
 // ------------------------- ARRAYS -------------------------
 
-arr_r_value : (ID | func_inv) (L_SQR_BR expr R_SQR_BR)+ ;
-arr_l_value  : ID (L_SQR_BR expr R_SQR_BR)+ ;
+arr_r_value : arr_l_value | (func_inv (L_SQR_BR expr R_SQR_BR)+) ;
+arr_l_value : ID (L_SQR_BR expr R_SQR_BR)+ ;
 
 
 // ------------------------- DATA TYPES -------------------------

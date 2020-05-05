@@ -4,40 +4,22 @@ import java.util.List;
 
 import ast.Position;
 
-public class ArrayAcessFuncExpression implements Expression {
+public class ArrayAcessFuncExpression extends ArrayAcessVarExpression {
 
-	private String funcName;
-	private List<Expression> funcParameters;
-	private List<Expression> arrIndexes;
-	private Position pos;
+	private List<Expression> arguments;
 	
-	public ArrayAcessFuncExpression(String funcName, List<Expression> funcParameters, List<Expression> arrIndexes) {
-		this(funcName, funcParameters, arrIndexes, null);
+	public ArrayAcessFuncExpression(String varName, List<Expression> indexes, List<Expression> arguments) {
+		this(varName, indexes, arguments, null);
+	}
+
+	public ArrayAcessFuncExpression(String varName, List<Expression> indexes, List<Expression> arguments, Position pos) {
+		super(varName, indexes, pos);
+		this.arguments = arguments;
 	}
 	
-	public ArrayAcessFuncExpression(String funcName, List<Expression> funcParameters, List<Expression> arrIndexes,
-			Position pos) {
-		this.funcName = funcName;
-		this.funcParameters = funcParameters;
-		this.arrIndexes = arrIndexes;
-		this.pos = pos;
-	}
 
-	public String getFuncName() {
-		return funcName;
+	public List<Expression> getArguments() {
+		return arguments;
 	}
-
-	public List<Expression> getFuncParameters() {
-		return funcParameters;
-	}
-
-	public List<Expression> getArrIndexes() {
-		return arrIndexes;
-	}
-
-	@Override
-	public Position getPosition() {
-		return pos;
-	}
-		
+			
 }
