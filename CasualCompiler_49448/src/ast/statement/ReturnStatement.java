@@ -9,7 +9,7 @@ public class ReturnStatement implements Statement {
 	private Position pos;
 
 	public ReturnStatement(Expression value) {
-		new ReturnStatement(value, null);
+		this(value, null);
 	}
 	
 	public ReturnStatement(Expression value, Position pos) {

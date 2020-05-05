@@ -5,7 +5,7 @@ import ast.Position;
 public class StringLit extends LiteralExpression {
 	
 	public StringLit(String value) {
-		super(value, null);
+		super(value);
 	}	
 
 	public StringLit(String value, Position pos) {

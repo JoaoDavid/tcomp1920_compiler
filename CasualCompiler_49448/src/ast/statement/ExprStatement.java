@@ -9,7 +9,7 @@ public class ExprStatement implements Statement {
 	private Position pos;	
 	
 	public ExprStatement(Expression value) {
-		new ExprStatement(value, null);
+		this(value, null);
 	}
 		
 	public ExprStatement(Expression value, Position pos) {

@@ -41,7 +41,7 @@ public class CasualParseTreeVisitor {
 		List<FunctionParameter> parameters = new ArrayList<>();
 		for (Var_typeContext currVarTypeCtx : ctx.func_args().var_type()) {
 			System.out.println("egeg "  + currVarTypeCtx.getText());
-			parameters.add(new FunctionParameter(currVarTypeCtx.ID().getText(), currVarTypeCtx.datatype().getText(), null));
+			parameters.add(visitFunctionParameter(currVarTypeCtx));
 		}
 		for (FunctionParameter curr : parameters) {
 			System.out.println(curr.getVarName() +" --- " + curr.getDatatype());
@@ -52,8 +52,8 @@ public class CasualParseTreeVisitor {
 	}
 	
 	
-	private VarDeclarationStatement visitVarDeclaration() {
-		return null;
+	private FunctionParameter visitFunctionParameter(Var_typeContext ctx) {
+		return new FunctionParameter(ctx.ID().getText(), ctx.datatype().getText());
 	}
 	
 

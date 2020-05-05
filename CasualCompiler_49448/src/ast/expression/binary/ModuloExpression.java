@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class ModuloExpression extends BinaryExpression {
 	
 	public ModuloExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public ModuloExpression(Expression left, Expression right, Position pos) {

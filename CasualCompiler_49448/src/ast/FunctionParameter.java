@@ -7,7 +7,7 @@ public class FunctionParameter implements Node {
 	private Position pos;
 	
 	public FunctionParameter(String varName, String datatype) {
-		new FunctionParameter(varName, datatype, null);
+		this(varName, datatype, null);
 	}
 	
 	public FunctionParameter(String varName, String datatype, Position pos) {

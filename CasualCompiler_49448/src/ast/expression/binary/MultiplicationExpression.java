@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class MultiplicationExpression extends BinaryExpression {
 	
 	public MultiplicationExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public MultiplicationExpression(Expression left, Expression right, Position pos) {

@@ -10,7 +10,7 @@ public class FunctionDeclaration implements DefDecl {
 	private Position pos;
 	
 	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, String returnType) {
-		new FunctionDeclaration(funcName, parameters, returnType, null);
+		this(funcName, parameters, returnType, null);
 	}
 	
 	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, String returnType,

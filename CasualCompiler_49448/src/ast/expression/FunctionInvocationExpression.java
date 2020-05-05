@@ -12,7 +12,7 @@ public class FunctionInvocationExpression implements Expression {
 	
 	
 	public FunctionInvocationExpression(String funcName, List<Expression> arguments) {
-		new FunctionInvocationExpression(funcName, arguments, null);
+		this(funcName, arguments, null);
 	}
 	
 	public FunctionInvocationExpression(String funcName, List<Expression> arguments, Position pos) {

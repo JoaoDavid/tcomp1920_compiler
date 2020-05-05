@@ -10,7 +10,7 @@ public class CasualFile implements Node {
 	
 	
 	public CasualFile(List<DefDecl> statements) {
-		new CasualFile(statements, null);
+		this(statements, null);
 	}
 
 	public CasualFile(List<DefDecl> statements, Position pos) {

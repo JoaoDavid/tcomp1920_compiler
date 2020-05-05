@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class LessOrEqualExpression extends BinaryExpression {
 	
 	public LessOrEqualExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public LessOrEqualExpression(Expression left, Expression right, Position pos) {

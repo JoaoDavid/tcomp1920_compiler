@@ -10,7 +10,7 @@ public class BinaryExpression implements Expression {
 	private Position pos;
 	
 	public BinaryExpression(Expression left, Expression right) {
-		new BinaryExpression(left, right, null);
+		this(left, right, null);
 	}
 	
 	public BinaryExpression(Expression left, Expression right, Position pos) {

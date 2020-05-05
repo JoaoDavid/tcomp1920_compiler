@@ -10,7 +10,7 @@ public class AssignStatement implements Statement {
 	private Position pos;	
 	
 	public AssignStatement(String varName, Expression value) {
-		new AssignStatement(varName, value, null);
+		this(varName, value, null);
 	}
 		
 	public AssignStatement(String varName, Expression value, Position pos) {

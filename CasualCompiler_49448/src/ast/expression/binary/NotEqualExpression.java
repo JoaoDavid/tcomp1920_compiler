@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class NotEqualExpression extends BinaryExpression {
 	
 	public NotEqualExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public NotEqualExpression(Expression left, Expression right, Position pos) {

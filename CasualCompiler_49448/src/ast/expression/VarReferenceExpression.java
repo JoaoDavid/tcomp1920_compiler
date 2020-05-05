@@ -8,7 +8,7 @@ public class VarReferenceExpression implements Expression {
 	private Position pos;
 	
 	public VarReferenceExpression(String varName) {
-		new VarReferenceExpression(varName, null);
+		this(varName, null);
 	}
 	
 	public VarReferenceExpression(String varName, Position pos) {

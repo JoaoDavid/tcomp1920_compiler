@@ -13,7 +13,7 @@ public class IfStatement implements Statement {
 	
 	
 	public IfStatement(Expression condition, List<Statement> body) {
-		new WhileStatement(condition, body, null);
+		this(condition, body, null);
 	}
 		
 	public IfStatement(Expression condition, List<Statement> body, Position pos) {

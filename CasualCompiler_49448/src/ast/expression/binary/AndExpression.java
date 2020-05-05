@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class AndExpression extends BinaryExpression {
 	
 	public AndExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public AndExpression(Expression left, Expression right, Position pos) {

@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class GreaterExpression extends BinaryExpression {
 	
 	public GreaterExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public GreaterExpression(Expression left, Expression right, Position pos) {

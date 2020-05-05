@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class OrExpression extends BinaryExpression {
 	
 	public OrExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public OrExpression(Expression left, Expression right, Position pos) {

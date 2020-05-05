@@ -12,7 +12,7 @@ public class ArrayAcessFuncExpression implements Expression {
 	private Position pos;
 	
 	public ArrayAcessFuncExpression(String funcName, List<Expression> funcParameters, List<Expression> arrIndexes) {
-		new ArrayAcessFuncExpression(funcName, funcParameters, arrIndexes, null);
+		this(funcName, funcParameters, arrIndexes, null);
 	}
 	
 	public ArrayAcessFuncExpression(String funcName, List<Expression> funcParameters, List<Expression> arrIndexes,

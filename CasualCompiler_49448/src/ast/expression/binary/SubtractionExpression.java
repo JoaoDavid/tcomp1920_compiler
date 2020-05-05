@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class SubtractionExpression extends BinaryExpression {
 	
 	public SubtractionExpression(Expression left, Expression right) {
-		super(left, right, null);
+		super(left, right);
 	}
 
 	public SubtractionExpression(Expression left, Expression right, Position pos) {

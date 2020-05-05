@@ -11,7 +11,7 @@ public class ArrayAcessVarExpression implements Expression {
 	private Position pos;
 	
 	public ArrayAcessVarExpression(String varName, List<Expression> indexes) {
-		new ArrayAcessVarExpression(varName, indexes, null);
+		this(varName, indexes, null);
 	}
 	
 	public ArrayAcessVarExpression(String varName, List<Expression> indexes, Position pos) {

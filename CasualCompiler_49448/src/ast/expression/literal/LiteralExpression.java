@@ -9,7 +9,7 @@ public class LiteralExpression implements Expression {
 	private Position pos;
 	
 	public LiteralExpression(String value) {
-		new LiteralExpression(value, null);
+		this(value, null);
 	}	
 	
 	public LiteralExpression(String value, Position pos) {

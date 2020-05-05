@@ -13,7 +13,7 @@ public class WhileStatement implements Statement {
 	
 	
 	public WhileStatement(Expression condition, List<Statement> body) {
-		new WhileStatement(condition, body, null);
+		this(condition, body, null);
 	}
 		
 	public WhileStatement(Expression condition, List<Statement> body, Position pos) {

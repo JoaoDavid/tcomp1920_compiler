@@ -6,7 +6,7 @@ import ast.expression.Expression;
 public class NegativeExpression extends UnaryExpression {
 
 	public NegativeExpression(Expression value) {
-		super(value, null);
+		super(value);
 	}
 	
 	public NegativeExpression(Expression value, Position pos) {

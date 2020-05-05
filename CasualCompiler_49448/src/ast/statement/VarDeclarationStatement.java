@@ -12,7 +12,7 @@ public class VarDeclarationStatement implements Statement {
 	
 	
 	public VarDeclarationStatement(String varName, String datatype, Expression value) {
-		new VarDeclarationStatement(varName, datatype, value, null);
+		this(datatype, datatype, value, null);
 	}
 		
 	public VarDeclarationStatement(String varName, String datatype, Expression value, Position pos) {

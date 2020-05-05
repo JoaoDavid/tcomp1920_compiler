@@ -9,7 +9,7 @@ public class UnaryExpression implements Expression {
 	private Position pos;
 	
 	public UnaryExpression(Expression value) {
-		new UnaryExpression(value, null);
+		this(value, null);
 	}
 	
 	public UnaryExpression(Expression value, Position pos) {

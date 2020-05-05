@@ -5,7 +5,7 @@ import ast.Position;
 public class BoolLit extends LiteralExpression {
 	
 	public BoolLit(String value) {
-		super(value, null);
+		super(value);
 	}	
 
 	public BoolLit(String value, Position pos) {
