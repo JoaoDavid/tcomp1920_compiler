@@ -1,19 +1,14 @@
-def get_hello_w0rld():String {
-}
-
-def double(i:Int):Int {
-
-}
-
 def fib(i:Int,yey:Int):Int {
 	if i <= 2 {
 		return 1;
 	}
-	return fib(i-1) + fib(i-2);
+	return fib(i-1) && fib(i-2);
 }
 
 
 def factorial(i:Int):Int {
+	!34;
+	-34;
 	r:Int = 1;
 	a:Int = 1;
 	while a <= i {
@@ -23,12 +18,4 @@ def factorial(i:Int):Int {
 	return r;
 }
 
-def main(ar:[String]):Int {
-	printLine(get_hello_w0rld());
-	printInt(double(1 + 2 * 3));
-	printInt(fib(5));
-	printInt(factorial(4));
-	printFloat(3.4 * 5 / 2);
-	z:Int = stringToInt(ar[0]);
-	return 0;
-}
+

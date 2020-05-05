@@ -31,7 +31,7 @@ public class CasualC {
 			//parser.addErrorListener(new CasualErrorListener());
 			ProgramContext tree = parser.program();			
 			CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
-			System.out.println("num child nodes " + tree.getChildCount());
+			System.out.println("program's child nodes count " + tree.getChildCount());
 			casualVisitor.visitCasualFile(tree);
 			System.out.println("\nFinished Execution");
 		}else {

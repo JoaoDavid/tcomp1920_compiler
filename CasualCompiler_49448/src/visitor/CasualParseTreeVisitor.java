@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.antlr.v4.runtime.atn.SemanticContext.AND;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import ast.CasualFile;
@@ -12,6 +13,25 @@ import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.expression.Expression;
+import ast.expression.VarReferenceExpression;
+import ast.expression.binary.AndExpression;
+import ast.expression.binary.BinaryExpression;
+import ast.expression.binary.DivisionExpression;
+import ast.expression.binary.EqualExpression;
+import ast.expression.binary.GreaterExpression;
+import ast.expression.binary.GreaterOrEqualExpression;
+import ast.expression.binary.LessExpression;
+import ast.expression.binary.LessOrEqualExpression;
+import ast.expression.binary.ModuloExpression;
+import ast.expression.binary.MultiplicationExpression;
+import ast.expression.binary.NotEqualExpression;
+import ast.expression.binary.OrExpression;
+import ast.expression.binary.SubtractionExpression;
+import ast.expression.binary.SumExpression;
+import ast.expression.literal.BoolLit;
+import ast.expression.literal.FloatLit;
+import ast.expression.literal.IntLit;
+import ast.expression.literal.StringLit;
 import ast.statement.ExprStatement;
 import ast.statement.IfElseStatement;
 import ast.statement.IfStatement;
@@ -133,9 +153,13 @@ public class CasualParseTreeVisitor {
 		return new WhileStatement(expr, statements);
 	}
 	
-	private ReturnStatement visitReturnStatement(Return_statContext ctx) {		
-		Expression expr = visitExpression(ctx.expr());
-		return new ReturnStatement(expr);
+	private ReturnStatement visitReturnStatement(Return_statContext ctx) {
+		if (ctx.expr() == null) {
+			return new ReturnStatement(); //void return
+		} else {
+			Expression expr = visitExpression(ctx.expr());
+			return new ReturnStatement(expr);
+		}		
 	}
 	
 	private VarDeclarationStatement visitVarDeclarationStatement(Var_decl_statContext ctx) {		
@@ -164,17 +188,11 @@ public class CasualParseTreeVisitor {
 	}
 	
 	private Expression visitExpression(ExprContext ctx) {
-		Stack<ParseTree> stack = new Stack<ParseTree>();
-		for (ParseTree curr : ctx.children) {
-			if (curr instanceof Expr_statContext) {
-				stack.push(curr);
-			} else if(curr instanceof Binary_opeContext) {
-				//return visitWhileStatement(ctx.while_stat());
-			} 
-		}		
+		System.out.println(ctx.getText());
 		if(ctx.binary_ope() != null) {
-			//return visitIfStatement(ctx.if_stat());
+			return visitBinaryExpression(ctx);
 		} else if(ctx.unary_ope() != null) {
+			System.out.println("unary" + ctx.expr().size() + "\n");
 			//return visitWhileStatement(ctx.while_stat());
 		} else if(ctx.func_inv() != null) {
 			//return visitReturnStatement(ctx.return_stat());
@@ -183,17 +201,50 @@ public class CasualParseTreeVisitor {
 		} else if(ctx.arr_l_value() != null) {
 			//return visitVarAssignStatement(ctx.var_assign_stat());
 		} else if(ctx.BOOL() != null) {
-			//return visitExprStatement(ctx.expr_stat());
+			return new BoolLit(ctx.BOOL().getText());
 		}else if(ctx.INT() != null) {
-			//return visitExprStatement(ctx.expr_stat());
+			return new IntLit(ctx.INT().getText());
 		}else if(ctx.FLOAT() != null) {
-			//return visitExprStatement(ctx.expr_stat());
+			return new FloatLit(ctx.FLOAT().getText());
 		}else if(ctx.STRING() != null) {
-			//return visitExprStatement(ctx.expr_stat());
+			return new StringLit(ctx.STRING().getText());
 		}else if(ctx.ID() != null) {
-			//return visitExprStatement(ctx.expr_stat());
+			return new VarReferenceExpression(ctx.ID().getText());
 		}else if(ctx.L_RND_BR() != null) {
-			//return visitExprStatement(ctx.expr_stat());
+			return visitExpression(ctx.expr(0));
+		}
+		return null;
+	}
+	
+	private BinaryExpression visitBinaryExpression(ExprContext ctx) {
+		Expression left = visitExpression(ctx.expr(0));
+		Expression right = visitExpression(ctx.expr(1));
+		if(ctx.binary_ope().AND() != null) {
+			return new AndExpression(left, right);
+		} else if(ctx.binary_ope().OR() != null) {
+			return new OrExpression(left, right);
+		} else if(ctx.binary_ope().EQUAL() != null) {
+			return new EqualExpression(left, right);
+		} else if(ctx.binary_ope().NOT_EQUAL() != null) {
+			return new NotEqualExpression(left, right);
+		} else if(ctx.binary_ope().GREATER_EQ() != null) {
+			return new GreaterOrEqualExpression(left, right);
+		} else if(ctx.binary_ope().GREATER() != null) {
+			return new GreaterExpression(left, right);
+		} else if(ctx.binary_ope().LESS_EQ() != null) {
+			return new LessOrEqualExpression(left, right);
+		} else if(ctx.binary_ope().LESS() != null) {
+			return new LessExpression(left, right);
+		} else if(ctx.binary_ope().PLUS() != null) {
+			return new SumExpression(left, right);
+		} else if(ctx.binary_ope().MINUS() != null) {
+			return new SubtractionExpression(left, right);
+		} else if(ctx.binary_ope().TIMES() != null) {
+			return new MultiplicationExpression(left, right);
+		} else if(ctx.binary_ope().DIV() != null) {
+			return new DivisionExpression(left, right);
+		} else if(ctx.binary_ope().MOD() != null) {
+			return new ModuloExpression(left, right);
 		}
 		return null;
 	}

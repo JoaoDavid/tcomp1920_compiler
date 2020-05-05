@@ -7,6 +7,14 @@ public class ReturnStatement implements Statement {
 	
 	private Expression value;
 	private Position pos;
+	
+	public ReturnStatement() {
+		this(null, null);
+	}
+	
+	public ReturnStatement(Position pos) {
+		this(null, pos);
+	}
 
 	public ReturnStatement(Expression value) {
 		this(value, null);
