@@ -28,10 +28,10 @@ statement: if_stat
 		 | return_stat
 		 | var_decl_stat 
 		 | var_assign_stat
-		 | literal_stat
+		 | expr_stat
 		 ;
 		 
-literal_stat: expr SEMICOLON ;
+expr_stat: expr SEMICOLON ;
 
 return_stat : RETURN expr? SEMICOLON ;
 

@@ -8,13 +8,15 @@ public class FunctionDefinition extends FunctionDeclaration {
 	
 	private List<Statement> statements;
 	
-	public FunctionDefinition(String funcName, List<FunctionParameter> parameters, String returnType) {
+	public FunctionDefinition(String funcName, List<FunctionParameter> parameters, String returnType, List<Statement> statements) {
 		super(funcName, parameters, returnType);
+		this.statements = statements;
 	}
 	
-	public FunctionDefinition(String funcName, List<FunctionParameter> parameters, String returnType,
+	public FunctionDefinition(String funcName, List<FunctionParameter> parameters, String returnType, List<Statement> statements,
 			Position pos) {
 		super(funcName, parameters, returnType, pos);
+		this.statements = statements;
 	}
 
 	

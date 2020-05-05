@@ -2,7 +2,6 @@ package casual;
 
 import java.io.IOException;
 
-import org.antlr.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -10,10 +9,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;
 import casual.grammar.CasualParser.ProgramContext;
-import listeners.CasualErrorListener;
-import listeners.CasualListener;
 import visitor.CasualParseTreeVisitor;
-import visitor.MyCasualVisitor;
 
 public class CasualC {
 	public static void main(String[] args) {
@@ -33,11 +29,9 @@ public class CasualC {
 			parser.setBuildParseTree(true);
 			//parser.addParseListener(new CasualListener()); //debug
 			//parser.addErrorListener(new CasualErrorListener());
-			ProgramContext tree = parser.program();
-			MyCasualVisitor myVisitor = new MyCasualVisitor();
+			ProgramContext tree = parser.program();			
 			CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
 			System.out.println("num child nodes " + tree.getChildCount());
-			System.out.println(myVisitor.visit(tree));
 			casualVisitor.visitCasualFile(tree);
 			System.out.println("\nFinished Execution");
 		}else {

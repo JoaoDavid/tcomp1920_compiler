@@ -1,12 +1,11 @@
 def get_hello_w0rld():String {
-	return "Hello World";
 }
 
 def double(i:Int):Int {
-	return 2 * i;
+
 }
 
-def fib(i:Int):Int {
+def fib(i:Int,yey:Int):Int {
 	if i <= 2 {
 		return 1;
 	}
