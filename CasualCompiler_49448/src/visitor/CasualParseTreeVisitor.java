@@ -17,6 +17,7 @@ import ast.statement.IfElseStatement;
 import ast.statement.IfStatement;
 import ast.statement.ReturnStatement;
 import ast.statement.Statement;
+import ast.statement.VarAssignArrayStatement;
 import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
@@ -112,8 +113,6 @@ public class CasualParseTreeVisitor {
 		for (StatementContext currStatementCtx : ctx.statement()) {
 			statementsIf.add(visitStatement(currStatementCtx));
 		}
-		System.out.println("SIZE OF STATEMENTS INSIDE IF " + ctx.statement().size());
-		System.out.println("SIZE OF STATEMENTS INSIDE else " + ctx.else_block().statement().size());
 		if (ctx.else_block() != null) { //has the else block
 			List<Statement> statementsElse = new ArrayList<>(ctx.statement().size());
 			for (StatementContext currStatementCtx : ctx.statement()) {
@@ -126,28 +125,42 @@ public class CasualParseTreeVisitor {
 	}
 	
 	private WhileStatement visitWhileStatement(While_statContext ctx) {		
-		System.out.println(ctx.getText());
-		return null;
+		Expression expr = visitExpression(ctx.expr());
+		List<Statement> statements = new ArrayList<>(ctx.statement().size());
+		for (StatementContext currStatementCtx : ctx.statement()) {
+			statements.add(visitStatement(currStatementCtx));
+		}
+		return new WhileStatement(expr, statements);
 	}
 	
 	private ReturnStatement visitReturnStatement(Return_statContext ctx) {		
-		System.out.println(ctx.getText());
-		return null;
+		Expression expr = visitExpression(ctx.expr());
+		return new ReturnStatement(expr);
 	}
 	
 	private VarDeclarationStatement visitVarDeclarationStatement(Var_decl_statContext ctx) {		
-		System.out.println(ctx.getText());
-		return null;
+		Expression expr = visitExpression(ctx.expr());
+		return new VarDeclarationStatement(ctx.var_type().ID().getText(), ctx.var_type().datatype().getText(), expr);
 	}
 	
 	private VarAssignStatement visitVarAssignStatement(Var_assign_statContext ctx) {		
-		System.out.println(ctx.getText());
+		Expression expr = visitExpression(ctx.expr());
+		if (ctx.ID() != null) {
+			return new VarAssignStatement(ctx.ID().getText(), expr);
+		} else if (ctx.arr_l_value() != null) {
+			Expression value = visitExpression(ctx.expr());
+			List<Expression> indexes = new ArrayList<>(ctx.arr_l_value().expr().size());
+			for (ExprContext currIndex : ctx.arr_l_value().expr()) {
+				indexes.add(visitExpression((currIndex)));
+			}
+			return new VarAssignArrayStatement(ctx.arr_l_value().ID().getText(), value, indexes);
+		}
 		return null;
 	}
 	
-	private ExprStatement visitExprStatement(Expr_statContext ctx) {		
-		System.out.println(ctx.getText());
-		return null;
+	private ExprStatement visitExprStatement(Expr_statContext ctx) {
+		Expression expr = visitExpression(ctx.expr());
+		return new ExprStatement(expr);
 	}
 	
 	private Expression visitExpression(ExprContext ctx) {
