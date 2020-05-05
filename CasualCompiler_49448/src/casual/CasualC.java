@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import ast.Node;
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;
 import casual.grammar.CasualParser.ProgramContext;
@@ -31,8 +32,7 @@ public class CasualC {
 			//parser.addErrorListener(new CasualErrorListener());
 			ProgramContext tree = parser.program();			
 			CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
-			System.out.println("program's child nodes count " + tree.getChildCount());
-			casualVisitor.visitCasualFile(tree);
+			Node ast = casualVisitor.visitCasualFile(tree);
 			System.out.println("\nFinished Execution");
 		}else {
 			System.out.println("Your args are not correct");

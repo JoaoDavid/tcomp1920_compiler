@@ -2,9 +2,7 @@ package visitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
-import org.antlr.v4.runtime.atn.SemanticContext.AND;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import ast.CasualFile;
@@ -49,7 +47,6 @@ import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
 import casual.grammar.CasualParser.Arr_l_valueContext;
 import casual.grammar.CasualParser.Arr_r_valueContext;
-import casual.grammar.CasualParser.Binary_opeContext;
 import casual.grammar.CasualParser.ExprContext;
 import casual.grammar.CasualParser.Expr_statContext;
 import casual.grammar.CasualParser.Func_declContext;
