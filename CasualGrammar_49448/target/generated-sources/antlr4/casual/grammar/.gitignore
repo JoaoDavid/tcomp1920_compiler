@@ -6,3 +6,5 @@
 /CasualParser.java
 /Casual.interp
 /CasualLexer.interp
+/CasualBaseVisitor.java
+/CasualVisitor.java
