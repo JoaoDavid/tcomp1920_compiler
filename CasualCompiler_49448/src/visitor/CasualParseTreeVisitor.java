@@ -2,6 +2,7 @@ package visitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -10,13 +11,17 @@ import ast.DefDecl;
 import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
+import ast.expression.Expression;
 import ast.statement.ExprStatement;
+import ast.statement.IfElseStatement;
 import ast.statement.IfStatement;
 import ast.statement.ReturnStatement;
 import ast.statement.Statement;
 import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
+import casual.grammar.CasualParser.Binary_opeContext;
+import casual.grammar.CasualParser.ExprContext;
 import casual.grammar.CasualParser.Expr_statContext;
 import casual.grammar.CasualParser.Func_declContext;
 import casual.grammar.CasualParser.Func_defContext;
@@ -74,6 +79,16 @@ public class CasualParseTreeVisitor {
 		return new FunctionDefinition(funcName, parameters, retType, null);
 	}
 	
+	/**
+	 * Visits the casual def/decl function's parameter context
+	 * 
+	 * @param ctx
+	 * @return FunctionParameter Node
+	 */
+	private FunctionParameter visitFunctionParameter(Var_typeContext ctx) {
+		return new FunctionParameter(ctx.ID().getText(), ctx.datatype().getText());
+	}
+	
 	private Statement visitStatement(StatementContext ctx) {
 		if(ctx.if_stat() != null) {
 			return visitIfStatement(ctx.if_stat());
@@ -91,19 +106,23 @@ public class CasualParseTreeVisitor {
 		return null;
 	}
 	
-	/**
-	 * Visits the casual def/decl function's parameter context
-	 * 
-	 * @param ctx
-	 * @return FunctionParameter Node
-	 */
-	private FunctionParameter visitFunctionParameter(Var_typeContext ctx) {
-		return new FunctionParameter(ctx.ID().getText(), ctx.datatype().getText());
-	}
-	
-	private IfStatement visitIfStatement(If_statContext ctx) {		
-		System.out.println(ctx.getText());
-		return null;
+	private IfStatement visitIfStatement(If_statContext ctx) {	
+		Expression expr = visitExpression(ctx.expr());
+		List<Statement> statementsIf = new ArrayList<>(ctx.statement().size());
+		for (StatementContext currStatementCtx : ctx.statement()) {
+			statementsIf.add(visitStatement(currStatementCtx));
+		}
+		System.out.println("SIZE OF STATEMENTS INSIDE IF " + ctx.statement().size());
+		System.out.println("SIZE OF STATEMENTS INSIDE else " + ctx.else_block().statement().size());
+		if (ctx.else_block() != null) { //has the else block
+			List<Statement> statementsElse = new ArrayList<>(ctx.statement().size());
+			for (StatementContext currStatementCtx : ctx.statement()) {
+				statementsElse.add(visitStatement(currStatementCtx));
+			}
+			return new IfElseStatement(expr, statementsIf, statementsElse);
+		} else {
+			return new IfStatement(expr, statementsIf);
+		}
 	}
 	
 	private WhileStatement visitWhileStatement(While_statContext ctx) {		
@@ -131,5 +150,39 @@ public class CasualParseTreeVisitor {
 		return null;
 	}
 	
+	private Expression visitExpression(ExprContext ctx) {
+		Stack<ParseTree> stack = new Stack<ParseTree>();
+		for (ParseTree curr : ctx.children) {
+			if (curr instanceof Expr_statContext) {
+				stack.push(curr);
+			} else if(curr instanceof Binary_opeContext) {
+				//return visitWhileStatement(ctx.while_stat());
+			} 
+		}		
+		if(ctx.binary_ope() != null) {
+			//return visitIfStatement(ctx.if_stat());
+		} else if(ctx.unary_ope() != null) {
+			//return visitWhileStatement(ctx.while_stat());
+		} else if(ctx.func_inv() != null) {
+			//return visitReturnStatement(ctx.return_stat());
+		} else if(ctx.arr_r_value() != null) {
+			//return visitVarDeclarationStatement(ctx.var_decl_stat());
+		} else if(ctx.arr_l_value() != null) {
+			//return visitVarAssignStatement(ctx.var_assign_stat());
+		} else if(ctx.BOOL() != null) {
+			//return visitExprStatement(ctx.expr_stat());
+		}else if(ctx.INT() != null) {
+			//return visitExprStatement(ctx.expr_stat());
+		}else if(ctx.FLOAT() != null) {
+			//return visitExprStatement(ctx.expr_stat());
+		}else if(ctx.STRING() != null) {
+			//return visitExprStatement(ctx.expr_stat());
+		}else if(ctx.ID() != null) {
+			//return visitExprStatement(ctx.expr_stat());
+		}else if(ctx.L_RND_BR() != null) {
+			//return visitExprStatement(ctx.expr_stat());
+		}
+		return null;
+	}
 
 }

@@ -7,18 +7,19 @@ import ast.expression.Expression;
 
 public class IfElseStatement extends IfStatement {
 	
-	private List<Statement> secondBody;
+	private List<Statement> bodyElse;
 	
-	public IfElseStatement(Expression condition, List<Statement> body) {
-		super(condition, body);
+	public IfElseStatement(Expression condition, List<Statement> bodyIf, List<Statement> bodyElse) {
+		this(condition, bodyIf, bodyElse, null);
 	}
 
-	public IfElseStatement(Expression condition, List<Statement> body, Position pos) {
-		super(condition, body, pos);
+	public IfElseStatement(Expression condition, List<Statement> bodyIf, List<Statement> bodyElse, Position pos) {
+		super(condition, bodyIf, pos);
+		this.bodyElse = bodyElse;
 	}
 
-	public List<Statement> getSecondBody() {
-		return secondBody;
+	public List<Statement> getBodyElse() {
+		return bodyElse;
 	}
 	
 }

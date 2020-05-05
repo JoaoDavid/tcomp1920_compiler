@@ -47,10 +47,10 @@ var_type         : ID COLON datatype ;
 
 if_stat: IF expr L_CRL_BR
 				statement*
-		 R_CRL_BR 
-		 (ELSE L_CRL_BR
+		 R_CRL_BR else_block? ;
+else_block: ELSE L_CRL_BR
 				statement*
-		 R_CRL_BR)? ;
+		    R_CRL_BR;	
 			
 while_stat:	WHILE expr L_CRL_BR
 				statement*
