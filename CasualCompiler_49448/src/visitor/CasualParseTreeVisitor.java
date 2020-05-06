@@ -77,7 +77,8 @@ public class CasualParseTreeVisitor {
 				statements.add(funcDecl);
 			}
 		}		
-		return new CasualFile(statements);
+		return new CasualFile(statements, new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private FunctionDeclaration visitFunctionDeclaration(Func_declContext ctx) {
@@ -218,6 +219,8 @@ public class CasualParseTreeVisitor {
 	}
 	
 	private Expression visitExpression(ExprContext ctx) {
+		Position pos = new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()));
 		System.out.println(ctx.getText());
 		if(ctx.binary_ope() != null) {
 			return visitBinaryExpression(ctx);
@@ -234,15 +237,15 @@ public class CasualParseTreeVisitor {
 		} else if(ctx.arr_l_value() != null) {
 			return visitArrayAcessVarExpression(ctx.arr_l_value());
 		} else if(ctx.BOOL() != null) {
-			return new BoolLit(ctx.BOOL().getText());
+			return new BoolLit(ctx.BOOL().getText(), pos);
 		}else if(ctx.INT() != null) {
-			return new IntLit(ctx.INT().getText());
+			return new IntLit(ctx.INT().getText(), pos);
 		}else if(ctx.FLOAT() != null) {
-			return new FloatLit(ctx.FLOAT().getText());
+			return new FloatLit(ctx.FLOAT().getText(), pos);
 		}else if(ctx.STRING() != null) {
-			return new StringLit(ctx.STRING().getText());
+			return new StringLit(ctx.STRING().getText(), pos);
 		}else if(ctx.ID() != null) {
-			return new VarReferenceExpression(ctx.ID().getText());
+			return new VarReferenceExpression(ctx.ID().getText(), pos);
 		}else if(ctx.L_RND_BR() != null) {
 			return visitExpression(ctx.expr(0));
 		}

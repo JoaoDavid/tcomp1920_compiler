@@ -181,7 +181,7 @@ public class ValidatorAST {
 			validate(curr.getValue());
 		} else if (n instanceof ExprStatement) {
 			ExprStatement curr = (ExprStatement) n;
-			validate(curr.getValue());
+			validExpression(curr.getValue());
 		}
 	}
 
@@ -255,6 +255,7 @@ public class ValidatorAST {
 				throw new VarNotDeclaredException(arrExpr.getPosition().toString());
 			}
 			for (Expression currIndex : arrExpr.getIndexes()) {
+				System.out.println("BATATA ASSADAAAAA");
 				if(!validExpression(currIndex).equals(INT)) {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
