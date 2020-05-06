@@ -16,32 +16,35 @@ public class Context {
 		stack.peek().set(varName, datatype);
 	}
 	
-	public Scope get(String varName) throws Exception {
+	public Scope get(String varName) {
 		List<Scope> list = stack.subList(0, stack.size());
 		for (int i = stack.size()-1; i > 0; i--) {
 			if (list.get(i).contains(varName)) {
 				return list.get(i);
 			}			
 		}
-		throw new Exception("var " + varName + " not found");
+		return null;
 	}
 	
 	public void enterScope() {
 		stack.push(new Scope());
 	}
 	
-	public void exitScope() throws Exception {
+	public void exitScope() {
 		if (!stack.isEmpty()) {
 			stack.pop();
-		} else {
-			throw new Exception("no more scopes to pop");
-		}		
+		}	
 	}
 	
-	public boolean hasVariable(String varName) {
+	public boolean hasVariableCurrScope(String varName) {
 		if (!stack.isEmpty()) {
 			return stack.peek().contains(varName);
 		}
 		return false;
 	}
+	
+	public boolean hasBeenDeclared(String varName) {
+		return this.get(varName) != null;
+	}
+	
 }
