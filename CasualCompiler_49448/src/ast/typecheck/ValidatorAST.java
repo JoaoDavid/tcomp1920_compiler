@@ -111,7 +111,7 @@ public class ValidatorAST {
 					hasSeenRet = true;
 				}
 			}
-			if (!hasSeenRet) {
+			if (!hasSeenRet && !curr.getReturnType().equals(VOID)) {
 				throw new MissingReturnStatementException(curr.getPosition().toString());
 			}
 			ctx.exitScope();			
