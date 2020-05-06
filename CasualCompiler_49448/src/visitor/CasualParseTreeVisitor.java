@@ -10,6 +10,8 @@ import ast.DefDecl;
 import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
+import ast.Point;
+import ast.Position;
 import ast.expression.ArrayAcessFuncExpression;
 import ast.expression.ArrayAcessVarExpression;
 import ast.expression.Expression;
@@ -88,7 +90,9 @@ public class CasualParseTreeVisitor {
 		for (FunctionParameter curr : parameters) {
 			System.out.println(curr.getVarName() +" --- " + curr.getDatatype());
 		}
-		return new FunctionDeclaration(funcName, parameters, retType);
+		return new FunctionDeclaration(funcName, parameters, retType);/*, 
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));*/
 	}
 	
 	private FunctionDefinition visitFunctionDefinition(Func_defContext ctx) {

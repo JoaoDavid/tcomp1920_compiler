@@ -16,11 +16,11 @@ public class Context {
 		stack.peek().set(varName, datatype);
 	}
 	
-	public Scope get(String varName) {
+	public String get(String varName) {
 		List<Scope> list = stack.subList(0, stack.size());
 		for (int i = stack.size()-1; i > 0; i--) {
 			if (list.get(i).contains(varName)) {
-				return list.get(i);
+				return list.get(i).get(varName);
 			}			
 		}
 		return null;
