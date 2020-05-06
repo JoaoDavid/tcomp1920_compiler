@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 import ast.Node;
+import ast.typecheck.ValidatorAST;
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;
 import casual.grammar.CasualParser.ProgramContext;
@@ -33,6 +34,13 @@ public class CasualC {
 			ProgramContext tree = parser.program();			
 			CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
 			Node ast = casualVisitor.visitCasualFile(tree);
+			ValidatorAST validatorAST = new ValidatorAST();
+			try {
+				validatorAST.validate(ast);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("\nFinished Execution");
 		}else {
 			System.out.println("Your args are not correct");
