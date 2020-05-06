@@ -21,8 +21,7 @@ public class Context {
 		for (int i = stack.size()-1; i > 0; i--) {
 			if (list.get(i).contains(varName)) {
 				return list.get(i);
-			}
-			
+			}			
 		}
 		throw new Exception("var " + varName + " not found");
 	}
@@ -41,7 +40,7 @@ public class Context {
 	
 	public boolean hasVariable(String varName) {
 		if (!stack.isEmpty()) {
-			return stack.pop().contains(varName);
+			return stack.peek().contains(varName);
 		}
 		return false;
 	}
