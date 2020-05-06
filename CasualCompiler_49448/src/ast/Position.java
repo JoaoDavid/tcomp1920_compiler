@@ -19,7 +19,7 @@ public class Position {
 	}
 	
 	public String toString() {
-		return start.toString() + " " + end.toString();
+		return start.toString() + " to " + end.toString();
 	}
 	
 }

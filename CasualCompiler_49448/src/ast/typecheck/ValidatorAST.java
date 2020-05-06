@@ -1,5 +1,10 @@
 package ast.typecheck;
 
+import static ast.expression.datatype.PrimitiveDataTypes.BOOL;
+import static ast.expression.datatype.PrimitiveDataTypes.FLOAT;
+import static ast.expression.datatype.PrimitiveDataTypes.INT;
+import static ast.expression.datatype.PrimitiveDataTypes.STRING;
+
 import java.util.List;
 
 import ast.CasualFile;
@@ -10,7 +15,9 @@ import ast.FunctionParameter;
 import ast.Node;
 import ast.exception.DuplicateVarAssignException;
 import ast.exception.InvalidOperandException;
+import ast.exception.MissingReturnStatementException;
 import ast.exception.TypeCheckException;
+import ast.exception.TypeMismatchException;
 import ast.exception.VarNotDeclaredException;
 import ast.expression.ArrayAcessFuncExpression;
 import ast.expression.ArrayAcessVarExpression;
@@ -46,16 +53,20 @@ import ast.statement.VarAssignArrayStatement;
 import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
-import casual.grammar.CasualLexer;
-import casual.grammar.CasualParser;
-
-import static ast.expression.datatype.PrimitiveDataTypes.*;
 
 public class ValidatorAST {
 
-	private static String RETURN_KW = "$return";
+	private static final String RETURN_KW = "$return";
+	private static final String VOID = "Void";
 	private Context ctx;
 	private List<TypeCheckException> exceptions;
+	/*
+	 * TODO
+	 replace all throw new Exception with exception.add(new Exception)
+	 then implement a getter for this variable an print the list at the end
+	 this way we can see all the errors without one error preventing us
+	 from knowing what else is wrong
+	 */
 
 	public ValidatorAST() {
 		ctx = new Context();
@@ -80,7 +91,7 @@ public class ValidatorAST {
 		}
 	}
 
-	public Node validate(Node n) throws TypeCheckException {
+	public void validate(Node n) throws TypeCheckException {
 		if (n instanceof CasualFile) {			
 			CasualFile curr = (CasualFile) n;
 			for (DefDecl currDefDecl : curr.getStatements()) {
@@ -93,7 +104,16 @@ public class ValidatorAST {
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
 				validate(currFuncParam);
 			}
-			validBody(curr.getStatements());		
+			boolean hasSeenRet = false;
+			for (Statement currStat : curr.getStatements()) {
+				validate(currStat);
+				if(currStat instanceof ReturnStatement) {
+					hasSeenRet = true;
+				}
+			}
+			if (!hasSeenRet) {
+				throw new MissingReturnStatementException(curr.getPosition().toString());
+			}
 			ctx.exitScope();			
 		} else if (n instanceof FunctionParameter) {
 			FunctionParameter curr = (FunctionParameter) n;
@@ -104,24 +124,42 @@ public class ValidatorAST {
 		} else if (n instanceof IfStatement) {
 			ctx.enterScope();
 			IfStatement curr = (IfStatement) n;
-			validate(curr.getCondition());		
+			if (!validExpression(curr.getCondition()).equals(BOOL)) {
+				throw new TypeMismatchException(curr.getPosition().toString());
+			}
 			validBody(curr.getBody());
 			ctx.exitScope();
 		} else if (n instanceof IfElseStatement) {
 			ctx.enterScope();
 			IfElseStatement curr = (IfElseStatement) n;
-			validate(curr.getCondition());		
+			if (!validExpression(curr.getCondition()).equals(BOOL)) {
+				throw new TypeMismatchException(curr.getPosition().toString());
+			}	
 			validBody(curr.getBody());
 			validBody(curr.getBodyElse());
 			ctx.exitScope();
 		} else if (n instanceof WhileStatement) {
 			ctx.enterScope();
 			WhileStatement curr = (WhileStatement) n;
-			validate(curr.getCondition());		
+			if (!validExpression(curr.getCondition()).equals(BOOL)) {
+				throw new TypeMismatchException(curr.getPosition().toString());
+			}
 			validBody(curr.getBody());
 			ctx.exitScope();
 		} else if (n instanceof ReturnStatement) {
 			ReturnStatement curr = (ReturnStatement) n;
+			String expectedRetType = ctx.get(RETURN_KW);
+			if (curr.getValue() == null) { //no expr in return statement
+				if (expectedRetType.equals(VOID)) {
+					return;
+				}
+			} else {
+				String actualRetType = validExpression(curr.getValue());
+				if (expectedRetType.equals(actualRetType)) {
+					return;
+				}
+			}
+			throw new TypeMismatchException(curr.getPosition().toString());
 		} else if (n instanceof VarDeclarationStatement) {
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
 			validate(curr.getValue());
@@ -144,17 +182,7 @@ public class ValidatorAST {
 		} else if (n instanceof ExprStatement) {
 			ExprStatement curr = (ExprStatement) n;
 			validate(curr.getValue());
-		} else if (n instanceof Expression) {
-			Expression expr = (Expression) n;
-			String res = validExpression(expr);
-			System.out.println(res);
-		} else if (n instanceof IfStatement) {
-
-		} else if (n instanceof IfStatement) {
-
 		}
-		return null;
-
 	}
 
 	private void validBody(List<Statement> statements) throws TypeCheckException {
@@ -168,69 +196,69 @@ public class ValidatorAST {
 			BinaryExpression binaryExpr = (BinaryExpression) expr;
 			String leftTy = validExpression(binaryExpr.getLeft());
 			String rightTy = validExpression(binaryExpr.getRight());
-			if (expr instanceof AndExpression) {
+			if (expr instanceof AndExpression || expr instanceof OrExpression) {
 				if (!leftTy.equals(BOOL) || !rightTy.equals(BOOL)) {
-					throw new InvalidOperandException(leftTy + "&&" + rightTy);
-				}
-				return BOOL;
-			} else if (expr instanceof OrExpression) {
-				if (!leftTy.equals(BOOL) || !rightTy.equals(BOOL)) {
-					throw new InvalidOperandException(leftTy + "||" + rightTy);
+					throw new InvalidOperandException(expr.getPosition().toString());
 				}
 				return BOOL;
 			} else if (expr instanceof EqualExpression) {
 				if (!leftTy.equals(rightTy)) {
-					throw new InvalidOperandException(leftTy + "==" + rightTy);
+					throw new InvalidOperandException(expr.getPosition().toString());
 				}
 				return leftTy;
 			} else if (expr instanceof NotEqualExpression) {
 				if (!leftTy.equals(rightTy)) {
-					throw new InvalidOperandException(leftTy + "!=" + rightTy);
+					throw new InvalidOperandException(expr.getPosition().toString());
 				}
 				return leftTy;
 			} else if (expr instanceof GreaterOrEqualExpression || expr instanceof GreaterExpression
 					|| expr instanceof LessOrEqualExpression || expr instanceof LessExpression) {
-				if (!leftTy.equals(INT) || !rightTy.equals(INT)) {
-					throw new InvalidOperandException(leftTy + "operator" + rightTy);
-				} else if (!leftTy.equals(FLOAT) || !rightTy.equals(FLOAT)) {
-					throw new InvalidOperandException(leftTy + "operator" + rightTy);
+				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT))) {
+					return leftTy;
 				}
-				return leftTy;
+				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SumExpression) {
-				if (!leftTy.equals(INT) || !rightTy.equals(INT)) {
-					throw new InvalidOperandException(leftTy + "operator" + rightTy);
-				} else if (!leftTy.equals(FLOAT) || !rightTy.equals(FLOAT)) {
-					throw new InvalidOperandException(leftTy + "operator" + rightTy);
-				} else if (!leftTy.equals(STRING) || !rightTy.equals(STRING)) {
-					throw new InvalidOperandException(leftTy + "operator" + rightTy);
+				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT)
+						|| leftTy.equals(STRING))) {
+					return leftTy;
 				}
+				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SubtractionExpression || expr instanceof MultiplicationExpression
 					|| expr instanceof DivisionExpression || expr instanceof ModuloExpression) {
-				if (!leftTy.equals(INT) || !rightTy.equals(INT)) {
-					throw new InvalidOperandException(leftTy + "operator" + rightTy);
-				} else if (!leftTy.equals(FLOAT) || !rightTy.equals(FLOAT)) {
-					throw new InvalidOperandException(leftTy + "operator" + rightTy);
-				} 
-				return leftTy;
+				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT))) {
+					return leftTy;
+				}
+				throw new InvalidOperandException(expr.getPosition().toString());
 			}
 		} else if (expr instanceof NotExpression) {
 			NotExpression notExpr = (NotExpression) expr;
-			String val = validExpression(notExpr.getValue());
-			if (!val.equals(BOOL)) {
-				throw new InvalidOperandException("not");
+			String type = validExpression(notExpr.getValue());
+			if (!type.equals(BOOL)) {
+				throw new InvalidOperandException(expr.getPosition().toString());
 			}
+			return type;
 		} else if (expr instanceof NegativeExpression) {
 			NegativeExpression negExpr = (NegativeExpression) expr;
-			String val = validExpression(negExpr.getValue());
-			if (!val.equals(INT) || !val.equals(FLOAT)) {
-				throw new InvalidOperandException("neg");
+			String type = validExpression(negExpr.getValue());
+			if (!type.equals(INT) || !type.equals(FLOAT)) {
+				throw new InvalidOperandException(expr.getPosition().toString());
 			}
+			return type;
 		} else if (expr instanceof FunctionInvocationExpression) {
 
 		} else if (expr instanceof ArrayAcessFuncExpression) {
 
 		} else if (expr instanceof ArrayAcessVarExpression) {
-
+			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
+			String type = ctx.get(arrExpr.getVarName());
+			if (type == null) {
+				throw new VarNotDeclaredException(arrExpr.getPosition().toString());
+			}
+			for (Expression currIndex : arrExpr.getIndexes()) {
+				if(!validExpression(currIndex).equals(INT)) {
+					throw new TypeMismatchException(expr.getPosition().toString());
+				}
+			}
 		} else if (expr instanceof BoolLit) {
 			return BOOL;
 		} else if (expr instanceof IntLit) {
@@ -243,7 +271,7 @@ public class ValidatorAST {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
 			String type = ctx.get(varExpr.getVarName());
 			if (type == null) {
-				throw new VarNotDeclaredException();
+				throw new VarNotDeclaredException(varExpr.getPosition().toString());
 			}
 			return type;
 		}
