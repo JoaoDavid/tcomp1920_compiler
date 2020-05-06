@@ -18,5 +18,8 @@ public class Position {
 		return end;
 	}
 	
-
+	public String toString() {
+		return start.toString() + " " + end.toString();
+	}
+	
 }

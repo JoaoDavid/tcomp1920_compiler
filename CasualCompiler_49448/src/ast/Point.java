@@ -1,5 +1,7 @@
 package ast;
 
+import org.antlr.v4.codegen.target.CppTarget;
+
 public class Point {
 	
 	private int line;
@@ -17,5 +19,9 @@ public class Point {
 	public int getColumn() {
 		return column;
 	}	
+	
+	public String toString() {
+		return "line:" + this.line + " column:" + this.column;
+	}
 
 }

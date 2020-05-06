@@ -90,9 +90,9 @@ public class CasualParseTreeVisitor {
 		for (FunctionParameter curr : parameters) {
 			System.out.println(curr.getVarName() +" --- " + curr.getDatatype());
 		}
-		return new FunctionDeclaration(funcName, parameters, retType);/*, 
+		return new FunctionDeclaration(funcName, parameters, retType,
 				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
-						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));*/
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private FunctionDefinition visitFunctionDefinition(Func_defContext ctx) {
@@ -107,7 +107,9 @@ public class CasualParseTreeVisitor {
 		for (StatementContext currStatementCtx : ctx.statement()) {
 			statements.add(visitStatement(currStatementCtx));
 		}
-		return new FunctionDefinition(funcName, parameters, retType, statements);
+		return new FunctionDefinition(funcName, parameters, retType, statements,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	/**
@@ -148,9 +150,13 @@ public class CasualParseTreeVisitor {
 			for (StatementContext currStatementCtx : ctx.statement()) {
 				statementsElse.add(visitStatement(currStatementCtx));
 			}
-			return new IfElseStatement(expr, statementsIf, statementsElse);
+			return new IfElseStatement(expr, statementsIf, statementsElse,
+					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 		} else {
-			return new IfStatement(expr, statementsIf);
+			return new IfStatement(expr, statementsIf,
+					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 		}
 	}
 	
@@ -160,41 +166,55 @@ public class CasualParseTreeVisitor {
 		for (StatementContext currStatementCtx : ctx.statement()) {
 			statements.add(visitStatement(currStatementCtx));
 		}
-		return new WhileStatement(expr, statements);
+		return new WhileStatement(expr, statements,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private ReturnStatement visitReturnStatement(Return_statContext ctx) {
 		if (ctx.expr() == null) {
-			return new ReturnStatement(); //void return
+			return new ReturnStatement(
+					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()))); //void return
 		} else {
 			Expression expr = visitExpression(ctx.expr());
-			return new ReturnStatement(expr);
+			return new ReturnStatement(expr,
+					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 		}		
 	}
 	
 	private VarDeclarationStatement visitVarDeclarationStatement(Var_decl_statContext ctx) {		
 		Expression expr = visitExpression(ctx.expr());
-		return new VarDeclarationStatement(ctx.var_type().ID().getText(), ctx.var_type().datatype().getText(), expr);
+		return new VarDeclarationStatement(ctx.var_type().ID().getText(), ctx.var_type().datatype().getText(), expr,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private VarAssignStatement visitVarAssignStatement(Var_assign_statContext ctx) {		
 		Expression expr = visitExpression(ctx.expr());
 		if (ctx.ID() != null) {
-			return new VarAssignStatement(ctx.ID().getText(), expr);
+			return new VarAssignStatement(ctx.ID().getText(), expr,
+					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 		} else if (ctx.arr_l_value() != null) {
 			Expression value = visitExpression(ctx.expr());
 			List<Expression> indexes = new ArrayList<>(ctx.arr_l_value().expr().size());
 			for (ExprContext currIndex : ctx.arr_l_value().expr()) {
 				indexes.add(visitExpression((currIndex)));
 			}
-			return new VarAssignArrayStatement(ctx.arr_l_value().ID().getText(), value, indexes);
+			return new VarAssignArrayStatement(ctx.arr_l_value().ID().getText(), value, indexes,
+					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 		}
 		return null;
 	}
 	
 	private ExprStatement visitExprStatement(Expr_statContext ctx) {
 		Expression expr = visitExpression(ctx.expr());
-		return new ExprStatement(expr);
+		return new ExprStatement(expr,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private Expression visitExpression(ExprContext ctx) {
@@ -230,44 +250,48 @@ public class CasualParseTreeVisitor {
 	}
 	
 	private BinaryExpression visitBinaryExpression(ExprContext ctx) {
+		Position pos = new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()));
 		Expression left = visitExpression(ctx.expr(0));
 		Expression right = visitExpression(ctx.expr(1));
 		if(ctx.binary_ope().AND() != null) {
-			return new AndExpression(left, right);
+			return new AndExpression(left, right, pos);
 		} else if(ctx.binary_ope().OR() != null) {
-			return new OrExpression(left, right);
+			return new OrExpression(left, right, pos);
 		} else if(ctx.binary_ope().EQUAL() != null) {
-			return new EqualExpression(left, right);
+			return new EqualExpression(left, right, pos);
 		} else if(ctx.binary_ope().NOT_EQUAL() != null) {
-			return new NotEqualExpression(left, right);
+			return new NotEqualExpression(left, right, pos);
 		} else if(ctx.binary_ope().GREATER_EQ() != null) {
-			return new GreaterOrEqualExpression(left, right);
+			return new GreaterOrEqualExpression(left, right, pos);
 		} else if(ctx.binary_ope().GREATER() != null) {
-			return new GreaterExpression(left, right);
+			return new GreaterExpression(left, right, pos);
 		} else if(ctx.binary_ope().LESS_EQ() != null) {
-			return new LessOrEqualExpression(left, right);
+			return new LessOrEqualExpression(left, right, pos);
 		} else if(ctx.binary_ope().LESS() != null) {
-			return new LessExpression(left, right);
+			return new LessExpression(left, right, pos);
 		} else if(ctx.binary_ope().PLUS() != null) {
-			return new SumExpression(left, right);
+			return new SumExpression(left, right, pos);
 		} else if(ctx.binary_ope().MINUS() != null) {
-			return new SubtractionExpression(left, right);
+			return new SubtractionExpression(left, right, pos);
 		} else if(ctx.binary_ope().TIMES() != null) {
-			return new MultiplicationExpression(left, right);
+			return new MultiplicationExpression(left, right, pos);
 		} else if(ctx.binary_ope().DIV() != null) {
-			return new DivisionExpression(left, right);
+			return new DivisionExpression(left, right, pos);
 		} else if(ctx.binary_ope().MOD() != null) {
-			return new ModuloExpression(left, right);
+			return new ModuloExpression(left, right, pos);
 		}
 		return null;
 	}
 	
 	private UnaryExpression visitUnaryExpression(ExprContext ctx) {
+		Position pos = new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()));
 		Expression expr = visitExpression(ctx.expr(0));
 		if(ctx.unary_ope().NOT() != null) {
-			return new NotExpression(expr);
+			return new NotExpression(expr, pos);
 		} else if(ctx.unary_ope().MINUS() != null) {
-			return new NegativeExpression(expr);
+			return new NegativeExpression(expr, pos);
 		} 
 		return null;
 	}
@@ -279,7 +303,9 @@ public class CasualParseTreeVisitor {
 		for (ExprContext currExpr : ctx.expr()) {
 			arguments.add(visitExpression(currExpr));
 		}
-		return new FunctionInvocationExpression(funcName, arguments);
+		return new FunctionInvocationExpression(funcName, arguments,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private ArrayAcessVarExpression visitArrayAcessVarExpression(Arr_l_valueContext ctx) {
@@ -287,7 +313,9 @@ public class CasualParseTreeVisitor {
 		for (ExprContext currIndex : ctx.expr()) {
 			indexes.add(visitExpression((currIndex)));
 		}
-		return new ArrayAcessVarExpression(ctx.ID().getText(),indexes);
+		return new ArrayAcessVarExpression(ctx.ID().getText(),indexes,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private ArrayAcessFuncExpression visitArrayAcessFuncExpression(Arr_r_valueContext ctx) {
@@ -299,7 +327,9 @@ public class CasualParseTreeVisitor {
 		for (ExprContext currArg : ctx.expr()) {
 			arguments.add(visitExpression(currArg));
 		}
-		return new ArrayAcessFuncExpression(ctx.func_inv().ID().getText(), indexes, arguments);
+		return new ArrayAcessFuncExpression(ctx.func_inv().ID().getText(), indexes, arguments,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 
 }
