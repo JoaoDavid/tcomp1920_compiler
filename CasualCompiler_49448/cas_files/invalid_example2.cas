@@ -1,52 +1,36 @@
+#quicksort implementation
 
+def quickSort(arr:[Int], low:Int, highlow:Int):Void	{
+		if (low < high) {
+			#fp represents the index of the pivot chosen in partition
+			#that is in the correct final position
+			fp:Int = partition(arr, low, high);
 
-decl a_Function_With_invalid_args(varName:  , varName2String):Float 
+			quickSort(arr, low, fp - 1);  # Before fp
+			quickSort(arr, fp + 1, high); # After fp
+		}
+	}
 
-decl 234invalidFunctionName(varName:Int  , varName2:String):Float
+def partition(arr:[Int], low:Int, highlow:Int):Int {
+	# pivot (Element to be placed at right position)
+	pivot:Int = arr[high];  
 
-decl validFunctionName(varName:Int  , varName2:String):35invalidType
-
-
-def a_Function_With_invalid_args(varName:  , varName2String):Float {
-
-	
-}
-
-
-def 234invalidFunctionName(varName:Int  , varName2:String):Float {
-
-	
-}
-
-def validFunctionName(varName:Int  , varName2:String):35invalidType {
-
-	
-}
-
-
-
-#def and decl keyworsd swapped
-
-
-def a_Function_With_invalid_args(varName:  , varName2String):Float 
-
-def 234invalidFunctionName(varName:Int  , varName2:String):Float
-
-def validFunctionName(varName:Int  , varName2:String):35invalidType
-
-
-decl a_Function_With_invalid_args(varName:  , varName2String):Float {
-
-	
-}
-
-
-decl 234invalidFunctionName(varName:Int  , varName2:String):Float {
-
-	
-}
-
-decl validFunctionName(varName:Int  , varName2:String):35invalidType {
-
-	
-}
+	i:Int = (low - 1);  # Index of smaller element
+		
+		j:Int = low;
+		#for (int j = low; j <= high- 1; j++) {
+		while j <= high - 1 {
+			# If current element is smaller than the pivot
+			if (arr[j] < pivot){
+				i = i+   1;    # increment index of smaller element
+				temp:Int = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+			j=j+1;
+		}
+		temp2:Int = arr[i + 1];
+		arr[i + 1] = arr[high];
+		arr[high] = temp2;
+		return (i + 1);
+	}

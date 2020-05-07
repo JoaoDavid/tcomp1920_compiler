@@ -23,6 +23,24 @@ If the source code within the file provided has any syntactic errors, red error 
 with the name of the exception thrown as well
 
 
+
+
+--- Valid Example Files ---
+valid_example1.cas
+valid_example2.cas
+valid_example4.cas
+valid_example5.cas
+benchmark.cas
+hello_world.cas
+
+--- INvalid Example Files ---
+invalid_example1.cas
+invalid_example2.cas
+invalid_example4.cas
+invalid_example5.cas
+
+
+
 Software
 
 Download antlr-4.8-complete.jar at section: ANTLR tool and Java Target

@@ -38,7 +38,6 @@ public class CasualC {
 			try {
 				validatorAST.validateAST(ast);
 			} catch (Exception e) {
-				e.printStackTrace();
 				System.out.println(e.toString());
 				System.err.println("Syntactic Verification found an error");
 				return;
