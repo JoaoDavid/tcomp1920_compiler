@@ -1,6 +1,6 @@
 #quicksort implementation
 
-def quickSort(arr:[Int], low:Int, highlow:Int):Void	{
+def quickSort(arr:[Int], low:Int, high:Int):Void	{
 		if (low < high) {
 			#fp represents the index of the pivot chosen in partition
 			#that is in the correct final position
@@ -11,7 +11,7 @@ def quickSort(arr:[Int], low:Int, highlow:Int):Void	{
 		}
 	}
 
-def partition(arr:[Int], low:Int, highlow:Int):Int {
+def partition(arr:[Int], low:Int, high:Int):Int {
 	# pivot (Element to be placed at right position)
 	pivot:Int = arr[high];  
 
@@ -19,7 +19,7 @@ def partition(arr:[Int], low:Int, highlow:Int):Int {
 		
 		j:Int = low;
 		#for (int j = low; j <= high- 1; j++) {
-		while j <= high - 1 {
+		while j <= (high - 1) {
 			# If current element is smaller than the pivot
 			if (arr[j] < pivot){
 				i = i+   1;    # increment index of smaller element

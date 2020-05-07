@@ -15,17 +15,17 @@ def oneArgFuncA     (ola:Float)                              :String {
 	return "gewg" + "aegeag" + "gesgeg";
 }
 
-def twoArgsFuncB    (ola:Float,ola:Float)                    :Float {
+def twoArgsFuncB    (ola:Float,olaB:Float)                    :Float {
 
 	return 3245e35;
 }
 
-def threeArgsFuncC  (ola:Float,variable:Bool,ola:Float)      :Bool {
+def threeArgsFuncC  (ola:Float,variable:Bool,adeus:Float)      :Bool {
 
-	return 235E234 == 34;
+	return 235E234 == 34.7;
 }
 
-def fourArgsFuncD   (ola:String,ola:Float,ola:Int,ola:Bool)  :Void {
+def fourArgsFuncD   (ola:String,ola2:Float,ola3:Int,ola4:Bool)  :Void {
 
 	return ;
 }

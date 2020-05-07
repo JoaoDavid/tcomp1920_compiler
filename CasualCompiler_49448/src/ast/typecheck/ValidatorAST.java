@@ -238,16 +238,16 @@ public class ValidatorAST {
 				if (!leftTy.equals(rightTy)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return leftTy;
+				return BOOL;
 			} else if (expr instanceof NotEqualExpression) {
 				if (!leftTy.equals(rightTy)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return leftTy;
+				return BOOL;
 			} else if (expr instanceof GreaterOrEqualExpression || expr instanceof GreaterExpression
 					|| expr instanceof LessOrEqualExpression || expr instanceof LessExpression) {
 				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT))) {
-					return leftTy;
+					return BOOL;
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SumExpression) {
@@ -278,10 +278,13 @@ public class ValidatorAST {
 		} else if (expr instanceof NegativeExpression) {
 			NegativeExpression negExpr = (NegativeExpression) expr;
 			String type = validExpression(negExpr.getValue());
-			if (!type.equals(INT) || !type.equals(FLOAT)) {
+			if (type.equals(INT)) {
+				return INT;
+			} else if (type.equals(FLOAT)) {
+				return FLOAT;
+			} else {
 				throw new InvalidOperandException(expr.getPosition().toString());
 			}
-			return type;
 		} else if (expr instanceof FunctionInvocationExpression) {
 			FunctionInvocationExpression funcInvExpr = (FunctionInvocationExpression) expr;
 			String[] datatypes = funcSignCtx.getDataTypes(funcInvExpr.getFuncName());
