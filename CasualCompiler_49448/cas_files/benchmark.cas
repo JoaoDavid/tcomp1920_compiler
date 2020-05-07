@@ -1,21 +1,25 @@
-def fib(i:Int,yey:Int):Int {
-	if i <= 2 {
-		return 1;
+def fib(i:Bool,x:Int,arr:[Int]):[Int] {
+	if true {
+		while true {
+			return arr;
+		}
 	}
-	return fib(i-1) && fib(i-2);
+	vafsf:Int = arr[5*1];
+	arr[5*1];
+	return arr;
+	if i == true {
+		a:Float = 3.0 + 0.9;
+		e:Int = 3;
+	} else {
+	
+	}
+	arr[1] = arr[4];
+	#return fib(i-1) && fib(i-2);
 }
 
+def fib(i:Bool,x:Int,arr:[Int]):Void {
 
-def factorial(i:Int):Int {
-	!34;
-	-34;
-	r:Int = 1;
-	a:Int = 1;
-	while a <= i {
-		r = r * i;
-		a = a + 1;
-	}
-	return r;
+
+
 }
-
 

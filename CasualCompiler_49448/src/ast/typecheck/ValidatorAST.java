@@ -16,7 +16,7 @@ import ast.Node;
 import ast.exception.DuplicateVarAssignException;
 import ast.exception.InvalidOperandException;
 import ast.exception.MissingReturnStatementException;
-import ast.exception.TypeCheckException;
+import ast.exception.SyntacticException;
 import ast.exception.TypeMismatchException;
 import ast.exception.VarNotDeclaredException;
 import ast.expression.ArrayAcessFuncExpression;
@@ -59,7 +59,8 @@ public class ValidatorAST {
 	private static final String RETURN_KW = "$return";
 	private static final String VOID = "Void";
 	private Context ctx;
-	private List<TypeCheckException> exceptions;
+	private FuncSignContext funcSignCtx;
+	private List<SyntacticException> exceptions;
 	/*
 	 * TODO
 	 replace all throw new Exception with exception.add(new Exception)
@@ -70,6 +71,7 @@ public class ValidatorAST {
 
 	public ValidatorAST() {
 		ctx = new Context();
+		funcSignCtx = new FuncSignContext();
 	}
 
 	private void readFunctionSignature(Node n) {
@@ -91,7 +93,7 @@ public class ValidatorAST {
 		}
 	}
 
-	public void validate(Node n) throws TypeCheckException {
+	public void validate(Node n) throws SyntacticException {
 		if (n instanceof CasualFile) {			
 			CasualFile curr = (CasualFile) n;
 			for (DefDecl currDefDecl : curr.getStatements()) {
@@ -162,7 +164,7 @@ public class ValidatorAST {
 			throw new TypeMismatchException(curr.getPosition().toString());
 		} else if (n instanceof VarDeclarationStatement) {
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
-			validate(curr.getValue());
+			validExpression(curr.getValue());
 			if (ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new DuplicateVarAssignException();
 			}
@@ -173,25 +175,32 @@ public class ValidatorAST {
 				throw new VarNotDeclaredException(curr.getVarName());
 			}
 			validate(curr.getValue());
-		} else if (n instanceof VarAssignArrayStatement) {
-			VarAssignArrayStatement curr = (VarAssignArrayStatement) n;
-			if (!ctx.hasBeenDeclared(curr.getVarName())) {
-				throw new DuplicateVarAssignException();
+			if (n instanceof VarAssignArrayStatement) {
+				VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
+				for (Expression currIndex : currArr.getIndexes()) {
+					if(!validExpression(currIndex).equals(INT)) {
+						throw new TypeMismatchException(currArr.getPosition().toString());
+					}
+				}
+			} else {
+				
 			}
-			validate(curr.getValue());
 		} else if (n instanceof ExprStatement) {
 			ExprStatement curr = (ExprStatement) n;
 			validExpression(curr.getValue());
-		}
+		} /*else if (n instanceof Expression) {
+			Expression expr = (Expression) n;
+			validExpression(expr);
+		}*/
 	}
 
-	private void validBody(List<Statement> statements) throws TypeCheckException {
+	private void validBody(List<Statement> statements) throws SyntacticException {
 		for (Statement currStat : statements) {
 			validate(currStat);
 		}
 	}
 
-	private String validExpression(Expression expr) throws TypeCheckException {
+	private String validExpression(Expression expr) throws SyntacticException {
 		if (expr instanceof BinaryExpression) {
 			BinaryExpression binaryExpr = (BinaryExpression) expr;
 			String leftTy = validExpression(binaryExpr.getLeft());
@@ -224,12 +233,17 @@ public class ValidatorAST {
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SubtractionExpression || expr instanceof MultiplicationExpression
-					|| expr instanceof DivisionExpression || expr instanceof ModuloExpression) {
+					|| expr instanceof DivisionExpression) {
 				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT))) {
 					return leftTy;
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
-			}
+			} else if (expr instanceof ModuloExpression) {
+				if (!leftTy.equals(INT) || !rightTy.equals(INT)) {
+					throw new InvalidOperandException(expr.getPosition().toString());
+				}
+				return INT;
+			} 
 		} else if (expr instanceof NotExpression) {
 			NotExpression notExpr = (NotExpression) expr;
 			String type = validExpression(notExpr.getValue());
@@ -255,7 +269,6 @@ public class ValidatorAST {
 				throw new VarNotDeclaredException(arrExpr.getPosition().toString());
 			}
 			for (Expression currIndex : arrExpr.getIndexes()) {
-				System.out.println("BATATA ASSADAAAAA");
 				if(!validExpression(currIndex).equals(INT)) {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
@@ -281,7 +294,7 @@ public class ValidatorAST {
 		return null;		
 	}
 
-	private String equalOperandTypes(String leftTy, String rightTy, String type) throws TypeCheckException {
+	private String equalOperandTypes(String leftTy, String rightTy, String type) throws SyntacticException {
 		if (!leftTy.equals(type) || !rightTy.equals(type)) {
 			throw new InvalidOperandException(leftTy + " and " + rightTy + " must be of type " + type);
 		}

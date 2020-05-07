@@ -1,6 +1,6 @@
 package ast.exception;
 
-public class MissingReturnStatementException extends TypeCheckException {
+public class MissingReturnStatementException extends SyntacticException {
 
 	/**
 	 * 

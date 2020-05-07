@@ -1,6 +1,6 @@
 package ast.exception;
 
-public class InvalidOperandException extends TypeCheckException {
+public class InvalidOperandException extends SyntacticException {
 
 	/**
 	 * 

@@ -1,17 +1,17 @@
 package ast.exception;
 
-public class TypeCheckException extends Exception {
+public class SyntacticException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public TypeCheckException() {
+	public SyntacticException() {
 		super();
 	}
 	
-	public TypeCheckException(String message) {
+	public SyntacticException(String message) {
 		super(message);
 	}
 

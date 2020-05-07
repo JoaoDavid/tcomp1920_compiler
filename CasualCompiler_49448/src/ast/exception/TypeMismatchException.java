@@ -1,6 +1,6 @@
 package ast.exception;
 
-public class TypeMismatchException extends TypeCheckException {
+public class TypeMismatchException extends SyntacticException {
 
 	/**
 	 * 

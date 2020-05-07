@@ -1,6 +1,6 @@
 package ast.exception;
 
-public class DuplicateVarAssignException extends TypeCheckException {
+public class DuplicateVarAssignException extends SyntacticException {
 
 	/**
 	 * 

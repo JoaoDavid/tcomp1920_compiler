@@ -1,6 +1,6 @@
 package ast.exception;
 
-public class VarNotDeclaredException extends TypeCheckException {
+public class VarNotDeclaredException extends SyntacticException {
 
 	/**
 	 * 
