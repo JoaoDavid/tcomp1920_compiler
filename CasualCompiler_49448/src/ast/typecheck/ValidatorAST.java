@@ -194,15 +194,29 @@ public class ValidatorAST {
 			if (!ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new VarNotDeclaredException(curr.getVarName());
 			}
-			System.out.println(validExpression(curr.getValue())+curr.getPosition().toString());
-
 			if (n instanceof VarAssignArrayStatement) {
+				System.out.println("yeAQUIQAQUIy");
 				VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
 				for (Expression currIndex : currArr.getIndexes()) {
 					if(!validExpression(currIndex).equals(INT)) {
 						throw new TypeMismatchException(currArr.getPosition().toString());
 					}
+				}				
+				String type = ctx.get(currArr.getVarName());
+				int indexCount = currArr.getIndexes().size();
+				int count = 0;
+				for (int i = 0; i < type.length(); i++) {
+				    if (type.charAt(i) == '[') {
+				        count++;
+				    }
 				}
+				if (indexCount > count) {
+					throw new TypeMismatchException(currArr.getPosition().toString());
+				} else {
+					if (!type.substring(indexCount, type.length()-indexCount).equals(validExpression(currArr.getValue()))) {
+						throw new TypeMismatchException(currArr.getPosition().toString());
+					}
+				}				
 			} else {
 				if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
 					throw new TypeMismatchException(curr.getPosition().toString());

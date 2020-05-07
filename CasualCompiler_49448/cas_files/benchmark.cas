@@ -4,6 +4,7 @@ def fib(i:Bool,x:Int,arr:[Int]):Int {
 			return fib2(i,x,arr);
 		}
 	}
+	arr[0] = arr;
 	j:Int = arr[0];
 	m:[Int] = matrix()[1+1][5];
 	m = matrix()[1+1][5];
