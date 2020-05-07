@@ -88,9 +88,6 @@ public class CasualParseTreeVisitor {
 		for (Var_typeContext currVarTypeCtx : ctx.func_args().var_type()) {
 			parameters.add(visitFunctionParameter(currVarTypeCtx));
 		}
-		for (FunctionParameter curr : parameters) {
-			System.out.println(curr.getVarName() +" --- " + curr.getDatatype());
-		}
 		return new FunctionDeclaration(funcName, parameters, retType,
 				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
@@ -327,7 +324,7 @@ public class CasualParseTreeVisitor {
 			indexes.add(visitExpression((currIndex)));
 		}
 		List<Expression> arguments = new ArrayList<>(ctx.func_inv().expr().size());
-		for (ExprContext currArg : ctx.expr()) {
+		for (ExprContext currArg : ctx.func_inv().expr()) {
 			arguments.add(visitExpression(currArg));
 		}
 		return new ArrayAcessFuncExpression(ctx.func_inv().ID().getText(), indexes, arguments,

@@ -86,7 +86,6 @@ public class ValidatorAST {
 			for (DefDecl currDefDecl : curr.getStatements()) {
 				validateFuncSign(currDefDecl);
 			}
-			System.out.println("ge");
 		} else if (n instanceof FunctionDefinition) {
 			FunctionDefinition curr = (FunctionDefinition) n;
 			String[] datatypes = new String[curr.getParameters().size()];			
@@ -292,10 +291,38 @@ public class ValidatorAST {
 				}
 				i++;
 			}
-			System.out.println("HELHELOHE" + funcSignCtx.getRetType(funcInvExpr.getFuncName()));
 			return funcSignCtx.getRetType(funcInvExpr.getFuncName());
 		} else if (expr instanceof ArrayAcessFuncExpression) {
-
+			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
+			String[] datatypes = funcSignCtx.getDataTypes(arrAcFuncExpr.getVarName());
+			if (datatypes.length != arrAcFuncExpr.getArguments().size()) {
+				throw new FunctiontArgumentsException(arrAcFuncExpr.getPosition().toString());
+			}
+			int i = 0;
+			for (Expression currExpr : arrAcFuncExpr.getArguments()) {
+				if(!validExpression(currExpr).equals(datatypes[i])){
+					throw new FunctiontArgumentsException(arrAcFuncExpr.getPosition().toString());
+				}
+				i++;
+			}
+			String type = funcSignCtx.getRetType(arrAcFuncExpr.getVarName());
+			for (Expression currIndex : arrAcFuncExpr.getIndexes()) {
+				if(!validExpression(currIndex).equals(INT)) {
+					throw new TypeMismatchException(expr.getPosition().toString());
+				}
+			}
+			int indexCount = arrAcFuncExpr.getIndexes().size();
+			int count = 0;
+			for (int j = 0; j < type.length(); j++) {
+			    if (type.charAt(j) == '[') {
+			        count++;
+			    }
+			}
+			if (indexCount > count) {
+				throw new TypeMismatchException(arrAcFuncExpr.getPosition().toString());
+			} else {
+				return type.substring(indexCount, type.length()-indexCount);
+			}
 		} else if (expr instanceof ArrayAcessVarExpression) {
 			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
 			String type = ctx.get(arrExpr.getVarName());
@@ -306,6 +333,18 @@ public class ValidatorAST {
 				if(!validExpression(currIndex).equals(INT)) {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
+			}
+			int indexCount = arrExpr.getIndexes().size();
+			int count = 0;
+			for (int i = 0; i < type.length(); i++) {
+			    if (type.charAt(i) == '[') {
+			        count++;
+			    }
+			}
+			if (indexCount > count) {
+				throw new TypeMismatchException(arrExpr.getPosition().toString());
+			} else {
+				return type.substring(indexCount, type.length()-indexCount);
 			}
 		} else if (expr instanceof BoolLit) {
 			return BOOL;
@@ -323,16 +362,27 @@ public class ValidatorAST {
 			}
 			return type;
 		}
-
-
 		return null;		
 	}
-
-	private String equalOperandTypes(String leftTy, String rightTy, String type) throws SyntacticException {
-		if (!leftTy.equals(type) || !rightTy.equals(type)) {
-			throw new InvalidOperandException(leftTy + " and " + rightTy + " must be of type " + type);
+	
+	
+	private boolean validArrayAssign(String var, String varType, String assignedVarType, String varAcess) {
+		int count = 0;
+		for (int i = 0; i < varAcess.length(); i++) {
+		    if (varAcess.charAt(i) == '[') {
+		        count++;
+		    }
 		}
-		return leftTy;
+		for (int i = 0; i < count; i++) {
+			assignedVarType = "[" + assignedVarType + "]";
+		}
+		
+		if (assignedVarType.equals(varType)) {
+			return true;
+		}else {
+			return false;
+		}
+
 	}
 
 }
