@@ -4,11 +4,12 @@ def fib(i:Bool,x:Int,arr:[Int]):[Int] {
 			return arr;
 		}
 	}
-	vafsf:Int = arr[5*1];
+	vafsf:Int = fib2(i,x,arr);
+	#arr = fib2(i,x,arr);
 	arr[5*1];
 	return arr;
 	if i == true {
-		a:Float = 3.0 + 0.9;
+		a:Float = 34.3;
 		e:Int = 3;
 	} else {
 	
@@ -17,9 +18,10 @@ def fib(i:Bool,x:Int,arr:[Int]):[Int] {
 	#return fib(i-1) && fib(i-2);
 }
 
-def fib2(i:Bool,x:Int,arr:[Int]):Void {
+def fib2(i:Bool,x:Int,arr:[Int]):Int {
 
 
-
+	return 4;
 }
 
+decl fibfad(i:Bool,x:Int,arr:[Int]):Void

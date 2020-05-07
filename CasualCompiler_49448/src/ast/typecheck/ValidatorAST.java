@@ -14,6 +14,7 @@ import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.Node;
 import ast.exception.DuplicateVarAssignException;
+import ast.exception.FunctiontArgumentsException;
 import ast.exception.InvalidOperandException;
 import ast.exception.MissingReturnStatementException;
 import ast.exception.SyntacticException;
@@ -73,7 +74,7 @@ public class ValidatorAST {
 		ctx = new Context();
 		funcSignCtx = new FuncSignContext();
 	}
-	
+
 	public void validateAST(Node n) throws SyntacticException {
 		validateFuncSign(n);
 		validate(n);
@@ -88,16 +89,22 @@ public class ValidatorAST {
 			System.out.println("ge");
 		} else if (n instanceof FunctionDefinition) {
 			FunctionDefinition curr = (FunctionDefinition) n;
-			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType());
+			String[] datatypes = new String[curr.getParameters().size()];			
+			int i = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
-				funcSignCtx.set(curr.getFuncName(), currFuncParam.getVarName(), currFuncParam.getDatatype());
-			}	
+				datatypes[i] = currFuncParam.getDatatype();
+				i++;
+			}
+			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType(), datatypes);
 		} else if (n instanceof FunctionDeclaration) {			
 			FunctionDeclaration curr = (FunctionDeclaration) n;
-			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType());
+			String[] datatypes = new String[curr.getParameters().size()];			
+			int i = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
-				funcSignCtx.set(curr.getFuncName(), currFuncParam.getVarName(), currFuncParam.getDatatype());
-			}	
+				datatypes[i] = currFuncParam.getDatatype();
+				i++;
+			}
+			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType(), datatypes);
 		}
 	}
 
@@ -175,6 +182,12 @@ public class ValidatorAST {
 			validExpression(curr.getValue());
 			if (ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new DuplicateVarAssignException();
+			} else {
+				ctx.set(curr.getVarName(), curr.getDatatype());
+			}
+			if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
+				throw new TypeMismatchException(curr.getPosition().toString() + 
+						validExpression(curr.getValue()) + ctx.get(curr.getVarName()));
 			}
 			ctx.set(curr.getVarName(), curr.getDatatype());			
 		} else if (n instanceof VarAssignStatement) {
@@ -182,7 +195,8 @@ public class ValidatorAST {
 			if (!ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new VarNotDeclaredException(curr.getVarName());
 			}
-			validate(curr.getValue());
+			System.out.println(validExpression(curr.getValue())+curr.getPosition().toString());
+
 			if (n instanceof VarAssignArrayStatement) {
 				VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
 				for (Expression currIndex : currArr.getIndexes()) {
@@ -191,15 +205,14 @@ public class ValidatorAST {
 					}
 				}
 			} else {
-				
+				if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
+					throw new TypeMismatchException(curr.getPosition().toString());
+				}
 			}
 		} else if (n instanceof ExprStatement) {
 			ExprStatement curr = (ExprStatement) n;
 			validExpression(curr.getValue());
-		} /*else if (n instanceof Expression) {
-			Expression expr = (Expression) n;
-			validExpression(expr);
-		}*/
+		}
 	}
 
 	private void validBody(List<Statement> statements) throws SyntacticException {
@@ -267,7 +280,20 @@ public class ValidatorAST {
 			}
 			return type;
 		} else if (expr instanceof FunctionInvocationExpression) {
-
+			FunctionInvocationExpression funcInvExpr = (FunctionInvocationExpression) expr;
+			String[] datatypes = funcSignCtx.getDataTypes(funcInvExpr.getFuncName());
+			if (datatypes.length != funcInvExpr.getArguments().size()) {
+				throw new FunctiontArgumentsException(funcInvExpr.getPosition().toString());
+			}
+			int i = 0;
+			for (Expression currExpr : funcInvExpr.getArguments()) {
+				if(!validExpression(currExpr).equals(datatypes[i])){
+					throw new FunctiontArgumentsException(funcInvExpr.getPosition().toString());
+				}
+				i++;
+			}
+			System.out.println("HELHELOHE" + funcSignCtx.getRetType(funcInvExpr.getFuncName()));
+			return funcSignCtx.getRetType(funcInvExpr.getFuncName());
 		} else if (expr instanceof ArrayAcessFuncExpression) {
 
 		} else if (expr instanceof ArrayAcessVarExpression) {

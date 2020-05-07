@@ -14,29 +14,29 @@ public class FuncSignContext {
 		map = new HashMap<>();
 	}
 
-	public void set(String funcName, String varName, String datatype) throws SyntacticException {
+	public String[] getDataTypes(String funcName) throws SyntacticException {
 		FuncSignatureScope funcSign = map.get(funcName);
 		if (funcSign == null) {
 			throw new FunctionNotDefinedException(funcName);
 		} else {
-			funcSign.set(varName, datatype);
+			return funcSign.getDataTypes();
 		}
 	}
-
-	public String get(String funcName, String varName) throws SyntacticException {
+	
+	public String getRetType(String funcName)  throws SyntacticException {
 		FuncSignatureScope funcSign = map.get(funcName);
 		if (funcSign == null) {
 			throw new FunctionNotDefinedException(funcName);
 		} else {
-			return funcSign.get(varName);
+			return funcSign.getRetType();
 		}
 	}
 
-	public void newFunc(String funcName, String retType) throws SyntacticException {
+	public void newFunc(String funcName, String retType, String[] datatypes) throws SyntacticException {
 		if(map.containsKey(funcName)) {
 			throw new DuplicateFunctionException(funcName);
 		}
-		map.put(funcName, new FuncSignatureScope(funcName, retType));
+		map.put(funcName, new FuncSignatureScope(funcName, retType, datatypes));
 	}
 
 
