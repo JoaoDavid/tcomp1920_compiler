@@ -195,7 +195,6 @@ public class ValidatorAST {
 				throw new VarNotDeclaredException(curr.getVarName());
 			}
 			if (n instanceof VarAssignArrayStatement) {
-				System.out.println("yeAQUIQAQUIy");
 				VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
 				for (Expression currIndex : currArr.getIndexes()) {
 					if(!validExpression(currIndex).equals(INT)) {
@@ -379,24 +378,4 @@ public class ValidatorAST {
 		return null;		
 	}
 	
-	
-	private boolean validArrayAssign(String var, String varType, String assignedVarType, String varAcess) {
-		int count = 0;
-		for (int i = 0; i < varAcess.length(); i++) {
-		    if (varAcess.charAt(i) == '[') {
-		        count++;
-		    }
-		}
-		for (int i = 0; i < count; i++) {
-			assignedVarType = "[" + assignedVarType + "]";
-		}
-		
-		if (assignedVarType.equals(varType)) {
-			return true;
-		}else {
-			return false;
-		}
-
-	}
-
 }

@@ -218,7 +218,6 @@ public class CasualParseTreeVisitor {
 	private Expression visitExpression(ExprContext ctx) {
 		Position pos = new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()));
-		System.out.println(ctx.getText());
 		if(ctx.binary_ope() != null) {
 			return visitBinaryExpression(ctx);
 		} else if(ctx.unary_ope() != null) {
