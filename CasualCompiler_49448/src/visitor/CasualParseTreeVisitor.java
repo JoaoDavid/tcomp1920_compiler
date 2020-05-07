@@ -117,7 +117,9 @@ public class CasualParseTreeVisitor {
 	 * @return FunctionParameter Node
 	 */
 	private FunctionParameter visitFunctionParameter(Var_typeContext ctx) {
-		return new FunctionParameter(ctx.ID().getText(), ctx.datatype().getText());
+		return new FunctionParameter(ctx.ID().getText(), ctx.datatype().getText(),
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 	
 	private Statement visitStatement(StatementContext ctx) {

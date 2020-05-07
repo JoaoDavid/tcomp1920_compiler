@@ -38,10 +38,12 @@ public class CasualC {
 			try {
 				validatorAST.validateAST(ast);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.out.println(e.toString());
+				System.err.println("Syntactic Verification found an error");
+				return;
 			}
-			System.out.println("\nFinished Execution");
+			System.out.println("\nFinished Execution Successfully");
 		}else {
 			System.out.println("Your args are not correct");
 			System.out.println("Valid args: <sourceFile>");

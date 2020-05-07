@@ -20,6 +20,7 @@ Phase 1
 8) Run CasualC from CasualCompiler_49448 using source_file.cas as argument
 
 If the source code within the file provided has any syntactic errors, red error messages will appear with the line number where the error is
+with the name of the exception thrown as well
 
 
 Software

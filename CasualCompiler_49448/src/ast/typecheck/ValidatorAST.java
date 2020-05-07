@@ -61,14 +61,6 @@ public class ValidatorAST {
 	private static final String VOID = "Void";
 	private Context ctx;
 	private FuncSignContext funcSignCtx;
-	private List<SyntacticException> exceptions;
-	/*
-	 * TODO
-	 replace all throw new Exception with exception.add(new Exception)
-	 then implement a getter for this variable an print the list at the end
-	 this way we can see all the errors without one error preventing us
-	 from knowing what else is wrong
-	 */
 
 	public ValidatorAST() {
 		ctx = new Context();
@@ -134,7 +126,7 @@ public class ValidatorAST {
 		} else if (n instanceof FunctionParameter) {
 			FunctionParameter curr = (FunctionParameter) n;
 			if (ctx.hasBeenDeclared(curr.getVarName())) {
-				throw new DuplicateVarAssignException();
+				throw new DuplicateVarAssignException(curr.getPosition().toString());
 			}
 			ctx.set(curr.getVarName(), curr.getDatatype());
 		} else if (n instanceof IfStatement) {
@@ -180,19 +172,18 @@ public class ValidatorAST {
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
 			validExpression(curr.getValue());
 			if (ctx.hasBeenDeclared(curr.getVarName())) {
-				throw new DuplicateVarAssignException();
+				throw new DuplicateVarAssignException(curr.getPosition().toString());
 			} else {
 				ctx.set(curr.getVarName(), curr.getDatatype());
 			}
 			if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
-				throw new TypeMismatchException(curr.getPosition().toString() + 
-						validExpression(curr.getValue()) + ctx.get(curr.getVarName()));
+				throw new TypeMismatchException(curr.getPosition().toString());
 			}
 			ctx.set(curr.getVarName(), curr.getDatatype());			
 		} else if (n instanceof VarAssignStatement) {
 			VarAssignStatement curr = (VarAssignStatement) n;			
 			if (!ctx.hasBeenDeclared(curr.getVarName())) {
-				throw new VarNotDeclaredException(curr.getVarName());
+				throw new VarNotDeclaredException(curr.getPosition().toString());
 			}
 			if (n instanceof VarAssignArrayStatement) {
 				VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
