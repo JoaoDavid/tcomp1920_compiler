@@ -36,7 +36,7 @@ public class CasualC {
 			Node ast = casualVisitor.visitCasualFile(tree);
 			ValidatorAST validatorAST = new ValidatorAST();
 			try {
-				validatorAST.validate(ast);
+				validatorAST.validateAST(ast);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

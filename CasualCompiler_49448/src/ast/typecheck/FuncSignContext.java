@@ -36,6 +36,7 @@ public class FuncSignContext {
 		if(map.containsKey(funcName)) {
 			throw new DuplicateFunctionException(funcName);
 		}
+		map.put(funcName, new FuncSignatureScope(funcName, retType));
 	}
 
 

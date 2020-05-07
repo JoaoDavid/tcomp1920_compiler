@@ -73,27 +73,35 @@ public class ValidatorAST {
 		ctx = new Context();
 		funcSignCtx = new FuncSignContext();
 	}
+	
+	public void validateAST(Node n) throws SyntacticException {
+		validateFuncSign(n);
+		validate(n);
+	}
 
-	private void readFunctionSignature(Node n) {
+	private void validateFuncSign(Node n) throws SyntacticException {
 		if (n instanceof CasualFile) {			
 			CasualFile curr = (CasualFile) n;
 			for (DefDecl currDefDecl : curr.getStatements()) {
-				readFunctionSignature(currDefDecl);
+				validateFuncSign(currDefDecl);
 			}
-		} else if (n instanceof FunctionDeclaration) {
-
+			System.out.println("ge");
 		} else if (n instanceof FunctionDefinition) {
 			FunctionDefinition curr = (FunctionDefinition) n;
+			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType());
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
-				readFunctionSignature(currFuncParam);
-			}		
-		} else if (n instanceof FunctionParameter) {
-			FunctionParameter curr = (FunctionParameter) n;
-			ctx.set(curr.getVarName(), curr.getDatatype());
+				funcSignCtx.set(curr.getFuncName(), currFuncParam.getVarName(), currFuncParam.getDatatype());
+			}	
+		} else if (n instanceof FunctionDeclaration) {			
+			FunctionDeclaration curr = (FunctionDeclaration) n;
+			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType());
+			for (FunctionParameter currFuncParam : curr.getParameters()) {
+				funcSignCtx.set(curr.getFuncName(), currFuncParam.getVarName(), currFuncParam.getDatatype());
+			}	
 		}
 	}
 
-	public void validate(Node n) throws SyntacticException {
+	private void validate(Node n) throws SyntacticException {
 		if (n instanceof CasualFile) {			
 			CasualFile curr = (CasualFile) n;
 			for (DefDecl currDefDecl : curr.getStatements()) {

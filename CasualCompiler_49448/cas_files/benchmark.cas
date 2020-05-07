@@ -17,7 +17,7 @@ def fib(i:Bool,x:Int,arr:[Int]):[Int] {
 	#return fib(i-1) && fib(i-2);
 }
 
-def fib(i:Bool,x:Int,arr:[Int]):Void {
+def fib2(i:Bool,x:Int,arr:[Int]):Void {
 
 
 
