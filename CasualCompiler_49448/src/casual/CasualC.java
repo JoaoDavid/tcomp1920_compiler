@@ -46,7 +46,7 @@ public class CasualC {
 		}else {
 			System.out.println("Your args are not correct");
 			System.out.println("Valid args: <sourceFile>");
-			System.out.println("example: .\\files\\HelloWorld.cas");
+			System.out.println("example: .\\cas_files\\hello_world.cas");
 		}
 	}
 
