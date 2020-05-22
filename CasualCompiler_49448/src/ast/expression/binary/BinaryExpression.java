@@ -3,7 +3,7 @@ package ast.expression.binary;
 import ast.Position;
 import ast.expression.Expression;
 
-public class BinaryExpression implements Expression {
+public abstract class BinaryExpression implements Expression {
 	
 	private Expression left;
 	private Expression right;

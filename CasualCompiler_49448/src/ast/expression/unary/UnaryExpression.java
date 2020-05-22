@@ -3,7 +3,7 @@ package ast.expression.unary;
 import ast.Position;
 import ast.expression.Expression;
 
-public class UnaryExpression implements Expression {
+public abstract class UnaryExpression implements Expression {
 	
 	private Expression value;
 	private Position pos;
