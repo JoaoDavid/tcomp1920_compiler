@@ -1,6 +1,6 @@
 package ast.exception;
 
-public class SyntacticException extends Exception {
+public abstract class SyntacticException extends Exception {
 
 	/**
 	 * 
