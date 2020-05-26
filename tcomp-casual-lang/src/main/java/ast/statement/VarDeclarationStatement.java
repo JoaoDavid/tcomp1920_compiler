@@ -1,21 +1,22 @@
 package ast.statement;
 
 import ast.Position;
+import ast.datatype.Type;
 import ast.expression.Expression;
 
 public class VarDeclarationStatement implements Statement {
 	
 	private String varName;
-	private String datatype;
+	private Type datatype;
 	private Expression value;
 	private Position pos;
 	
 	
-	public VarDeclarationStatement(String varName, String datatype, Expression value) {
+	public VarDeclarationStatement(String varName, Type datatype, Expression value) {
 		this(varName, datatype, value, null);
 	}
 		
-	public VarDeclarationStatement(String varName, String datatype, Expression value, Position pos) {
+	public VarDeclarationStatement(String varName, Type datatype, Expression value, Position pos) {
 		this.varName = varName;
 		this.datatype = datatype;
 		this.value = value;
@@ -26,7 +27,7 @@ public class VarDeclarationStatement implements Statement {
 		return varName;
 	}
 	
-	public String getDatatype() {
+	public Type getDatatype() {
 		return datatype;
 	}
 

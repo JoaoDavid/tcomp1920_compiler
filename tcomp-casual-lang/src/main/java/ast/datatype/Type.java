@@ -2,6 +2,16 @@ package ast.datatype;
 
 public abstract class Type {
 	
-	private String strRep;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!this.getClass().equals(obj.getClass())) {
+			return false;
+		}
+		return true;
+	}
+
 
 }

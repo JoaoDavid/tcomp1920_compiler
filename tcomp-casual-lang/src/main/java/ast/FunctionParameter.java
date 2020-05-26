@@ -1,16 +1,18 @@
 package ast;
 
+import ast.datatype.Type;
+
 public class FunctionParameter implements Node {
 	
 	private String varName;
-	private String datatype;
+	private Type datatype;
 	private Position pos;
 	
-	public FunctionParameter(String varName, String datatype) {
+	public FunctionParameter(String varName, Type datatype) {
 		this(varName, datatype, null);
 	}
 	
-	public FunctionParameter(String varName, String datatype, Position pos) {
+	public FunctionParameter(String varName, Type datatype, Position pos) {
 		this.varName = varName;
 		this.datatype = datatype;
 		this.pos = pos;
@@ -21,7 +23,7 @@ public class FunctionParameter implements Node {
 		return varName;
 	}
 
-	public String getDatatype() {
+	public Type getDatatype() {
 		return datatype;
 	}
 

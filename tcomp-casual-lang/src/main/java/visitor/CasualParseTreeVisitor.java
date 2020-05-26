@@ -12,6 +12,9 @@ import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.Point;
 import ast.Position;
+import ast.datatype.ArrayType;
+import ast.datatype.PrimitiveDataTypes;
+import ast.datatype.Type;
 import ast.expression.ArrayAcessFuncExpression;
 import ast.expression.ArrayAcessVarExpression;
 import ast.expression.Expression;
@@ -49,6 +52,7 @@ import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
 import casual.grammar.CasualParser.Arr_l_valueContext;
 import casual.grammar.CasualParser.Arr_r_valueContext;
+import casual.grammar.CasualParser.DatatypeContext;
 import casual.grammar.CasualParser.ExprContext;
 import casual.grammar.CasualParser.Expr_statContext;
 import casual.grammar.CasualParser.Func_declContext;
@@ -83,7 +87,7 @@ public class CasualParseTreeVisitor {
 
 	private FunctionDeclaration visitFunctionDeclaration(Func_declContext ctx) {
 		String funcName = ctx.func_args().ID().getText();
-		String retType = ctx.func_args().datatype().getText();
+		Type retType = visitDatatype(ctx.func_args().datatype());
 		List<FunctionParameter> parameters = new ArrayList<>();
 		for (Var_typeContext currVarTypeCtx : ctx.func_args().var_type()) {
 			parameters.add(visitFunctionParameter(currVarTypeCtx));
@@ -95,7 +99,7 @@ public class CasualParseTreeVisitor {
 
 	private FunctionDefinition visitFunctionDefinition(Func_defContext ctx) {
 		String funcName = ctx.func_args().ID().getText();
-		String retType = ctx.func_args().datatype().getText();
+		Type retType = visitDatatype(ctx.func_args().datatype());
 		List<FunctionParameter> parameters = new ArrayList<>();		
 		List<Statement> statements = new ArrayList<>();
 
@@ -117,7 +121,7 @@ public class CasualParseTreeVisitor {
 	 * @return FunctionParameter Node
 	 */
 	private FunctionParameter visitFunctionParameter(Var_typeContext ctx) {
-		return new FunctionParameter(ctx.ID().getText(), ctx.datatype().getText(),
+		return new FunctionParameter(ctx.ID().getText(), visitDatatype(ctx.datatype()),
 				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
@@ -187,7 +191,7 @@ public class CasualParseTreeVisitor {
 	private VarDeclarationStatement visitVarDeclarationStatement(Var_decl_statContext ctx) {
 		if (ctx.expr() != null) {
 			Expression expr = visitExpression(ctx.expr());
-			return new VarDeclarationStatement(ctx.var_type().ID().getText(), ctx.var_type().datatype().getText(), expr,
+			return new VarDeclarationStatement(ctx.var_type().ID().getText(), visitDatatype(ctx.var_type().datatype()), expr,
 					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 		}
@@ -334,6 +338,21 @@ public class CasualParseTreeVisitor {
 		return new ArrayAcessFuncExpression(ctx.func_inv().ID().getText(), indexes, arguments,
 				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
+	}
+	
+	private Type visitDatatype(DatatypeContext ctx) {
+		DatatypeContext curr = ctx;		
+		int count = 0;
+		while(curr.ID() == null) {
+			curr = curr.datatype();
+			count++;
+		}
+		Type type = PrimitiveDataTypes.parseStringType(curr.ID().getText());
+		if (count == 0) {
+			return type;
+		} else {
+			return new ArrayType(count, type);
+		}
 	}
 
 }

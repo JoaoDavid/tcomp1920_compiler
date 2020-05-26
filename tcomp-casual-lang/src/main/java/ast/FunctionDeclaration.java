@@ -2,18 +2,20 @@ package ast;
 
 import java.util.List;
 
+import ast.datatype.Type;
+
 public class FunctionDeclaration implements DefDecl {
 	
 	private String funcName;
 	private List<FunctionParameter> parameters;
-	private String returnType;
+	private Type returnType;
 	private Position pos;
 	
-	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, String returnType) {
+	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, Type returnType) {
 		this(funcName, parameters, returnType, null);
 	}
 	
-	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, String returnType,
+	public FunctionDeclaration(String funcName, List<FunctionParameter> parameters, Type returnType,
 			Position pos) {
 		this.funcName = funcName;
 		this.parameters = parameters;
@@ -29,7 +31,7 @@ public class FunctionDeclaration implements DefDecl {
 		return parameters;
 	}
 
-	public String getReturnType() {
+	public Type getReturnType() {
 		return returnType;
 	}	
 

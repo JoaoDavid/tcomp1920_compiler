@@ -1,9 +1,5 @@
 package ast.typecheck;
 
-import static ast.datatype.PrimitiveDataTypes.BOOL;
-import static ast.datatype.PrimitiveDataTypes.FLOAT;
-import static ast.datatype.PrimitiveDataTypes.INT;
-import static ast.datatype.PrimitiveDataTypes.STRING;
 
 import java.util.List;
 
@@ -13,6 +9,13 @@ import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.Node;
+import ast.datatype.ArrayType;
+import ast.datatype.BoolType;
+import ast.datatype.FloatType;
+import ast.datatype.IntType;
+import ast.datatype.StringType;
+import ast.datatype.Type;
+import ast.datatype.VoidType;
 import ast.exception.DuplicateVarAssignException;
 import ast.exception.FunctiontArgumentsException;
 import ast.exception.InvalidOperandException;
@@ -58,7 +61,6 @@ import ast.statement.WhileStatement;
 public class ValidatorAST {
 
 	private static final String RETURN_KW = "$return";
-	private static final String VOID = "Void";
 	private Context ctx;
 	private FuncSignContext funcSignCtx;
 
@@ -80,7 +82,7 @@ public class ValidatorAST {
 			}
 		} else if (n instanceof FunctionDefinition) {
 			FunctionDefinition curr = (FunctionDefinition) n;
-			String[] datatypes = new String[curr.getParameters().size()];			
+			Type[] datatypes = new Type[curr.getParameters().size()];			
 			int i = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
 				datatypes[i] = currFuncParam.getDatatype();
@@ -89,7 +91,7 @@ public class ValidatorAST {
 			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType(), datatypes);
 		} else if (n instanceof FunctionDeclaration) {			
 			FunctionDeclaration curr = (FunctionDeclaration) n;
-			String[] datatypes = new String[curr.getParameters().size()];			
+			Type[] datatypes = new Type[curr.getParameters().size()];			
 			int i = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
 				datatypes[i] = currFuncParam.getDatatype();
@@ -119,7 +121,7 @@ public class ValidatorAST {
 					hasSeenRet = true;
 				}
 			}
-			if (!hasSeenRet && !curr.getReturnType().equals(VOID)) {
+			if (!hasSeenRet && !(curr.getReturnType() instanceof VoidType)) {
 				throw new MissingReturnStatementException(curr.getPosition().toString());
 			}
 			ctx.exitScope();			
@@ -132,7 +134,7 @@ public class ValidatorAST {
 		} else if (n instanceof IfStatement) {
 			ctx.enterScope();
 			IfStatement curr = (IfStatement) n;
-			if (!validExpression(curr.getCondition()).equals(BOOL)) {
+			if (!(validExpression(curr.getCondition()) instanceof BoolType)) {
 				throw new TypeMismatchException(curr.getPosition().toString());
 			}
 			validBody(curr.getBody());
@@ -140,7 +142,7 @@ public class ValidatorAST {
 		} else if (n instanceof IfElseStatement) {
 			ctx.enterScope();
 			IfElseStatement curr = (IfElseStatement) n;
-			if (!validExpression(curr.getCondition()).equals(BOOL)) {
+			if (!(validExpression(curr.getCondition()) instanceof BoolType)) {
 				throw new TypeMismatchException(curr.getPosition().toString());
 			}	
 			validBody(curr.getBody());
@@ -149,20 +151,20 @@ public class ValidatorAST {
 		} else if (n instanceof WhileStatement) {
 			ctx.enterScope();
 			WhileStatement curr = (WhileStatement) n;
-			if (!validExpression(curr.getCondition()).equals(BOOL)) {
+			if (!(validExpression(curr.getCondition()) instanceof BoolType)) {
 				throw new TypeMismatchException(curr.getPosition().toString());
 			}
 			validBody(curr.getBody());
 			ctx.exitScope();
 		} else if (n instanceof ReturnStatement) {
 			ReturnStatement curr = (ReturnStatement) n;
-			String expectedRetType = ctx.get(RETURN_KW);
+			Type expectedRetType = ctx.get(RETURN_KW);
 			if (curr.getValue() == null) { //no expr in return statement
-				if (expectedRetType.equals(VOID)) {
+				if (expectedRetType instanceof VoidType) {
 					return;
 				}
 			} else {
-				String actualRetType = validExpression(curr.getValue());
+				Type actualRetType = validExpression(curr.getValue());
 				if (expectedRetType.equals(actualRetType)) {
 					return;
 				}
@@ -181,6 +183,7 @@ public class ValidatorAST {
 			}
 			ctx.set(curr.getVarName(), curr.getDatatype());			
 		} else if (n instanceof VarAssignStatement) {
+			System.out.println("yey");
 			VarAssignStatement curr = (VarAssignStatement) n;			
 			if (!ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new VarNotDeclaredException(curr.getPosition().toString());
@@ -188,12 +191,25 @@ public class ValidatorAST {
 			if (n instanceof VarAssignArrayStatement) {
 				VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
 				for (Expression currIndex : currArr.getIndexes()) {
-					if(!validExpression(currIndex).equals(INT)) {
+					if(!(validExpression(currIndex) instanceof IntType)) {
 						throw new TypeMismatchException(currArr.getPosition().toString());
 					}
-				}				
-				String type = ctx.get(currArr.getVarName());
-				int indexCount = currArr.getIndexes().size();
+				}		
+				System.out.println("yey");
+				Type type = ctx.get(currArr.getVarName());
+				if (type instanceof ArrayType) {
+					ArrayType arrType = (ArrayType) type;
+					int indexCount = currArr.getIndexes().size();
+					int count = arrType.getNumNestedArr();
+					int res = count - indexCount;
+					if (res == 0) {
+						return ;
+					} else {
+						return ;
+					}
+				}
+				throw new TypeMismatchException(currArr.getPosition().toString());
+				/*int indexCount = currArr.getIndexes().size();
 				int count = 0;
 				for (int i = 0; i < type.length(); i++) {
 				    if (type.charAt(i) == '[') {
@@ -205,8 +221,8 @@ public class ValidatorAST {
 				} else {
 					if (!type.substring(indexCount, type.length()-indexCount).equals(validExpression(currArr.getValue()))) {
 						throw new TypeMismatchException(currArr.getPosition().toString());
-					}
-				}				
+					}TODO
+				}	*/		
 			} else {
 				if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
 					throw new TypeMismatchException(curr.getPosition().toString());
@@ -224,70 +240,68 @@ public class ValidatorAST {
 		}
 	}
 
-	private String validExpression(Expression expr) throws SyntacticException {
+	private Type validExpression(Expression expr) throws SyntacticException {
 		if (expr instanceof BinaryExpression) {
 			BinaryExpression binaryExpr = (BinaryExpression) expr;
-			String leftTy = validExpression(binaryExpr.getLeft());
-			String rightTy = validExpression(binaryExpr.getRight());
+			Type leftTy = validExpression(binaryExpr.getLeft());
+			Type rightTy = validExpression(binaryExpr.getRight());
 			if (expr instanceof AndExpression || expr instanceof OrExpression) {
-				if (!leftTy.equals(BOOL) || !rightTy.equals(BOOL)) {
+				if (!(leftTy instanceof BoolType) || !(rightTy instanceof BoolType)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return BOOL;
+				return new BoolType();
 			} else if (expr instanceof EqualExpression) {
 				if (!leftTy.equals(rightTy)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return BOOL;
+				return new BoolType();
 			} else if (expr instanceof NotEqualExpression) {
 				if (!leftTy.equals(rightTy)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return BOOL;
+				return new BoolType();
 			} else if (expr instanceof GreaterOrEqualExpression || expr instanceof GreaterExpression
 					|| expr instanceof LessOrEqualExpression || expr instanceof LessExpression) {
-				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT))) {
-					return BOOL;
+				if (leftTy.equals(rightTy) && (leftTy instanceof BoolType || leftTy instanceof FloatType)) {
+					return new BoolType();
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SumExpression) {
-				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT)
-						|| leftTy.equals(STRING))) {
+				if (leftTy.equals(rightTy) && (leftTy instanceof IntType || leftTy instanceof FloatType
+						|| leftTy instanceof StringType)) {
 					return leftTy;
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SubtractionExpression || expr instanceof MultiplicationExpression
 					|| expr instanceof DivisionExpression) {
-				if (leftTy.equals(rightTy) && (leftTy.equals(INT) || leftTy.equals(FLOAT))) {
+				if (leftTy.equals(rightTy) && (leftTy instanceof IntType || leftTy instanceof FloatType)) {
 					return leftTy;
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof ModuloExpression) {
-				if (!leftTy.equals(INT) || !rightTy.equals(INT)) {
+				if (!(leftTy instanceof IntType) || !(rightTy instanceof IntType)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return INT;
+				return leftTy;
 			} 
 		} else if (expr instanceof NotExpression) {
 			NotExpression notExpr = (NotExpression) expr;
-			String type = validExpression(notExpr.getValue());
-			if (!type.equals(BOOL)) {
+			Type type = validExpression(notExpr.getValue());
+			if (!(type instanceof BoolType)) {
 				throw new InvalidOperandException(expr.getPosition().toString());
 			}
 			return type;
 		} else if (expr instanceof NegativeExpression) {
 			NegativeExpression negExpr = (NegativeExpression) expr;
-			String type = validExpression(negExpr.getValue());
-			if (type.equals(INT)) {
-				return INT;
-			} else if (type.equals(FLOAT)) {
-				return FLOAT;
+			Type type = validExpression(negExpr.getValue());
+			if(type instanceof IntType || type instanceof FloatType) {
+				return type;
 			} else {
 				throw new InvalidOperandException(expr.getPosition().toString());
 			}
 		} else if (expr instanceof FunctionInvocationExpression) {
 			FunctionInvocationExpression funcInvExpr = (FunctionInvocationExpression) expr;
-			String[] datatypes = funcSignCtx.getDataTypes(funcInvExpr.getFuncName());
+			Type[] datatypes = funcSignCtx.getDataTypes(funcInvExpr.getFuncName());
 			if (datatypes.length != funcInvExpr.getArguments().size()) {
 				throw new FunctiontArgumentsException(funcInvExpr.getPosition().toString());
 			}
@@ -301,7 +315,7 @@ public class ValidatorAST {
 			return funcSignCtx.getRetType(funcInvExpr.getFuncName());
 		} else if (expr instanceof ArrayAcessFuncExpression) {
 			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
-			String[] datatypes = funcSignCtx.getDataTypes(arrAcFuncExpr.getVarName());
+			Type[] datatypes = funcSignCtx.getDataTypes(arrAcFuncExpr.getVarName());
 			if (datatypes.length != arrAcFuncExpr.getArguments().size()) {
 				throw new FunctiontArgumentsException(arrAcFuncExpr.getPosition().toString());
 			}
@@ -312,35 +326,61 @@ public class ValidatorAST {
 				}
 				i++;
 			}
-			String type = funcSignCtx.getRetType(arrAcFuncExpr.getVarName());
+			Type type = funcSignCtx.getRetType(arrAcFuncExpr.getVarName());
 			for (Expression currIndex : arrAcFuncExpr.getIndexes()) {
-				if(!validExpression(currIndex).equals(INT)) {
+				if(!(validExpression(currIndex) instanceof IntType)) {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
 			}
-			int indexCount = arrAcFuncExpr.getIndexes().size();
-			int count = 0;
-			for (int j = 0; j < type.length(); j++) {
-			    if (type.charAt(j) == '[') {
-			        count++;
-			    }
+			System.out.println("wew");
+			if (type instanceof ArrayType) {
+				ArrayType arrType = (ArrayType) type;
+				int indexCount = arrAcFuncExpr.getIndexes().size();
+				int count = arrType.getNumNestedArr();
+				int res = count - indexCount;
+				if (res == 0) {
+					return arrType.getInside();
+				} else {
+					return new ArrayType(res, arrType.getInside());
+				}
 			}
-			if (indexCount > count) {
-				throw new TypeMismatchException(arrAcFuncExpr.getPosition().toString());
-			} else {
-				return type.substring(indexCount, type.length()-indexCount);
-			}
+			throw new TypeMismatchException(arrAcFuncExpr.getPosition().toString());
 		} else if (expr instanceof ArrayAcessVarExpression) {
 			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
-			String type = ctx.get(arrExpr.getVarName());
+			Type type = ctx.get(arrExpr.getVarName());
 			if (type == null) {
 				throw new VarNotDeclaredException(arrExpr.getPosition().toString());
 			}
 			for (Expression currIndex : arrExpr.getIndexes()) {
-				if(!validExpression(currIndex).equals(INT)) {
+				if(!(validExpression(currIndex) instanceof IntType)) {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
 			}
+			System.out.println("wew");
+			/*if (type instanceof ArrayType) {
+				ArrayType arrType = (ArrayType) type;
+				int indexCount = arrExpr.getIndexes().size();
+				int count = arrType.getNumNestedArr();
+				int res = indexCount - count;
+				if (res == 0) {
+					return arrType.getInside();
+				} else {
+					return new ArrayType(res, arrType.getInside());
+				}
+			}*/
+			//throw new TypeMismatchException(arrExpr.getPosition().toString());
+			if (type instanceof ArrayType) {
+				ArrayType arrType = (ArrayType) type;
+				int indexCount = arrExpr.getIndexes().size();
+				int count = arrType.getNumNestedArr();
+				int res = indexCount - count;
+				if (indexCount <= count) {
+					return new ArrayType(res, arrType.getInside());
+				}
+			}
+			throw new TypeMismatchException(arrExpr.getPosition().toString());
+			
+			/*
 			int indexCount = arrExpr.getIndexes().size();
 			int count = 0;
 			for (int i = 0; i < type.length(); i++) {
@@ -352,18 +392,19 @@ public class ValidatorAST {
 				throw new TypeMismatchException(arrExpr.getPosition().toString());
 			} else {
 				return type.substring(indexCount, type.length()-indexCount);
-			}
+			}*/
+
 		} else if (expr instanceof BoolLit) {
-			return BOOL;
+			return new BoolType();
 		} else if (expr instanceof IntLit) {
-			return INT;
+			return new IntType();
 		} else if (expr instanceof FloatLit) {
-			return FLOAT;
+			return new FloatType();
 		} else if (expr instanceof StringLit) {
-			return STRING;
+			return new StringType();
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
-			String type = ctx.get(varExpr.getVarName());
+			Type type = ctx.get(varExpr.getVarName());
 			if (type == null) {
 				throw new VarNotDeclaredException(varExpr.getPosition().toString());
 			}

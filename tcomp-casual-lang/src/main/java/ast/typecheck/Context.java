@@ -3,6 +3,8 @@ package ast.typecheck;
 import java.util.List;
 import java.util.Stack;
 
+import ast.datatype.Type;
+
 public class Context {
 	
 	private Stack<Scope> stack;
@@ -12,11 +14,11 @@ public class Context {
 		this.enterScope();
 	}
 	
-	public void set(String varName, String datatype) {
+	public void set(String varName, Type datatype) {
 		stack.peek().set(varName, datatype);
 	}
 	
-	public String get(String varName) {
+	public Type get(String varName) {
 		List<Scope> list = stack.subList(0, stack.size());
 		for (int i = stack.size()-1; i > 0; i--) {
 			if (list.get(i).contains(varName)) {

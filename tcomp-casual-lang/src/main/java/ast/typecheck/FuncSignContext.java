@@ -2,6 +2,7 @@ package ast.typecheck;
 
 import java.util.HashMap;
 
+import ast.datatype.Type;
 import ast.exception.DuplicateFunctionException;
 import ast.exception.FunctionNotDefinedException;
 import ast.exception.SyntacticException;
@@ -14,7 +15,7 @@ public class FuncSignContext {
 		map = new HashMap<>();
 	}
 
-	public String[] getDataTypes(String funcName) throws SyntacticException {
+	public Type[] getDataTypes(String funcName) throws SyntacticException {
 		FuncSignatureScope funcSign = map.get(funcName);
 		if (funcSign == null) {
 			throw new FunctionNotDefinedException(funcName);
@@ -23,7 +24,7 @@ public class FuncSignContext {
 		}
 	}
 	
-	public String getRetType(String funcName)  throws SyntacticException {
+	public Type getRetType(String funcName)  throws SyntacticException {
 		FuncSignatureScope funcSign = map.get(funcName);
 		if (funcSign == null) {
 			throw new FunctionNotDefinedException(funcName);
@@ -32,7 +33,7 @@ public class FuncSignContext {
 		}
 	}
 
-	public void newFunc(String funcName, String retType, String[] datatypes) throws SyntacticException {
+	public void newFunc(String funcName, Type retType, Type[] datatypes) throws SyntacticException {
 		if(map.containsKey(funcName)) {
 			throw new DuplicateFunctionException(funcName);
 		}
