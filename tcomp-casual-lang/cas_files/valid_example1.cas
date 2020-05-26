@@ -3,7 +3,7 @@ decl len(arr:[Int]):Int
 
 def main(ar:[Int]):Int {
 	if (len(ar) == 1) {
-		myArray:[Int] = new_int_array(ar[0]);
+        myArray:[Int] = new_int_array(ar[0]);
 		i:Int = 0;
 		while i < ar[0] {	
 			myArray[i] = i;

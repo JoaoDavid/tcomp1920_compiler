@@ -4,5 +4,6 @@ decl printInt(i:Int):Int
 def main(ar:[String]):Int {
 	printLine("Hello World");
 	printInt(1 + 2 * 3);
+	ola:Int = 5;
 	return 0;
 }

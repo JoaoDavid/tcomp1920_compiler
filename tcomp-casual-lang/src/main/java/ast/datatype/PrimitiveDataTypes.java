@@ -24,7 +24,7 @@ public class PrimitiveDataTypes {
 		} else if(type.equals(VOID)){
 			return new VoidType();
 		} else {
-			return null;
+			return new CustomType(type);
 		}
 	}
 

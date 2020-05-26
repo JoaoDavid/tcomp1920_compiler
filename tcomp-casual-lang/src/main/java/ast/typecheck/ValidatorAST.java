@@ -9,8 +9,10 @@ import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.Node;
+import ast.Position;
 import ast.datatype.ArrayType;
 import ast.datatype.BoolType;
+import ast.datatype.CustomType;
 import ast.datatype.FloatType;
 import ast.datatype.IntType;
 import ast.datatype.StringType;
@@ -19,6 +21,7 @@ import ast.datatype.VoidType;
 import ast.exception.DuplicateVarAssignException;
 import ast.exception.FunctiontArgumentsException;
 import ast.exception.InvalidOperandException;
+import ast.exception.InvalidTypeException;
 import ast.exception.MissingReturnStatementException;
 import ast.exception.SyntacticException;
 import ast.exception.TypeMismatchException;
@@ -85,15 +88,17 @@ public class ValidatorAST {
 			Type[] datatypes = new Type[curr.getParameters().size()];			
 			int i = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
+				validType(currFuncParam.getDatatype(), currFuncParam.getPosition());
 				datatypes[i] = currFuncParam.getDatatype();
 				i++;
-			}
+			}			
 			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType(), datatypes);
 		} else if (n instanceof FunctionDeclaration) {			
 			FunctionDeclaration curr = (FunctionDeclaration) n;
 			Type[] datatypes = new Type[curr.getParameters().size()];			
 			int i = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
+				validType(currFuncParam.getDatatype(), currFuncParam.getPosition());
 				datatypes[i] = currFuncParam.getDatatype();
 				i++;
 			}
@@ -176,6 +181,7 @@ public class ValidatorAST {
 			if (ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new DuplicateVarAssignException(curr.getPosition().toString());
 			} else {
+				validType(curr.getDatatype(), curr.getPosition());
 				ctx.set(curr.getVarName(), curr.getDatatype());
 			}
 			if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
@@ -209,6 +215,7 @@ public class ValidatorAST {
 					}
 				}
 				throw new TypeMismatchException(currArr.getPosition().toString());
+				//TODO
 				/*int indexCount = currArr.getIndexes().size();
 				int count = 0;
 				for (int i = 0; i < type.length(); i++) {
@@ -239,6 +246,16 @@ public class ValidatorAST {
 			validate(currStat);
 		}
 	}
+	
+	private void validType(Type type, Position pos) throws InvalidTypeException {
+		if(type instanceof CustomType || type instanceof VoidType) {
+			throw new InvalidTypeException(pos.toString());
+		}else if (type instanceof ArrayType){
+			ArrayType arrType = (ArrayType) type;
+			validType(arrType.getInside(), pos);
+		}
+	}
+
 
 	private Type validExpression(Expression expr) throws SyntacticException {
 		if (expr instanceof BinaryExpression) {
@@ -262,9 +279,10 @@ public class ValidatorAST {
 				return new BoolType();
 			} else if (expr instanceof GreaterOrEqualExpression || expr instanceof GreaterExpression
 					|| expr instanceof LessOrEqualExpression || expr instanceof LessExpression) {
-				if (leftTy.equals(rightTy) && (leftTy instanceof BoolType || leftTy instanceof FloatType)) {
+				if (leftTy.equals(rightTy) && (leftTy instanceof IntType || leftTy instanceof FloatType)) {
 					return new BoolType();
 				}
+				System.out.println("batata");
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SumExpression) {
 				if (leftTy.equals(rightTy) && (leftTy instanceof IntType || leftTy instanceof FloatType
@@ -308,6 +326,8 @@ public class ValidatorAST {
 			int i = 0;
 			for (Expression currExpr : funcInvExpr.getArguments()) {
 				if(!validExpression(currExpr).equals(datatypes[i])){
+					System.out.println("fhdhah");
+					System.out.println(currExpr.toString());
 					throw new FunctiontArgumentsException(funcInvExpr.getPosition().toString());
 				}
 				i++;
@@ -332,16 +352,18 @@ public class ValidatorAST {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
 			}
-			System.out.println("wew");
+			System.out.println("wew2");
 			if (type instanceof ArrayType) {
 				ArrayType arrType = (ArrayType) type;
 				int indexCount = arrAcFuncExpr.getIndexes().size();
 				int count = arrType.getNumNestedArr();
 				int res = count - indexCount;
-				if (res == 0) {
-					return arrType.getInside();
-				} else {
-					return new ArrayType(res, arrType.getInside());
+				if (indexCount <= count) {
+					if (res == 0) {
+						return arrType.getInside();
+					} else {
+						return new ArrayType(res, arrType.getInside());
+					}
 				}
 			}
 			throw new TypeMismatchException(arrAcFuncExpr.getPosition().toString());
@@ -357,43 +379,20 @@ public class ValidatorAST {
 				}
 			}
 			System.out.println("wew");
-			/*if (type instanceof ArrayType) {
-				ArrayType arrType = (ArrayType) type;
-				int indexCount = arrExpr.getIndexes().size();
-				int count = arrType.getNumNestedArr();
-				int res = indexCount - count;
-				if (res == 0) {
-					return arrType.getInside();
-				} else {
-					return new ArrayType(res, arrType.getInside());
-				}
-			}*/
-			//throw new TypeMismatchException(arrExpr.getPosition().toString());
 			if (type instanceof ArrayType) {
 				ArrayType arrType = (ArrayType) type;
 				int indexCount = arrExpr.getIndexes().size();
 				int count = arrType.getNumNestedArr();
-				int res = indexCount - count;
+				int res = count - indexCount;
 				if (indexCount <= count) {
-					return new ArrayType(res, arrType.getInside());
+					if (res == 0) {
+						return arrType.getInside();
+					} else {
+						return new ArrayType(res, arrType.getInside());
+					}
 				}
 			}
 			throw new TypeMismatchException(arrExpr.getPosition().toString());
-			
-			/*
-			int indexCount = arrExpr.getIndexes().size();
-			int count = 0;
-			for (int i = 0; i < type.length(); i++) {
-			    if (type.charAt(i) == '[') {
-			        count++;
-			    }
-			}
-			if (indexCount > count) {
-				throw new TypeMismatchException(arrExpr.getPosition().toString());
-			} else {
-				return type.substring(indexCount, type.length()-indexCount);
-			}*/
-
 		} else if (expr instanceof BoolLit) {
 			return new BoolType();
 		} else if (expr instanceof IntLit) {

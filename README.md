@@ -28,13 +28,13 @@ If such thing happens, follow this solution:
 valid_example1.cas
 valid_example2.cas
 valid_example4.cas
-valid_example5.cas
 benchmark.cas
 hello_world.cas
 
 --- INvalid Example Files ---
 invalid_example1.cas
 invalid_example2.cas
+invalid_example3.cas
 invalid_example4.cas
 invalid_example5.cas
 
