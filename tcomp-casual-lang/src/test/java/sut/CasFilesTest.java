@@ -20,8 +20,7 @@ public class CasFilesTest {
 			"benchmark.cas",
 			"valid_example1.cas",
 			"valid_example2.cas",
-			"valid_example4.cas",
-			"valid_example5.cas"})
+			"valid_example4.cas"})
 	public void validTest(String file) {
 		assertDoesNotThrow( () -> {
 			CasualC.mainTest(".\\cas_files\\" + file);
@@ -32,6 +31,7 @@ public class CasFilesTest {
 	@ValueSource(strings = { 
 			"invalid_example1.cas", 
 			"invalid_example2.cas", 
+			"invalid_example3.cas", 
 			"invalid_example4.cas",
 			"invalid_example5.cas"})
 	public void invalidTest(String file) {

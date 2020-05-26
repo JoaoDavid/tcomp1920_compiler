@@ -3,7 +3,7 @@
 decl noArgsFunc     ()                                       :Int
 decl oneArgFunc     (ola:Float)                              :String
 decl twoArgsFunc    (ola:Float,ola:Float)                    :Float
-decl threeArgsFunc  (ola:Float,var:myDataType,ola:Float)     :Bool
+decl threeArgsFunc  (ola:Float,var:Int,ola:Float)     :Bool
 decl fourArgsFunc   (ola:String,ola:Float,ola:Int,ola:Bool)  :Void
 
 
