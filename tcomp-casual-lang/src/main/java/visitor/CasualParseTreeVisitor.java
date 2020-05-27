@@ -75,8 +75,7 @@ public class CasualParseTreeVisitor {
 			if(currChildren instanceof Func_declContext) {
 				FunctionDeclaration funcDecl = visitFunctionDeclaration((Func_declContext)currChildren);
 				statements.add(funcDecl);
-			}
-			if(currChildren instanceof Func_defContext) {
+			} else if(currChildren instanceof Func_defContext) {
 				FunctionDeclaration funcDecl = visitFunctionDefinition((Func_defContext)currChildren);
 				statements.add(funcDecl);
 			}
@@ -189,13 +188,14 @@ public class CasualParseTreeVisitor {
 	}
 
 	private VarDeclarationStatement visitVarDeclarationStatement(Var_decl_statContext ctx) {
+		Expression expr = null;
 		if (ctx.expr() != null) {
-			Expression expr = visitExpression(ctx.expr());
-			return new VarDeclarationStatement(ctx.var_type().ID().getText(), visitDatatype(ctx.var_type().datatype()), expr,
-					new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
-							new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
+			expr = visitExpression(ctx.expr());
 		}
-		return null;
+		return new VarDeclarationStatement(ctx.var_type().ID().getText(), visitDatatype(ctx.var_type().datatype()), expr,
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
+
 	}
 
 	private VarAssignStatement visitVarAssignStatement(Var_assign_statContext ctx) {		
@@ -339,7 +339,7 @@ public class CasualParseTreeVisitor {
 				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
-	
+
 	private Type visitDatatype(DatatypeContext ctx) {
 		DatatypeContext curr = ctx;		
 		int count = 0;
