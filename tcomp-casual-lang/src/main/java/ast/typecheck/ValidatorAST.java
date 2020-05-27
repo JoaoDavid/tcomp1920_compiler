@@ -178,62 +178,60 @@ public class ValidatorAST {
 		} else if (n instanceof VarDeclarationStatement) {
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
 			validExpression(curr.getValue());
+			System.out.println(curr.getVarName());
 			if (ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new DuplicateVarAssignException(curr.getPosition().toString());
 			} else {
 				validType(curr.getDatatype(), curr.getPosition());
 				ctx.set(curr.getVarName(), curr.getDatatype());
 			}
-			if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
-				throw new TypeMismatchException(curr.getPosition().toString());
+			if (curr.getValue() != null) {
+				if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
+					throw new TypeMismatchException(curr.getPosition().toString());
+				}
 			}
+
 			ctx.set(curr.getVarName(), curr.getDatatype());			
+		} else if (n instanceof VarAssignArrayStatement) {
+			System.out.println("yey2");
+			VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
+			for (Expression currIndex : currArr.getIndexes()) {
+				if(!(validExpression(currIndex) instanceof IntType)) {
+					throw new TypeMismatchException(currArr.getPosition().toString());
+				}
+			}		
+			System.out.println("yey3");
+			Type type = ctx.get(currArr.getVarName());
+			if (type instanceof ArrayType) {
+				ArrayType arrType = (ArrayType) type;
+				int indexCount = currArr.getIndexes().size();
+				int count = arrType.getNumNestedArr();
+				int res = count - indexCount;
+				if (indexCount > count) {
+					throw new TypeMismatchException(currArr.getPosition().toString());
+				} else {
+					Type indexedType = null;
+					if (res == 0) {							
+						indexedType = arrType.getInside();
+					} else {
+						indexedType = new ArrayType(res, arrType.getInside());
+					}
+					if (!indexedType.equals(validExpression(currArr.getValue()))) {
+						throw new TypeMismatchException(currArr.getPosition().toString());
+					}
+				}
+			} else {
+				throw new TypeMismatchException(currArr.getPosition().toString());
+			}
 		} else if (n instanceof VarAssignStatement) {
-			System.out.println("yey");
+			System.out.println("yey1");
 			VarAssignStatement curr = (VarAssignStatement) n;			
 			if (!ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new VarNotDeclaredException(curr.getPosition().toString());
 			}
-			if (n instanceof VarAssignArrayStatement) {
-				VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
-				for (Expression currIndex : currArr.getIndexes()) {
-					if(!(validExpression(currIndex) instanceof IntType)) {
-						throw new TypeMismatchException(currArr.getPosition().toString());
-					}
-				}		
-				System.out.println("yey");
-				Type type = ctx.get(currArr.getVarName());
-				if (type instanceof ArrayType) {
-					ArrayType arrType = (ArrayType) type;
-					int indexCount = currArr.getIndexes().size();
-					int count = arrType.getNumNestedArr();
-					int res = count - indexCount;
-					if (res == 0) {
-						return ;
-					} else {
-						return ;
-					}
-				}
-				throw new TypeMismatchException(currArr.getPosition().toString());
-				//TODO
-				/*int indexCount = currArr.getIndexes().size();
-				int count = 0;
-				for (int i = 0; i < type.length(); i++) {
-				    if (type.charAt(i) == '[') {
-				        count++;
-				    }
-				}
-				if (indexCount > count) {
-					throw new TypeMismatchException(currArr.getPosition().toString());
-				} else {
-					if (!type.substring(indexCount, type.length()-indexCount).equals(validExpression(currArr.getValue()))) {
-						throw new TypeMismatchException(currArr.getPosition().toString());
-					}TODO
-				}	*/		
-			} else {
-				if(!validExpression(curr.getValue()).equals(ctx.get(curr.getVarName()))) {
-					throw new TypeMismatchException(curr.getPosition().toString());
-				}
+			Type type = ctx.get(curr.getVarName());
+			if(!type.equals(validExpression(curr.getValue()))) {
+				throw new TypeMismatchException(curr.getPosition().toString());
 			}
 		} else if (n instanceof ExprStatement) {
 			ExprStatement curr = (ExprStatement) n;
@@ -246,7 +244,7 @@ public class ValidatorAST {
 			validate(currStat);
 		}
 	}
-	
+
 	private void validType(Type type, Position pos) throws InvalidTypeException {
 		if(type instanceof CustomType || type instanceof VoidType) {
 			throw new InvalidTypeException(pos.toString());
@@ -411,5 +409,5 @@ public class ValidatorAST {
 		}
 		return null;		
 	}
-	
+
 }

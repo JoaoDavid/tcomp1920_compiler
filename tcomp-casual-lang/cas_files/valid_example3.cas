@@ -10,10 +10,10 @@ def main (arg:[String]) :Int {
 	varD:[Int];
 	varE:Int;
 	
-	varB[0] = varA;
-	varC[0] = varA;
-	varD[0][8][5] = varA;
-	varE[0] = varA[5][8][7];
+	varB = varA;
+	varC[0] = varA[6][9];
+	varD[6] = varA[8][9][8];
+	varE = varA[5][8][7];
 	
 
 	

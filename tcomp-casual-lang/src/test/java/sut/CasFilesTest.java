@@ -20,7 +20,9 @@ public class CasFilesTest {
 			"benchmark.cas",
 			"valid_example1.cas",
 			"valid_example2.cas",
-			"valid_example4.cas"})
+			"valid_example3.cas",
+			"valid_example4.cas",
+			"valid_example5.cas"})
 	public void validTest(String file) {
 		assertDoesNotThrow( () -> {
 			CasualC.mainTest(".\\cas_files\\" + file);

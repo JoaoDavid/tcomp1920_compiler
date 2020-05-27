@@ -1,0 +1,28 @@
+#wrong array indexing
+decl matrix():[[Int]]
+decl arr3d():[[[Int]]]
+
+def main (arg:[String]) :Int {
+
+
+
+	var1:Int = matrix()[4][4];
+	var2:[Int] = matrix()[4];
+	
+	var3:Int = arr3d()[1][12][4];	
+	var4:[Int] = arr3d()[1][12];
+	var5:[[Int]] = arr3d()[1];
+	var6:[[[Int]]] = arr3d();
+	
+	
+	var7:Int = var6[1][12][4];	
+	var8:[Int] = var6[1][12];
+	var9:[[Int]] = var6[1];
+	var10:[[[Int]]] = var6;
+	
+	
+	
+
+	return 3;
+
+}
