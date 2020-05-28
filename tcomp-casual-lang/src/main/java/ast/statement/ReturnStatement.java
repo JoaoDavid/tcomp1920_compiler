@@ -1,10 +1,12 @@
 package ast.statement;
 
 import ast.Position;
+import ast.datatype.Type;
 import ast.expression.Expression;
 
 public class ReturnStatement implements Statement {
 	
+	private Type retType;
 	private Expression value;
 	private Position pos;
 	
@@ -23,6 +25,14 @@ public class ReturnStatement implements Statement {
 	public ReturnStatement(Expression value, Position pos) {
 		this.value = value;
 		this.pos = pos;
+	}	
+	
+	public void setRetType(Type retType) {
+		this.retType = retType;
+	}	
+
+	public Type getRetType() {
+		return retType;
 	}	
 
 	public Expression getValue() {

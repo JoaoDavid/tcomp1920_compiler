@@ -166,11 +166,13 @@ public class ValidatorAST {
 			Type expectedRetType = ctx.get(RETURN_KW);
 			if (curr.getValue() == null) { //no expr in return statement
 				if (expectedRetType instanceof VoidType) {
+					curr.setRetType(new VoidType());
 					return;
 				}
 			} else {
 				Type actualRetType = validExpression(curr.getValue());
 				if (expectedRetType.equals(actualRetType)) {
+					curr.setRetType(actualRetType);
 					return;
 				}
 			}
