@@ -37,7 +37,7 @@ public class CasualC {
 			CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
 			Node ast = casualVisitor.visitCasualFile(tree);
 			ValidatorAST validatorAST = new ValidatorAST();
-			Codegenator codegen = new Codegenator("file", args[1]);
+			Codegenator codegen = new Codegenator(ast, "file", args[1]);
 			try {
 				validatorAST.validateAST(ast);
 				codegen.generateLL();
