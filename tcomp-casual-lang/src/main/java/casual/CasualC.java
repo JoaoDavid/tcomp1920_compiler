@@ -12,11 +12,12 @@ import ast.typecheck.ValidatorAST;
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;
 import casual.grammar.CasualParser.ProgramContext;
+import codegen.Codegenator;
 import visitor.CasualParseTreeVisitor;
 
 public class CasualC {
 	public static void main(String[] args) {
-		if(args.length == 1) {
+		if(args.length == 2) {
 			System.out.println("Analysing " + args[0]);
 			CharStream inputFromFile;
 			try {
@@ -36,8 +37,10 @@ public class CasualC {
 			CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
 			Node ast = casualVisitor.visitCasualFile(tree);
 			ValidatorAST validatorAST = new ValidatorAST();
+			Codegenator codegen = new Codegenator("file", args[1]);
 			try {
 				validatorAST.validateAST(ast);
+				codegen.generateLL();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println(e.toString());
