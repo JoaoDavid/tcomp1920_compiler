@@ -266,33 +266,42 @@ public class ValidatorAST {
 				if (!(leftTy instanceof BoolType) || !(rightTy instanceof BoolType)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return new BoolType();
+				Type resType = new BoolType();
+				binaryExpr.setResType(resType);
+				return resType;
 			} else if (expr instanceof EqualExpression) {
 				if (!leftTy.equals(rightTy)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return new BoolType();
+				Type resType = new BoolType();
+				binaryExpr.setResType(resType);
+				return resType;
 			} else if (expr instanceof NotEqualExpression) {
 				if (!leftTy.equals(rightTy)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
-				return new BoolType();
+				Type resType = new BoolType();
+				binaryExpr.setResType(resType);
+				return resType;
 			} else if (expr instanceof GreaterOrEqualExpression || expr instanceof GreaterExpression
 					|| expr instanceof LessOrEqualExpression || expr instanceof LessExpression) {
 				if (leftTy.equals(rightTy) && (leftTy instanceof IntType || leftTy instanceof FloatType)) {
-					return new BoolType();
+					Type resType = new BoolType();
+					binaryExpr.setResType(resType);
+					return resType;
 				}
-				System.out.println("batata");
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SumExpression) {
 				if (leftTy.equals(rightTy) && (leftTy instanceof IntType || leftTy instanceof FloatType
 						|| leftTy instanceof StringType)) {
+					binaryExpr.setResType(leftTy);
 					return leftTy;
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
 			} else if (expr instanceof SubtractionExpression || expr instanceof MultiplicationExpression
 					|| expr instanceof DivisionExpression) {
 				if (leftTy.equals(rightTy) && (leftTy instanceof IntType || leftTy instanceof FloatType)) {
+					binaryExpr.setResType(leftTy);
 					return leftTy;
 				}
 				throw new InvalidOperandException(expr.getPosition().toString());
@@ -300,6 +309,7 @@ public class ValidatorAST {
 				if (!(leftTy instanceof IntType) || !(rightTy instanceof IntType)) {
 					throw new InvalidOperandException(expr.getPosition().toString());
 				}
+				binaryExpr.setResType(leftTy);
 				return leftTy;
 			} 
 		} else if (expr instanceof NotExpression) {
@@ -308,11 +318,13 @@ public class ValidatorAST {
 			if (!(type instanceof BoolType)) {
 				throw new InvalidOperandException(expr.getPosition().toString());
 			}
+			notExpr.setResType(type);
 			return type;
 		} else if (expr instanceof NegativeExpression) {
 			NegativeExpression negExpr = (NegativeExpression) expr;
 			Type type = validExpression(negExpr.getValue());
 			if(type instanceof IntType || type instanceof FloatType) {
+				negExpr.setResType(type);
 				return type;
 			} else {
 				throw new InvalidOperandException(expr.getPosition().toString());
