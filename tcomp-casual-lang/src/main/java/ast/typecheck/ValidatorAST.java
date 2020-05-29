@@ -344,7 +344,8 @@ public class ValidatorAST {
 				}
 				i++;
 			}
-			return funcSignCtx.getRetType(funcInvExpr.getFuncName());
+			funcInvExpr.setResType(funcSignCtx.getRetType(funcInvExpr.getFuncName()));
+			return funcInvExpr.getResType();
 		} else if (expr instanceof ArrayAcessFuncExpression) {
 			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
 			Type[] datatypes = funcSignCtx.getDataTypes(arrAcFuncExpr.getVarName());
@@ -372,9 +373,11 @@ public class ValidatorAST {
 				int res = count - indexCount;
 				if (indexCount <= count) {
 					if (res == 0) {
+						arrAcFuncExpr.setResType(arrType.getInside());
 						return arrType.getInside();
 					} else {
-						return new ArrayType(res, arrType.getInside());
+						arrAcFuncExpr.setResType(new ArrayType(res, arrType.getInside()));
+						return arrAcFuncExpr.getResType();
 					}
 				}
 			}
@@ -398,27 +401,34 @@ public class ValidatorAST {
 				int res = count - indexCount;
 				if (indexCount <= count) {
 					if (res == 0) {
+						arrExpr.setResType(arrType.getInside());
 						return arrType.getInside();
 					} else {
-						return new ArrayType(res, arrType.getInside());
+						arrExpr.setResType(new ArrayType(res, arrType.getInside()));
+						return arrExpr.getResType();
 					}
 				}
 			}
 			throw new TypeMismatchException(arrExpr.getPosition().toString());
 		} else if (expr instanceof BoolLit) {
-			return new BoolType();
+			expr.setResType(new BoolType());
+			return expr.getResType();
 		} else if (expr instanceof IntLit) {
-			return new IntType();
+			expr.setResType(new IntType());
+			return expr.getResType();
 		} else if (expr instanceof FloatLit) {
-			return new FloatType();
+			expr.setResType(new FloatType());
+			return expr.getResType();
 		} else if (expr instanceof StringLit) {
-			return new StringType();
+			expr.setResType(new StringType());
+			return expr.getResType();
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
 			Type type = ctx.get(varExpr.getVarName());
 			if (type == null) {
 				throw new VarNotDeclaredException(varExpr.getPosition().toString());
 			}
+			varExpr.setResType(type);
 			return type;
 		}
 		return null;		

@@ -1,15 +1,13 @@
 package ast.expression.binary;
 
 import ast.Position;
-import ast.datatype.Type;
 import ast.expression.Expression;
 
-public abstract class BinaryExpression implements Expression {
+public abstract class BinaryExpression extends Expression {
 	
 	private Expression left;
 	private Expression right;
 	private Position pos;
-	private Type resType;
 	
 	public BinaryExpression(Expression left, Expression right) {
 		this(left, right, null);
@@ -33,15 +31,6 @@ public abstract class BinaryExpression implements Expression {
 	@Override
 	public Position getPosition() {
 		return pos;
-	}
-
-	public Type getResType() {
-		return resType;
-	}
-
-	public void setResType(Type resType) {
-		this.resType = resType;
-	}
-	
+	}	
 	
 }

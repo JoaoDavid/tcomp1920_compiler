@@ -4,7 +4,7 @@ import java.util.List;
 
 import ast.Position;
 
-public class ArrayAcessVarExpression implements Expression {
+public class ArrayAcessVarExpression extends Expression {
 
 	private String varName;
 	private List<Expression> indexes;

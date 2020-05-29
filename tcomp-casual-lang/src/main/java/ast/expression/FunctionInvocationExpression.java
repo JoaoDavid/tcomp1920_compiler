@@ -4,7 +4,7 @@ import java.util.List;
 
 import ast.Position;
 
-public class FunctionInvocationExpression implements Expression {
+public class FunctionInvocationExpression extends Expression {
 
 	private String funcName;
 	private List<Expression> arguments;

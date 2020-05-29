@@ -2,7 +2,7 @@ package ast.expression;
 
 import ast.Position;
 
-public class VarReferenceExpression implements Expression {
+public class VarReferenceExpression extends Expression {
 	
 	private String varName;
 	private Position pos;

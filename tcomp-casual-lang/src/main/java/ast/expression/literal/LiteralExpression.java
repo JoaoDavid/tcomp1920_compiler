@@ -3,7 +3,7 @@ package ast.expression.literal;
 import ast.Position;
 import ast.expression.Expression;
 
-public abstract class LiteralExpression implements Expression {
+public abstract class LiteralExpression extends Expression {
 	
 	private String value;
 	private Position pos;
