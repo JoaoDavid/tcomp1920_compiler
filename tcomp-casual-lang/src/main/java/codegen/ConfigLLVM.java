@@ -65,15 +65,15 @@ public class ConfigLLVM {
 		return null;
 	}
 	
-	public String floatToLLVM(float f) {
+	public static String floatToLLVM(float f) {
 		return "0x" + toHexString(Double.doubleToRawLongBits((double) f));
 	}
 	
-	public String doubleToLLVM(double d) {
+	public static String doubleToLLVM(double d) {
 		return "0x" + toHexString(Double.doubleToRawLongBits(d));
 	}
 	
-	private String toHexString(long l) {
+	private static String toHexString(long l) {
 		int count = (l == 0L) ? 1 : ((64 - Long.numberOfLeadingZeros(l)) + 3) / 4;
 		StringBuilder buffer = new StringBuilder(count);
 		long k = l;
