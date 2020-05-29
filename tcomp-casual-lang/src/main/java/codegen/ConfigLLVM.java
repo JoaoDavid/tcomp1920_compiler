@@ -7,8 +7,6 @@ import ast.datatype.IntType;
 import ast.datatype.StringType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
-import ast.expression.binary.BinaryExpression;
-import ast.expression.binary.SumExpression;
 
 public class ConfigLLVM {
 	
@@ -27,6 +25,22 @@ public class ConfigLLVM {
 	protected static final String DIV_INT = "sdiv";
 	protected static final String DIV_FLOAT = "fdiv";
 	protected static final String MOD_INT = "srem";
+	
+	protected static final String CMP_INT = "icmp";	
+	protected static final String EQUAL_INT = "eq";
+	protected static final String NOT_EQUAL_INT = "ne";
+	protected static final String GREATER_EQUAL_INT = "sge";
+	protected static final String GREATER_INT = "sgt";
+	protected static final String LESS_EQUAL_INT = "sle";
+	protected static final String LESS_INT = "slt";
+	
+	protected static final String CMP_FLOAT = "fcmp";
+	protected static final String EQUAL_FLOAT = "oeq";
+	protected static final String NOT_EQUAL_FLOAT = "one";
+	protected static final String GREATER_EQUAL_FLOAT = "oge";
+	protected static final String GREATER_FLOAT = "ogt";
+	protected static final String LESS_EQUAL_FLOAT = "ole";
+	protected static final String LESS_FLOAT = "olt";
 	
 	protected static String getLLVMType(Type type) {
 		if(type instanceof IntType) {
