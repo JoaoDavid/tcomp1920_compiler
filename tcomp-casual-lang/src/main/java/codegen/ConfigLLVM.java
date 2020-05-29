@@ -7,14 +7,26 @@ import ast.datatype.IntType;
 import ast.datatype.StringType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
+import ast.expression.binary.BinaryExpression;
+import ast.expression.binary.SumExpression;
 
 public class ConfigLLVM {
 	
-	private static final String INT_TYPE = "i32";
-	private static final String FLOAT_TYPE = "float";
-	private static final String BOOL_TYPE = "i1";
-	private static final String STRING_TYPE = "i8*";
-	private static final String VOID_TYPE = "void";
+	protected static final String INT_TYPE = "i32";
+	protected static final String FLOAT_TYPE = "float";
+	protected static final String BOOL_TYPE = "i1";
+	protected static final String STRING_TYPE = "i8*";
+	protected static final String VOID_TYPE = "void";
+	
+	protected static final String SUM_INT = "add";
+	protected static final String SUM_FLOAT = "fadd";
+	protected static final String SUB_INT = "sub";
+	protected static final String SUB_FLOAT = "fsub";
+	protected static final String MUL_INT = "mul";
+	protected static final String MUL_FLOAT = "fmul";
+	protected static final String DIV_INT = "sdiv";
+	protected static final String DIV_FLOAT = "fdiv";
+	protected static final String MOD_INT = "srem";
 	
 	protected static String getLLVMType(Type type) {
 		if(type instanceof IntType) {
@@ -38,5 +50,5 @@ public class ConfigLLVM {
 		}
 		return null;
 	}
-
+	
 }
