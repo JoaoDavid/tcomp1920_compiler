@@ -9,6 +9,8 @@ import ast.DefDecl;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.Node;
+import ast.datatype.BoolType;
+import ast.datatype.FloatType;
 import ast.datatype.IntType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
@@ -46,7 +48,6 @@ import ast.statement.VarAssignArrayStatement;
 import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
-import casual.Emitter;
 import codegen.exception.CompileException;
 
 public class Codegenator {
@@ -70,8 +71,6 @@ public class Codegenator {
 	public Codegenator(Node n, String fileName) {
 		this(n, fileName, defaultPath);
 	}
-
-
 
 	public void generateLL() throws CompileException {
 		if(file.exists()) {
@@ -97,6 +96,7 @@ public class Codegenator {
 				writeStatements(currDefDecl, space);
 			}
 		} else if (n instanceof FunctionDefinition) {
+			em.enterScope();
 			FunctionDefinition curr = (FunctionDefinition) n;
 			pw.printf("define %s @%s (", ConfigLLVM.getLLVMType(curr.getReturnType()), curr.getFuncName());
 			int c = 0;
@@ -113,11 +113,12 @@ public class Codegenator {
 			}
 			pw.println("\n}");
 			//TODO
-
+			em.exitScope();
 		} else if (n instanceof FunctionParameter) {
 			FunctionParameter curr = (FunctionParameter) n;
-			String var = getVarName(curr.getVarName());
-			pw.printf("%s %s", ConfigLLVM.getLLVMType(curr.getDatatype()), var);
+			String llVar = getVarName(curr.getVarName());
+			em.set(curr.getVarName(), llVar);
+			pw.printf("%s %s", ConfigLLVM.getLLVMType(curr.getDatatype()), llVar);
 			//TODO
 
 		} else if (n instanceof IfStatement) {
@@ -139,23 +140,29 @@ public class Codegenator {
 			sb.append(ConfigLLVM.getLLVMType(curr.getRetType()));
 			sb.append(" ");
 			if (!(curr.getRetType() instanceof VoidType)) {
-				sb.append(visitExpression(curr.getValue()));
+				sb.append(visitExpression(curr.getValue(), space));
 			}
 			pw.print(sb.toString());
 			//TODO
 
 		} else if (n instanceof VarDeclarationStatement) {
-			System.out.println("VarDeclarationStatement");
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
-			String var = getVarName(curr.getVarName());
+			String llVar = getVarName(curr.getVarName());
+			em.set(curr.getVarName(), llVar);
 			Type type = curr.getDatatype();
-			pw.printf("%s%s = alloca %s%n", space, var, ConfigLLVM.getLLVMType(type));
+			pw.printf("%s%s = alloca %s%n", space, llVar, ConfigLLVM.getLLVMType(type));
 			if(curr.getValue() != null) { //checks if its only declaration (without assigning values)
-				if(type instanceof IntType) {
-					String value = visitExpression(curr.getValue());
-					pw.printf("%sstore i32 %s, i32* %s%n", space, value, var);//TODO alterar
-					sb.append("%");
-					sb.append(curr.getVarName());
+				String value = visitExpression(curr.getValue(), space);
+				System.out.println(value);
+				if(type instanceof IntType) {					
+					pw.printf("%sstore %s %s, %s* %s%n", space,ConfigLLVM.INT_TYPE , value, ConfigLLVM.INT_TYPE, llVar);//TODO alterar
+				} else if(type instanceof FloatType) {
+					//pw.printf("%sstore float %s, float* %s%n", space, value, llVar);
+					pw.printf("%sstore %s %s, %s* %s%n", space,ConfigLLVM.FLOAT_TYPE , value, ConfigLLVM.FLOAT_TYPE, llVar);//TODO alterar
+
+				} else if(type instanceof BoolType) {
+					//pw.printf("%sstore float %s, float* %s%n", space, value, llVar);
+					pw.printf("%sstore %s %s, %s* %s%n", space,ConfigLLVM.BOOL_TYPE , value, ConfigLLVM.BOOL_TYPE, llVar);//TODO alterar
 				}
 			}
 			//TODO
@@ -175,11 +182,10 @@ public class Codegenator {
 	}
 
 
-	private String visitExpression(Expression expr) {
+	private String visitExpression(Expression expr, String space) {
 		if (expr instanceof BinaryExpression) {
 			BinaryExpression binaryExpr = (BinaryExpression) expr;
-
-
+			return writeBinaryExpression(binaryExpr, space);
 		} else if (expr instanceof NotExpression) {
 			NotExpression notExpr = (NotExpression) expr;
 
@@ -210,14 +216,17 @@ public class Codegenator {
 			return lit.getValue();
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
-
+			return em.get(varExpr.getVarName());
 		}
 		return null;	
 	}
 
-	private void writeBinaryExpression(BinaryExpression expr) {
-		/*Type leftTy = writeExpression(expr.getLeft());
-		Type rightTy = writeExpression(expr.getRight());*/
+	private String writeBinaryExpression(BinaryExpression expr, String space) {
+		Expression left = expr.getLeft();
+		Expression right = expr.getRight();
+		String leftLL = visitExpression(left, space);
+		String rightLL = visitExpression(right, space);
+		String llvmType = ConfigLLVM.getLLVMType(expr.getResType());
 		if (expr instanceof AndExpression) {
 
 		} else if (expr instanceof OrExpression) {
@@ -235,20 +244,54 @@ public class Codegenator {
 		} else if (expr instanceof LessExpression) {
 
 		} else if (expr instanceof SumExpression) {
-
+			String sumVar = getVarName("sum");								
+			if(expr.getResType() instanceof IntType) {
+				writeBinaryStatement(space, sumVar, ConfigLLVM.SUM_INT, llvmType, leftLL, rightLL);
+			} else if(expr.getResType() instanceof FloatType) {
+				writeBinaryStatement(space, sumVar, ConfigLLVM.SUM_FLOAT, llvmType, leftLL, rightLL);
+			}
+			return sumVar;
 		} else if (expr instanceof SubtractionExpression) {
-
+			String subVar = getVarName("sub");								
+			if(expr.getResType() instanceof IntType) {
+				writeBinaryStatement(space, subVar, ConfigLLVM.SUB_INT, llvmType, leftLL, rightLL);
+			} else if(expr.getResType() instanceof FloatType) {
+				writeBinaryStatement(space, subVar, ConfigLLVM.SUB_FLOAT, llvmType, leftLL, rightLL);
+			}
+			return subVar;
 		} else if (expr instanceof MultiplicationExpression) {
-
+			String mulVar = getVarName("sub");								
+			if(expr.getResType() instanceof IntType) {
+				writeBinaryStatement(space, mulVar, ConfigLLVM.MUL_INT, llvmType, leftLL, rightLL);
+			} else if(expr.getResType() instanceof FloatType) {
+				writeBinaryStatement(space, mulVar, ConfigLLVM.MUL_FLOAT, llvmType, leftLL, rightLL);
+			}
+			return mulVar;
 		} else if (expr instanceof DivisionExpression) {
-
+			String divVar = getVarName("sub");								
+			if(expr.getResType() instanceof IntType) {
+				writeBinaryStatement(space, divVar, ConfigLLVM.DIV_INT, llvmType, leftLL, rightLL);
+			} else if(expr.getResType() instanceof FloatType) {
+				writeBinaryStatement(space, divVar, ConfigLLVM.DIV_FLOAT, llvmType, leftLL, rightLL);
+			}
+			return divVar;
 		} else if (expr instanceof ModuloExpression) {
-
+			String modVar = getVarName("sub");								
+			if(expr.getResType() instanceof IntType) {
+				writeBinaryStatement(space, modVar, ConfigLLVM.MOD_INT, llvmType, leftLL, rightLL);
+			}
+			return modVar;
 		} 
+		return null;
 	}
 
 	private String getVarName(String varName) {
 		return "%" + varName + "_" + em.getCount();
 	}
+	
+	private void writeBinaryStatement(String space, String llVar, String op, String llvmType, String leftLL, String rightLL) {
+		pw.printf("%s%s = %s %s %s, %s%n", space, llVar, op, llvmType, leftLL, rightLL);
+	}
+	
 
 }
