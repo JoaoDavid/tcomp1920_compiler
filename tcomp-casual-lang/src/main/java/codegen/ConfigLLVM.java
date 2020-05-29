@@ -1,5 +1,6 @@
 package codegen;
 
+import ast.datatype.ArrayType;
 import ast.datatype.BoolType;
 import ast.datatype.FloatType;
 import ast.datatype.IntType;
@@ -26,6 +27,14 @@ public class ConfigLLVM {
 			return STRING_TYPE;
 		} else if(type instanceof VoidType) {
 			return VOID_TYPE;
+		} else if(type instanceof ArrayType) {
+			ArrayType arrType = (ArrayType) type;
+			StringBuilder sb = new StringBuilder();
+			sb.append(getLLVMType(arrType.getInside()));
+			for (int i = 0; i < arrType.getNumNestedArr(); i++) {
+				sb.append("*");
+			}
+			return sb.toString();
 		}
 		return null;
 	}
