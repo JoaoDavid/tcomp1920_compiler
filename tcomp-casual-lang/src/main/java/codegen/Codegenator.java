@@ -1,6 +1,6 @@
 package codegen;
 
-import static codegen.ConfigLLVM.AND;
+import static codegen.ConfigLLVM.*;
 import static codegen.ConfigLLVM.CMP_FLOAT;
 import static codegen.ConfigLLVM.CMP_INT;
 import static codegen.ConfigLLVM.DIV_FLOAT;
@@ -104,7 +104,7 @@ public class Codegenator {
 	private PrintWriter pw;
 	private Emitter em;
 	private List<String> stringGlobal;
-	
+
 	public Codegenator(Node root, String fileName, String path) {
 		file = new File(path + File.separator + fileName + sufix);
 		this.root = root;
@@ -181,12 +181,36 @@ public class Codegenator {
 				}
 			}
 			pw.print(")\n\n");
-		} else if (n instanceof IfStatement) {
-
+		} else if (n instanceof IfElseStatement) {
+			IfElseStatement curr = (IfElseStatement) n;
+			int num = em.getCount();
+			//"\nthen_" + num + ":\n";
+			String thenLabel = "then_" + num;
+			String elseLabel = "else_" + num;
+			String contLabel = "cont_" + num;
+			String condVarResLLVM = visitExpression(curr.getCondition(), space);
+			pw.write(ConfigLLVM.br(space, condVarResLLVM, thenLabel, elseLabel));
+			pw.write(String.format("%n%s:%n", thenLabel));
+			em.enterScope();
+			for (Statement currStat : curr.getBody()) {
+				writeStatements(currStat, space);
+			}
+			em.exitScope();
+			pw.write(br_unconditional(space, contLabel));
+			
+			//-------------Else--------------
+			pw.write(String.format("%n%s:%n", elseLabel));
+			em.enterScope();
+			for (Statement currStat : curr.getBodyElse()) {
+				writeStatements(currStat, space);
+			}
+			em.exitScope();
+			pw.write(br_unconditional(space, contLabel));
+			pw.write(String.format("%n%s:%n", contLabel));
 			//TODO
 
-		} else if (n instanceof IfElseStatement) {
-
+		} else if (n instanceof IfStatement) {
+			IfStatement curr = (IfStatement) n;
 			//TODO
 
 		} else if (n instanceof WhileStatement) {
@@ -329,7 +353,7 @@ public class Codegenator {
 		return null;	
 	}
 
-	
+
 
 	private String writeBinaryExpression(BinaryExpression expr, String space) {
 		Expression left = expr.getLeft();
@@ -359,6 +383,8 @@ public class Codegenator {
 				pw.write(writeCompExpr(space, lessVar, CMP_INT, EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
 				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, EQUAL_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL));
+			} else if(argType instanceof BoolType) {
+				pw.write(writeCompExpr(space, lessVar, CMP_INT, EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof NotEqualExpression) {
@@ -368,6 +394,8 @@ public class Codegenator {
 				pw.write(writeCompExpr(space, lessVar, CMP_INT, NOT_EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
 				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, NOT_EQUAL_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL));
+			} else if(argType instanceof BoolType) {
+				pw.write(writeCompExpr(space, lessVar, CMP_INT, NOT_EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof GreaterOrEqualExpression) {
@@ -452,7 +480,7 @@ public class Codegenator {
 	private String getVarName(String varName) {
 		return "%" + varName + "_" + em.getCount();
 	}
-	
+
 	private String getGlobalStrVarName() {
 		return "@str_" + em.getCount();
 	}	
