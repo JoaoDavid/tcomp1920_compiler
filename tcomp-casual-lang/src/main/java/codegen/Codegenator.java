@@ -205,14 +205,25 @@ public class Codegenator {
 				writeStatements(currStat, space);
 			}
 			em.exitScope();
+			//------------------------------
 			pw.write(br_unconditional(space, contLabel));
 			pw.write(String.format("%n%s:%n", contLabel));
-			//TODO
-
 		} else if (n instanceof IfStatement) {
 			IfStatement curr = (IfStatement) n;
-			//TODO
-
+			int num = em.getCount();
+			//"\nthen_" + num + ":\n";
+			String thenLabel = "then_" + num;
+			String contLabel = "cont_" + num;
+			String condVarResLLVM = visitExpression(curr.getCondition(), space);
+			pw.write(ConfigLLVM.br(space, condVarResLLVM, thenLabel, contLabel));
+			pw.write(String.format("%n%s:%n", thenLabel));
+			em.enterScope();
+			for (Statement currStat : curr.getBody()) {
+				writeStatements(currStat, space);
+			}
+			em.exitScope();
+			pw.write(br_unconditional(space, contLabel));
+			pw.write(String.format("%n%s:%n", contLabel));
 		} else if (n instanceof WhileStatement) {
 
 			//TODO
