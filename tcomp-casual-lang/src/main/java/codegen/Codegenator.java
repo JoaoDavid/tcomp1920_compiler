@@ -25,10 +25,13 @@ import static codegen.ConfigLLVM.SUM_FLOAT;
 import static codegen.ConfigLLVM.SUM_INT;
 import static codegen.ConfigLLVM.floatToLLVM;
 import static codegen.ConfigLLVM.getLLVMType;
+import static codegen.ConfigLLVM.StringToLLVM;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import ast.CasualFile;
 import ast.DefDecl;
@@ -90,12 +93,13 @@ public class Codegenator {
 	private File file;
 	private PrintWriter pw;
 	private Emitter em;
-
+	private List<String> stringGlobal;
+	
 	public Codegenator(Node root, String fileName, String path) {
 		file = new File(path + File.separator + fileName + sufix);
 		this.root = root;
 		this.em = new Emitter();
-
+		this.stringGlobal = new ArrayList<String>();
 	}
 
 	public Codegenator(Node n, String fileName) {
@@ -114,6 +118,9 @@ public class Codegenator {
 			e.printStackTrace();
 		}
 		writeStatements(root, "");
+		for (String string : stringGlobal) {
+			pw.write(string);
+		}
 		this.pw.flush();
 		this.pw.close();
 	}
@@ -196,7 +203,6 @@ public class Codegenator {
 			pw.write(alloca(space, llVar, type));
 			if(curr.getValue() != null) { //checks if its only declaration (without assigning values)
 				String value = visitExpression(curr.getValue(), space);
-				System.out.println(value);
 				if(type instanceof IntType) {					
 					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof FloatType) {
@@ -204,7 +210,7 @@ public class Codegenator {
 				} else if(type instanceof BoolType) {
 					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof StringType) {
-					//TODO
+					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof ArrayType) {
 					//TODO
 				}
@@ -227,14 +233,13 @@ public class Codegenator {
 			} else if(type instanceof BoolType) {
 				pw.write(store(space, type, value, llVar));
 			} else if(type instanceof StringType) {
-				//TODO
+				pw.write(store(space, type, value, llVar));
 			} else if(type instanceof ArrayType) {
 				//IMPOSSIBLE, its treated in VarAssignArrayStatement
 			}
 		} else if (n instanceof ExprStatement) {
-
-			//TODO
-
+			ExprStatement curr = (ExprStatement) n;
+			visitExpression(curr.getValue(), space);
 		}
 	}
 
@@ -304,7 +309,13 @@ public class Codegenator {
 			return floatToLLVM(Float.parseFloat(lit.getValue()));
 		} else if (expr instanceof StringLit) {
 			StringLit lit = (StringLit) expr;
-			return lit.getValue();
+			//@.str = private unnamed_addr constant [13 x i8] c"sumLitVar: \0A\00"
+			String strGlobalVar = getGlobalStrVarName();
+			String stringLLVM = StringToLLVM(lit.getValue());
+			System.out.println(lit.getValue() + ":" + lit.getValue().length());
+			stringGlobal.add(globalStr(lit.getValue().length()-1, strGlobalVar, stringLLVM));
+			return getelementptr(lit.getValue().length()-1, strGlobalVar);
+			//return lit.getValue();
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
 			String loadVar = getVarName("load");	
@@ -441,6 +452,10 @@ public class Codegenator {
 		return "%" + varName + "_" + em.getCount();
 	}
 	
+	private String getGlobalStrVarName() {
+		return "@str_" + em.getCount();
+	}
+	
 	private void writeArithmeticExpr(String space, String llVar, String op, String llvmType, String leftLL, String rightLL) {
 		pw.printf("%s%s = %s %s %s, %s%n", space, llVar, op, llvmType, leftLL, rightLL);
 	}
@@ -476,6 +491,16 @@ public class Codegenator {
 	private String call(String space, String resVar, Type type, String funcName, String args) {
 		//<result> = call <ty> @<funcName>(<ty_ar> <ar>, ...)
 		return String.format("%s%s = call %s @%s(%s)%n", space, resVar, getLLVMType(type), funcName, args);
+	}
+	
+	private String globalStr(int len, String strGlobalVar, String strLit) {
+		//@.str = private unnamed_addr constant [13 x i8] c"sumLitVar: \0A\00"
+		return String.format("%s = private unnamed_addr constant [%d x i8] c%s%n", strGlobalVar, len, strLit);
+	}
+	
+	private String getelementptr(int len, String strGlobalVar) {
+		//getelementptr inbounds ([15 x i8], [15 x i8]* @.str.1, i64 0, i64 0)
+		return String.format("getelementptr inbounds ([%d x i8], [%d x i8]* %s, i64 0, i64 0)", len, len, strGlobalVar);
 	}
 
 }

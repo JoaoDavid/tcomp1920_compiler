@@ -68,6 +68,11 @@ public class ConfigLLVM {
 		return null;
 	}
 	
+	public static String StringToLLVM(String s) {
+		String res = s.replace("\\n", "\\0A").replaceFirst(".$","") + "\\00\"";
+		return res;
+	}
+	
 	public static String floatToLLVM(float f) {
 		return "0x" + toHexString(Double.doubleToRawLongBits((double) f));
 	}
