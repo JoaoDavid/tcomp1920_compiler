@@ -32,6 +32,7 @@ import java.io.PrintWriter;
 
 import ast.CasualFile;
 import ast.DefDecl;
+import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.Node;
@@ -149,6 +150,20 @@ public class Codegenator {
 			}
 			pw.println("\n}");
 			em.exitScope();
+		} else if (n instanceof FunctionDeclaration) {			
+			FunctionDeclaration curr = (FunctionDeclaration) n;	
+			pw.printf("declare %s @%s (", getLLVMType(curr.getReturnType()), curr.getFuncName());
+			int c = 0;
+			for (FunctionParameter currFuncParam : curr.getParameters()) {
+				String llVar = getVarName(currFuncParam.getVarName());
+				pw.printf("%s", getLLVMType(currFuncParam.getDatatype()));
+				//--------------
+				c++;	
+				if(c != curr.getParameters().size()) {
+					pw.print(", ");
+				}
+			}
+			pw.print(")\n\n");
 		} else if (n instanceof IfStatement) {
 
 			//TODO
@@ -280,7 +295,6 @@ public class Codegenator {
 
 		} else if (expr instanceof BoolLit) {
 			BoolLit lit = (BoolLit) expr;
-
 			return lit.getValue();
 		} else if (expr instanceof IntLit) {
 			IntLit lit = (IntLit) expr;
