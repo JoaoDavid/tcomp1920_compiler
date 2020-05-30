@@ -4,11 +4,19 @@ import static codegen.ConfigLLVM.CMP_FLOAT;
 import static codegen.ConfigLLVM.CMP_INT;
 import static codegen.ConfigLLVM.DIV_FLOAT;
 import static codegen.ConfigLLVM.DIV_INT;
+import static codegen.ConfigLLVM.EQUAL_FLOAT;
+import static codegen.ConfigLLVM.EQUAL_INT;
+import static codegen.ConfigLLVM.GREATER_EQUAL_FLOAT;
+import static codegen.ConfigLLVM.GREATER_EQUAL_INT;
+import static codegen.ConfigLLVM.GREATER_FLOAT;
+import static codegen.ConfigLLVM.GREATER_INT;
 import static codegen.ConfigLLVM.LESS_FLOAT;
 import static codegen.ConfigLLVM.LESS_INT;
 import static codegen.ConfigLLVM.MOD_INT;
 import static codegen.ConfigLLVM.MUL_FLOAT;
 import static codegen.ConfigLLVM.MUL_INT;
+import static codegen.ConfigLLVM.NOT_EQUAL_FLOAT;
+import static codegen.ConfigLLVM.NOT_EQUAL_INT;
 import static codegen.ConfigLLVM.SUB_FLOAT;
 import static codegen.ConfigLLVM.SUB_INT;
 import static codegen.ConfigLLVM.SUM_FLOAT;
@@ -274,23 +282,57 @@ public class Codegenator {
 		} else if (expr instanceof OrExpression) {
 
 		} else if (expr instanceof EqualExpression) {
-
+			String lessVar = getVarName("cmp_eq");
+			Type argType = left.getResType();
+			if(argType instanceof IntType) {
+				writeCompExpr(space, lessVar, CMP_INT, EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL);
+			} else if(argType instanceof FloatType) {
+				writeCompExpr(space, lessVar, CMP_FLOAT, EQUAL_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL);
+			}
+			return lessVar;
 		} else if (expr instanceof NotEqualExpression) {
-
+			String lessVar = getVarName("cmp_neq");
+			Type argType = left.getResType();
+			if(argType instanceof IntType) {
+				writeCompExpr(space, lessVar, CMP_INT, NOT_EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL);
+			} else if(argType instanceof FloatType) {
+				writeCompExpr(space, lessVar, CMP_FLOAT, NOT_EQUAL_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL);
+			}
+			return lessVar;
 		} else if (expr instanceof GreaterOrEqualExpression) {
-
+			String lessVar = getVarName("cmp_geq");
+			Type argType = left.getResType();
+			if(argType instanceof IntType) {
+				writeCompExpr(space, lessVar, CMP_INT, GREATER_EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL);
+			} else if(argType instanceof FloatType) {
+				writeCompExpr(space, lessVar, CMP_FLOAT, GREATER_EQUAL_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL);
+			}
+			return lessVar;
 		} else if (expr instanceof GreaterExpression) {
-
+			String lessVar = getVarName("cmp_grt");
+			Type argType = left.getResType();
+			if(argType instanceof IntType) {
+				writeCompExpr(space, lessVar, CMP_INT, GREATER_INT, getLLVMType(left.getResType()), leftLL, rightLL);
+			} else if(argType instanceof FloatType) {
+				writeCompExpr(space, lessVar, CMP_FLOAT, GREATER_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL);
+			}
+			return lessVar;
 		} else if (expr instanceof LessOrEqualExpression) {
-
-		} else if (expr instanceof LessExpression) {
-			//icmp <comp> <tipo> op1, op2
-			String lessVar = getVarName("less");
+			String lessVar = getVarName("cmp_leq");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
 				writeCompExpr(space, lessVar, CMP_INT, LESS_INT, getLLVMType(left.getResType()), leftLL, rightLL);
 			} else if(argType instanceof FloatType) {
-				//writeCompExpr(space, lessVar, CMP_FLOAT, LESS_FLOAT, getLLVMType(left.getResType())+"*", leftLL, rightLL);
+				writeCompExpr(space, lessVar, CMP_FLOAT, LESS_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL);
+			}
+			return lessVar;
+		} else if (expr instanceof LessExpression) {
+			//icmp <comp> <tipo> op1, op2
+			String lessVar = getVarName("cmp_less");
+			Type argType = left.getResType();
+			if(argType instanceof IntType) {
+				writeCompExpr(space, lessVar, CMP_INT, LESS_INT, getLLVMType(left.getResType()), leftLL, rightLL);
+			} else if(argType instanceof FloatType) {
 				writeCompExpr(space, lessVar, CMP_FLOAT, LESS_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL);
 			}
 			return lessVar;
