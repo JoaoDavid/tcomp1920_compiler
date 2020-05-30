@@ -198,6 +198,7 @@ public class Codegenator {
 			//TODO
 
 		} else if (n instanceof VarAssignStatement) {
+			//TODO falta em.set?
 			VarAssignStatement curr = (VarAssignStatement) n;
 			Type type = curr.getDatatype();
 			String value = visitExpression(curr.getValue(), space);
@@ -227,15 +228,32 @@ public class Codegenator {
 
 
 	private String visitExpression(Expression expr, String space) {
+		String llvmResType = getLLVMType(expr.getResType());
 		if (expr instanceof BinaryExpression) {
 			BinaryExpression binaryExpr = (BinaryExpression) expr;
 			return writeBinaryExpression(binaryExpr, space);
 		} else if (expr instanceof NotExpression) {
 			NotExpression notExpr = (NotExpression) expr;
-
+			String operand = visitExpression(notExpr.getValue(), space);
+			//first writes cmp ne
+			String notVarAux = getVarName("cmp_ne_aux");
+			Type argType = notExpr.getResType();
+			writeCompExpr(space, notVarAux, CMP_INT, EQUAL_INT, getLLVMType(argType), operand, "0");
+			//then xor with the result from cmp
+			String notVarFinal = getVarName("xor");
+			pw.write(xor(space, notVarFinal, argType, notVarAux, "true"));
+			return notVarFinal;
 		} else if (expr instanceof NegativeExpression) {
 			NegativeExpression negExpr = (NegativeExpression) expr;
-
+			String operand = visitExpression(negExpr.getValue(), space);
+			String subVar = getVarName("neg");								
+			Type argType = negExpr.getResType();
+			if(expr.getResType() instanceof IntType) {
+				writeArithmeticExpr(space, subVar, SUB_INT, llvmResType, "0", operand);
+			} else if(expr.getResType() instanceof FloatType) {
+				pw.write(fneg(space, subVar, visitExpression(negExpr.getValue(), space), argType, operand));
+			}
+			return subVar;
 		} else if (expr instanceof FunctionInvocationExpression) {
 			FunctionInvocationExpression funcInvExpr = (FunctionInvocationExpression) expr;
 
@@ -260,7 +278,6 @@ public class Codegenator {
 			return lit.getValue();
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
-			String llvmResType = getLLVMType(expr.getResType());
 			String loadVar = getVarName("load");	
 			//%b = load i32, i32* %p_a
 			pw.print(load(space, em.get(varExpr.getVarName()), llvmResType, loadVar));
@@ -405,7 +422,7 @@ public class Codegenator {
 	}
 	
 	private void writeLogicExpr(String space, String llVar, String cmp, String llvmType, String leftLL, String rightLL) {
-		//icmp <comp> <tipo> op1, op2
+		//<result> = or <ty> <op1>, <op2>
 		pw.printf("%s%s = %s %s %s, %s%n", space, llVar, cmp, llvmType, leftLL, rightLL);
 	}
 
@@ -415,6 +432,16 @@ public class Codegenator {
 	
 	private String store(String space, Type type, String value, String llVar) {
 		return String.format("%sstore %s %s, %s* %s%n", space, getLLVMType(type) , value, getLLVMType(type), llVar);
+	}
+	
+	private String fneg(String space, String newVar, String llVar, Type type, String value) {
+		//<result> = fneg <ty> <op1>
+		return String.format("%s%s = fneg %s %s%n", space, newVar,getLLVMType(type) ,llVar);
+	}
+	
+	private String xor(String space, String resVar, Type type, String op1, String op2) {
+		//<result> = xor <ty> <op1>, <op2> 
+		return String.format("%s%s = xor %s %s, %s%n", space, resVar, getLLVMType(type), op1, op2);
 	}
 
 }
