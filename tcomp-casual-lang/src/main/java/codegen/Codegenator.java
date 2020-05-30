@@ -103,18 +103,14 @@ public class Codegenator {
 			pw.printf("define %s @%s (", getLLVMType(curr.getReturnType()), curr.getFuncName());
 			int c = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
-				c++;
-				
-				//------------
 				String llVar = getVarName(currFuncParam.getVarName());
 				String newVar = getVarName(currFuncParam.getVarName());
 				sb.append(alloca(identation, newVar, currFuncParam.getDatatype()));
 				sb.append(store(identation, currFuncParam.getDatatype(), llVar, newVar));
-				//writeStore(space, INT_TYPE, llVar, value);
 				em.set(currFuncParam.getVarName(), newVar);
 				pw.printf("%s %s", getLLVMType(currFuncParam.getDatatype()), llVar);
-				//TODO
 				//--------------
+				c++;	
 				if(c != curr.getParameters().size() ) {
 					pw.print(", ");
 				}
@@ -127,14 +123,7 @@ public class Codegenator {
 			pw.println("\n}");
 			//TODO
 			em.exitScope();
-		} /*else if (n instanceof FunctionParameter) {
-			FunctionParameter curr = (FunctionParameter) n;
-			String llVar = getVarName(curr.getVarName());
-			em.set(curr.getVarName(), llVar);
-			pw.printf("%s %s", getLLVMType(curr.getDatatype()), llVar);
-			//TODO
-
-		}*/ else if (n instanceof IfStatement) {
+		} else if (n instanceof IfStatement) {
 
 			//TODO
 
