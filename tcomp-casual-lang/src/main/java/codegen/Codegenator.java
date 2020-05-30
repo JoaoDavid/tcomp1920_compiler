@@ -314,13 +314,11 @@ public class Codegenator {
 			return floatToLLVM(Float.parseFloat(lit.getValue()));
 		} else if (expr instanceof StringLit) {
 			StringLit lit = (StringLit) expr;
-			//@.str = private unnamed_addr constant [13 x i8] c"sumLitVar: \0A\00"
 			String strGlobalVar = getGlobalStrVarName();
 			String stringLLVM = StringToLLVM(lit.getValue());
-			System.out.println(lit.getValue() + ":" + lit.getValue().length());
-			stringGlobal.add(globalStr(lit.getValue().length()-1, strGlobalVar, stringLLVM));
-			return getelementptr(lit.getValue().length()-1, strGlobalVar);
-			//return lit.getValue();
+			int len = lit.getValue().replace("\\", "").length()-1;
+			stringGlobal.add(globalStr(len, strGlobalVar, stringLLVM));
+			return getelementptr(len, strGlobalVar);
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
 			String loadVar = getVarName("load");	
