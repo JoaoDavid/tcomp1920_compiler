@@ -38,11 +38,15 @@ import static codegen.ConfigLLVM.writeCompExpr;
 import static codegen.ConfigLLVM.writeLogicExpr;
 import static codegen.ConfigLLVM.xor;
 
+import static codegen.FunctionLib.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
 
 import ast.CasualFile;
 import ast.DefDecl;
@@ -137,16 +141,36 @@ public class Codegenator {
 		this.pw.close();
 	}
 
+	private boolean isLibFunc(String funcName) {
+		if (funcName.equals(FunctionLib.DEF_NEW_INT_ARRAY) || 
+				funcName.equals(RES_NEW_INT_ARRAY) || 
+				funcName.equals(RES_NEW_FLOAT_ARRAY) || 
+				funcName.equals(RES_NEW_BOOL_ARRAY) || 
+				funcName.equals(RES_NEW_STRING_ARRAY) || 
+				funcName.equals(RES_CALLOC)) {
+			return true;
+		}
+		return false;
+	}
+
 	private void writeStatements(Node n, String space) throws CompileException {
 		StringBuilder sb = new StringBuilder();
 		if (n instanceof CasualFile) {			
 			CasualFile curr = (CasualFile) n;
+			pw.write(FunctionLib.DECL_CALLOC);
+			pw.write(FunctionLib.DEF_NEW_INT_ARRAY);
+			pw.write(FunctionLib.DEF_NEW_FLOAT_ARRAY);
+			pw.write(FunctionLib.DEF_NEW_BOOL_ARRAY);
+			pw.write(FunctionLib.DEF_NEW_STRING_ARRAY);
 			for (DefDecl currDefDecl : curr.getStatements()) {
 				writeStatements(currDefDecl, space);
 			}
 		} else if (n instanceof FunctionDefinition) {
-			em.enterScope();
 			FunctionDefinition curr = (FunctionDefinition) n;
+			if(isLibFunc(curr.getFuncName())) {
+				return;
+			}
+			em.enterScope();			
 			pw.printf("define %s @%s (", getLLVMType(curr.getReturnType()), curr.getFuncName());
 			int c = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
@@ -169,12 +193,15 @@ public class Codegenator {
 			}
 			pw.println("\n}");
 			em.exitScope();
-		} else if (n instanceof FunctionDeclaration) {			
+		} else if (n instanceof FunctionDeclaration) {
 			FunctionDeclaration curr = (FunctionDeclaration) n;	
+			if(isLibFunc(curr.getFuncName())) {
+				return;
+			}			
 			pw.printf("declare %s @%s (", getLLVMType(curr.getReturnType()), curr.getFuncName());
 			int c = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
-				String llVar = getVarName(currFuncParam.getVarName());
+				//String llVar = getVarName(currFuncParam.getVarName());
 				pw.printf("%s", getLLVMType(currFuncParam.getDatatype()));
 				//--------------
 				c++;	
@@ -199,7 +226,7 @@ public class Codegenator {
 			}
 			em.exitScope();
 			pw.write(br_unconditional(space, contLabel));
-			
+
 			//-------------Else--------------
 			pw.write(String.format("%n%s:%n", elseLabel));
 			em.enterScope();
