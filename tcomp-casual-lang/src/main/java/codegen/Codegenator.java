@@ -98,6 +98,8 @@ public class Codegenator {
 	private final static String defaultPath = System.getProperty("user.home") + File.separator + "Desktop";
 	private final static String sufix = ".ll";
 	private final static String identation = "    ";
+	private static final String RETURN_KW = "$return";
+
 
 	private Node root;
 	private File file;
@@ -225,9 +227,26 @@ public class Codegenator {
 			pw.write(br_unconditional(space, contLabel));
 			pw.write(String.format("%n%s:%n", contLabel));
 		} else if (n instanceof WhileStatement) {
-
-			//TODO
-
+			WhileStatement curr = (WhileStatement) n;
+			int num = em.getCount();
+			String conditionLabel = "while_cond_" + num;
+			String bodyLabel = "while_body_" + num;
+			String contLabel = "while_cont_" + num;
+			//condition
+			pw.write(br_unconditional(space, conditionLabel));
+			pw.write(String.format("%n%s:%n", conditionLabel));
+			String condVarResLLVM = visitExpression(curr.getCondition(), space);
+			pw.write(br(space, condVarResLLVM, bodyLabel, contLabel));
+			//body
+			pw.write(String.format("%n%s:%n", bodyLabel));
+			em.enterScope();
+			for (Statement currStat : curr.getBody()) {
+				writeStatements(currStat, space);
+			}
+			em.exitScope();
+			pw.write(br_unconditional(space, conditionLabel));
+			//cont
+			pw.write(String.format("%n%s:%n", contLabel));
 		} else if (n instanceof ReturnStatement) {
 			ReturnStatement curr = (ReturnStatement) n;
 			sb.append(space);
