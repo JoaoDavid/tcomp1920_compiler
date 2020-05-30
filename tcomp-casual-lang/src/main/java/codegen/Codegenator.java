@@ -168,14 +168,11 @@ public class Codegenator {
 				String value = visitExpression(curr.getValue(), space);
 				System.out.println(value);
 				if(type instanceof IntType) {					
-					//pw.write(store(space, type, llVar, value));//TODO alterar
+					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof FloatType) {
-					//pw.printf("%sstore float %s, float* %s%n", space, value, llVar);
-					//pw.write(store(space, type, value, llVar));//TODO alterar
-
+					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof BoolType) {
-					//pw.printf("%sstore float %s, float* %s%n", space, value, llVar);
-					pw.write(store(space, type, value, llVar));//TODO alterar
+					pw.write(store(space, type, value, llVar));
 				}
 			}
 			//TODO
