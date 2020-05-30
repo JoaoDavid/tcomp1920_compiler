@@ -136,14 +136,6 @@ public class ValidatorAST {
 				throw new DuplicateVarAssignException(curr.getPosition().toString());
 			}
 			ctx.set(curr.getVarName(), curr.getDatatype());
-		} else if (n instanceof IfStatement) {
-			ctx.enterScope();
-			IfStatement curr = (IfStatement) n;
-			if (!(validExpression(curr.getCondition()) instanceof BoolType)) {
-				throw new TypeMismatchException(curr.getPosition().toString());
-			}
-			validBody(curr.getBody());
-			ctx.exitScope();
 		} else if (n instanceof IfElseStatement) {
 			ctx.enterScope();
 			IfElseStatement curr = (IfElseStatement) n;
@@ -152,6 +144,14 @@ public class ValidatorAST {
 			}	
 			validBody(curr.getBody());
 			validBody(curr.getBodyElse());
+			ctx.exitScope();
+		} else if (n instanceof IfStatement) {
+			ctx.enterScope();
+			IfStatement curr = (IfStatement) n;
+			if (!(validExpression(curr.getCondition()) instanceof BoolType)) {
+				throw new TypeMismatchException(curr.getPosition().toString());
+			}
+			validBody(curr.getBody());
 			ctx.exitScope();
 		} else if (n instanceof WhileStatement) {
 			ctx.enterScope();
