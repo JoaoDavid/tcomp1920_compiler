@@ -1,5 +1,7 @@
 package codegen;
 
+import static codegen.ConfigLLVM.getLLVMType;
+
 import ast.datatype.ArrayType;
 import ast.datatype.BoolType;
 import ast.datatype.FloatType;
@@ -97,6 +99,57 @@ public class ConfigLLVM {
 			k = k >> 4;
 		} while (count > 0);
 		return buffer.toString();
-	}	
+	}
+	
+	protected static String writeArithmeticExpr(String space, String llVar, String op, String llvmType, String leftLL, String rightLL) {
+		return String.format("%s%s = %s %s %s, %s%n", space, llVar, op, llvmType, leftLL, rightLL);
+	}
+	
+	protected static String writeCompExpr(String space, String llVar, String cmp, String op, String llvmType, String leftLL, String rightLL) {
+		//icmp <comp> <tipo> op1, op2
+		return String.format("%s%s = %s %s %s %s, %s%n", space, llVar, cmp, op, llvmType, leftLL, rightLL);
+	}
+	
+	protected static String writeLogicExpr(String space, String llVar, String cmp, String llvmType, String leftLL, String rightLL) {
+		//<result> = or <ty> <op1>, <op2>
+		return String.format("%s%s = %s %s %s, %s%n", space, llVar, cmp, llvmType, leftLL, rightLL);
+	}
+
+	protected static String alloca(String space, String llVar, Type type) {
+		return String.format("%s%s = alloca %s%n", space, llVar, getLLVMType(type));
+	}
+	
+	protected static String store(String space, Type type, String value, String llVar) {
+		return String.format("%sstore %s %s, %s* %s%n", space, getLLVMType(type) , value, getLLVMType(type), llVar);
+	}
+	
+	protected static String load(String space, String llvmVar, String llvmResType, String loadVar) {
+		return String.format("%s%s = load %s, %s* %s%n", space, loadVar, llvmResType, llvmResType, llvmVar);
+	}
+	
+	protected static String fneg(String space, String newVar, String llVar, Type type, String value) {
+		//<result> = fneg <ty> <op1>
+		return String.format("%s%s = fneg %s %s%n", space, newVar,getLLVMType(type) ,llVar);
+	}
+	
+	protected static String xor(String space, String resVar, Type type, String op1, String op2) {
+		//<result> = xor <ty> <op1>, <op2> 
+		return String.format("%s%s = xor %s %s, %s%n", space, resVar, getLLVMType(type), op1, op2);
+	}
+	
+	protected static String call(String space, String resVar, Type type, String funcName, String args) {
+		//<result> = call <ty> @<funcName>(<ty_ar> <ar>, ...)
+		return String.format("%s%s = call %s @%s(%s)%n", space, resVar, getLLVMType(type), funcName, args);
+	}
+	
+	protected static String globalStr(int len, String strGlobalVar, String strLit) {
+		//@.str = protected unnamed_addr constant [13 x i8] c"sumLitVar: \0A\00"
+		return String.format("%s = protected unnamed_addr constant [%d x i8] c%s%n", strGlobalVar, len, strLit);
+	}
+	
+	protected static String getelementptr(int len, String strGlobalVar) {
+		//getelementptr inbounds ([15 x i8], [15 x i8]* @.str.1, i64 0, i64 0)
+		return String.format("getelementptr inbounds ([%d x i8], [%d x i8]* %s, i64 0, i64 0)", len, len, strGlobalVar);
+	}
 	
 }
