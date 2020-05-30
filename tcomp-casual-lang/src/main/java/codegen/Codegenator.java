@@ -1,19 +1,35 @@
 package codegen;
 
+import static codegen.ConfigLLVM.CMP_FLOAT;
+import static codegen.ConfigLLVM.CMP_INT;
+import static codegen.ConfigLLVM.DIV_FLOAT;
+import static codegen.ConfigLLVM.DIV_INT;
+import static codegen.ConfigLLVM.LESS_FLOAT;
+import static codegen.ConfigLLVM.LESS_INT;
+import static codegen.ConfigLLVM.MOD_INT;
+import static codegen.ConfigLLVM.MUL_FLOAT;
+import static codegen.ConfigLLVM.MUL_INT;
+import static codegen.ConfigLLVM.SUB_FLOAT;
+import static codegen.ConfigLLVM.SUB_INT;
+import static codegen.ConfigLLVM.SUM_FLOAT;
+import static codegen.ConfigLLVM.SUM_INT;
+import static codegen.ConfigLLVM.floatToLLVM;
+import static codegen.ConfigLLVM.getLLVMType;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import static codegen.ConfigLLVM.*;
 
 import ast.CasualFile;
 import ast.DefDecl;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
 import ast.Node;
+import ast.datatype.ArrayType;
 import ast.datatype.BoolType;
 import ast.datatype.FloatType;
 import ast.datatype.IntType;
+import ast.datatype.StringType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
 import ast.expression.ArrayAcessFuncExpression;
@@ -121,7 +137,6 @@ public class Codegenator {
 				writeStatements(currStat, space + identation);
 			}
 			pw.println("\n}");
-			//TODO
 			em.exitScope();
 		} else if (n instanceof IfStatement) {
 
@@ -162,17 +177,33 @@ public class Codegenator {
 					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof BoolType) {
 					pw.write(store(space, type, value, llVar));
+				} else if(type instanceof StringType) {
+					//TODO
+				} else if(type instanceof ArrayType) {
+					//TODO
 				}
 			}
-			//TODO
 		} else if (n instanceof VarAssignArrayStatement) {
 
 			//TODO
 
 		} else if (n instanceof VarAssignStatement) {
-
-			//TODO
-
+			VarAssignStatement curr = (VarAssignStatement) n;
+			Type type = curr.getDatatype();
+			String value = visitExpression(curr.getValue(), space);
+			String llVar = em.get(curr.getVarName());
+			pw.write(store(space, type, value, llVar));
+			if(type instanceof IntType) {					
+				pw.write(store(space, type, value, llVar));
+			} else if(type instanceof FloatType) {
+				pw.write(store(space, type, value, llVar));
+			} else if(type instanceof BoolType) {
+				pw.write(store(space, type, value, llVar));
+			} else if(type instanceof StringType) {
+				//TODO
+			} else if(type instanceof ArrayType) {
+				//IMPOSSIBLE, its treated in VarAssignArrayStatement
+			}
 		} else if (n instanceof ExprStatement) {
 
 			//TODO
