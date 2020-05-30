@@ -152,4 +152,16 @@ public class ConfigLLVM {
 		return String.format("getelementptr inbounds ([%d x i8], [%d x i8]* %s, i64 0, i64 0)", len, len, strGlobalVar);
 	}
 	
+	protected static String br(String space, String condRes, String labelTrue, String labelFalse) {
+		//br i1 <cond>, label <iftrue>, label <iffalse>
+		//%sbr i1 %s, label %s, label %s
+		return String.format("%sbr i1 %s, label %%%s, label %%%s%n", space, condRes, labelTrue, labelFalse);
+	}
+
+	protected static String br_unconditional(String space, String label) {
+		//br label <dest>  
+		//%sbr label %s
+		return String.format("%sbr label %%%s%n", space, label);
+	}
+	
 }

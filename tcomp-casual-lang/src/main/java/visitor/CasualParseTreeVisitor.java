@@ -150,7 +150,7 @@ public class CasualParseTreeVisitor {
 		}
 		if (ctx.else_block() != null) { //has the else block
 			List<Statement> statementsElse = new ArrayList<>(ctx.statement().size());
-			for (StatementContext currStatementCtx : ctx.statement()) {
+			for (StatementContext currStatementCtx : ctx.else_block().statement()) {
 				statementsElse.add(visitStatement(currStatementCtx));
 			}
 			return new IfElseStatement(expr, statementsIf, statementsElse,
