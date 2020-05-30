@@ -180,7 +180,6 @@ public class ValidatorAST {
 		} else if (n instanceof VarDeclarationStatement) {
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
 			validExpression(curr.getValue());
-			System.out.println(curr.getVarName());
 			if (ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new DuplicateVarAssignException(curr.getPosition().toString());
 			} else {
@@ -195,14 +194,12 @@ public class ValidatorAST {
 
 			ctx.set(curr.getVarName(), curr.getDatatype());			
 		} else if (n instanceof VarAssignArrayStatement) {
-			System.out.println("yey2");
 			VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
 			for (Expression currIndex : currArr.getIndexes()) {
 				if(!(validExpression(currIndex) instanceof IntType)) {
 					throw new TypeMismatchException(currArr.getPosition().toString());
 				}
 			}		
-			System.out.println("yey3");
 			Type type = ctx.get(currArr.getVarName());
 			if (type instanceof ArrayType) {
 				ArrayType arrType = (ArrayType) type;
@@ -227,7 +224,6 @@ public class ValidatorAST {
 				throw new TypeMismatchException(currArr.getPosition().toString());
 			}
 		} else if (n instanceof VarAssignStatement) {
-			System.out.println("yey1");
 			VarAssignStatement curr = (VarAssignStatement) n;			
 			if (!ctx.hasBeenDeclared(curr.getVarName())) {
 				throw new VarNotDeclaredException(curr.getPosition().toString());
@@ -340,8 +336,6 @@ public class ValidatorAST {
 			int i = 0;
 			for (Expression currExpr : funcInvExpr.getArguments()) {
 				if(!validExpression(currExpr).equals(datatypes[i])){
-					System.out.println("fhdhah");
-					System.out.println(currExpr.toString());
 					throw new FunctiontArgumentsException(funcInvExpr.getPosition().toString());
 				}
 				i++;
@@ -367,7 +361,6 @@ public class ValidatorAST {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
 			}
-			System.out.println("wew2");
 			if (type instanceof ArrayType) {
 				ArrayType arrType = (ArrayType) type;
 				int indexCount = arrAcFuncExpr.getIndexes().size();
@@ -395,7 +388,6 @@ public class ValidatorAST {
 					throw new TypeMismatchException(expr.getPosition().toString());
 				}
 			}
-			System.out.println("wew");
 			if (type instanceof ArrayType) {
 				ArrayType arrType = (ArrayType) type;
 				int indexCount = arrExpr.getIndexes().size();
