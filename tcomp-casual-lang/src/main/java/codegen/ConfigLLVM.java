@@ -16,6 +16,9 @@ public class ConfigLLVM {
 	protected static final String STRING_TYPE = "i8*";
 	protected static final String VOID_TYPE = "void";
 	
+	protected static final String AND = "and";
+	protected static final String OR = "or";
+	
 	protected static final String SUM_INT = "add";
 	protected static final String SUM_FLOAT = "fadd";
 	protected static final String SUB_INT = "sub";

@@ -1,5 +1,6 @@
 package codegen;
 
+import static codegen.ConfigLLVM.AND;
 import static codegen.ConfigLLVM.CMP_FLOAT;
 import static codegen.ConfigLLVM.CMP_INT;
 import static codegen.ConfigLLVM.DIV_FLOAT;
@@ -17,6 +18,7 @@ import static codegen.ConfigLLVM.MUL_FLOAT;
 import static codegen.ConfigLLVM.MUL_INT;
 import static codegen.ConfigLLVM.NOT_EQUAL_FLOAT;
 import static codegen.ConfigLLVM.NOT_EQUAL_INT;
+import static codegen.ConfigLLVM.OR;
 import static codegen.ConfigLLVM.SUB_FLOAT;
 import static codegen.ConfigLLVM.SUB_INT;
 import static codegen.ConfigLLVM.SUM_FLOAT;
@@ -278,10 +280,21 @@ public class Codegenator {
 		String rightLL = visitExpression(right, space);
 		String llvmResType = getLLVMType(expr.getResType());
 		if (expr instanceof AndExpression) {
-
+			//<result> = and <ty> <op1>, <op2>
+			String andVar = getVarName("and");
+			Type argType = left.getResType();
+			String llvmType = ConfigLLVM.getLLVMType(argType);
+			writeLogicExpr(space, andVar, AND, llvmType, leftLL, rightLL);
+			return andVar;
 		} else if (expr instanceof OrExpression) {
-
+			//<result> = or <ty> <op1>, <op2>
+			String orVar = getVarName("or");
+			Type argType = left.getResType();
+			String llvmType = ConfigLLVM.getLLVMType(argType);
+			writeLogicExpr(space, orVar, OR, llvmType, leftLL, rightLL);
+			return orVar;
 		} else if (expr instanceof EqualExpression) {
+			//<result> = <fcmp/icmp> <cond> <ty> <op1>, <op2> 
 			String lessVar = getVarName("cmp_eq");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
@@ -389,6 +402,11 @@ public class Codegenator {
 	private void writeCompExpr(String space, String llVar, String cmp, String op, String llvmType, String leftLL, String rightLL) {
 		//icmp <comp> <tipo> op1, op2
 		pw.printf("%s%s = %s %s %s %s, %s%n", space, llVar, cmp, op, llvmType, leftLL, rightLL);
+	}
+	
+	private void writeLogicExpr(String space, String llVar, String cmp, String llvmType, String leftLL, String rightLL) {
+		//icmp <comp> <tipo> op1, op2
+		pw.printf("%s%s = %s %s %s, %s%n", space, llVar, cmp, llvmType, leftLL, rightLL);
 	}
 
 	private String alloca(String space, String llVar, Type type) {
