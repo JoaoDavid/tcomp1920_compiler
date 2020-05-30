@@ -42,6 +42,7 @@ import ast.datatype.IntType;
 import ast.datatype.StringType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
+import ast.exception.FunctiontArgumentsException;
 import ast.expression.ArrayAcessFuncExpression;
 import ast.expression.ArrayAcessVarExpression;
 import ast.expression.Expression;
@@ -256,7 +257,21 @@ public class Codegenator {
 			return subVar;
 		} else if (expr instanceof FunctionInvocationExpression) {
 			FunctionInvocationExpression funcInvExpr = (FunctionInvocationExpression) expr;
-
+			String funcVar = getVarName("func_call");
+			StringBuilder sb = new StringBuilder();
+			int c = 0;
+			for (Expression currExpr : funcInvExpr.getArguments()) {
+				sb.append(getLLVMType(currExpr.getResType()));
+				sb.append(" ");
+				sb.append(visitExpression(currExpr, space));
+				//--------------
+				c++;	
+				if(c != funcInvExpr.getArguments().size() ) {
+					sb.append(", ");
+				}
+			}
+			pw.write(call(space, funcVar, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));
+			return funcVar;
 		} else if (expr instanceof ArrayAcessFuncExpression) {
 			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
 
@@ -442,6 +457,11 @@ public class Codegenator {
 	private String xor(String space, String resVar, Type type, String op1, String op2) {
 		//<result> = xor <ty> <op1>, <op2> 
 		return String.format("%s%s = xor %s %s, %s%n", space, resVar, getLLVMType(type), op1, op2);
+	}
+	
+	private String call(String space, String resVar, Type type, String funcName, String args) {
+		//<result> = call <ty> @<funcName>(<ty_ar> <ar>, ...)
+		return String.format("%s%s = call %s @%s(%s)%n", space, resVar, getLLVMType(type), funcName, args);
 	}
 
 }
