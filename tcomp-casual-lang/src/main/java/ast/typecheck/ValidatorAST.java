@@ -221,6 +221,7 @@ public class ValidatorAST {
 					if (!indexedType.equals(validExpression(currArr.getValue()))) {
 						throw new TypeMismatchException(currArr.getPosition().toString());
 					}
+					currArr.setDatatype(indexedType);
 				}
 			} else {
 				throw new TypeMismatchException(currArr.getPosition().toString());
@@ -235,6 +236,7 @@ public class ValidatorAST {
 			if(!type.equals(validExpression(curr.getValue()))) {
 				throw new TypeMismatchException(curr.getPosition().toString());
 			}
+			curr.setDatatype(type);
 		} else if (n instanceof ExprStatement) {
 			ExprStatement curr = (ExprStatement) n;
 			validExpression(curr.getValue());
