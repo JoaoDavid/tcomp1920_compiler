@@ -142,6 +142,11 @@ public class ConfigLLVM {
 		return String.format("%s%s = call %s @%s(%s)%n", space, resVar, getLLVMType(type), funcName, args);
 	}
 	
+	protected static String call_void(String space, Type type, String funcName, String args) {
+		//<result> = call <ty> @<funcName>(<ty_ar> <ar>, ...)
+		return String.format("%scall %s @%s(%s)%n", space, getLLVMType(type), funcName, args);
+	}
+	
 	protected static String globalStr(int len, String strGlobalVar, String strLit) {
 		//@.str = protected unnamed_addr constant [13 x i8] c"sumLitVar: \0A\00"
 		return String.format("%s = protected unnamed_addr constant [%d x i8] c%s%n", strGlobalVar, len, strLit);

@@ -5,6 +5,44 @@ decl new_float_array(size:Int):[Float]
 decl new_bool_array(size:Int):[Bool]
 decl new_string_array(size:Int):[String]
 
+def matrixAssign():Int { 
+	m:[[Int]] = new_int_matrix(5,5);
+	m[0][0] = 4;
+	m[0][1] = 4;
+	if (m[0][0] == m[0][1]){
+		puts("matrix entrou");
+	} else {
+		puts("matrix NAO entrou");
+	}
+	return 1;
+}
+
+def arrAssignStr():Void { 
+	v:Int = 66;
+	arr:[String] = new_string_array(3);
+	arr[v] = "ola";
+	arr[0] = "adeus";
+	puts(arr[v]);
+	puts(arr[0]);
+	return;
+}
+
+
+def arrAssign():Int { 
+	v:Int = 88;
+	arr:[Int] = new_int_array(3);
+	arr[v] = 4;
+	arr[0] = 4;
+	if (arr[v] != arr[0]){
+		puts("entrou");
+	} else {
+		puts("NAO entrou");
+	}
+	return 1;
+}
+
+
+
 def matrixIntTest():Int { 
 	arr1:[[Int]] = new_int_matrix(3, 3);
 	val:Int = arr1[1][3];
@@ -117,6 +155,9 @@ def testIF2(a:Bool, b:Bool):Int {
 }
 
 def main(ar:[String]):Int {  
+    arrAssignStr();
+	matrixAssign();
+	arrAssign();
 	testWhile();
     testIF(true, true);
     onlyIF(false, true);

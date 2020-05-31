@@ -310,8 +310,25 @@ public class Codegenator {
 			}
 		} else if (n instanceof VarAssignArrayStatement) { //arr[x][y]...
 			VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
-			//TODO
-
+			String arrVar = getVarName("arr_access");
+			String loadVar = getVarName("arr_load");
+			int counter = currArr.getIndexes().size();
+			ArrayType type2 = new ArrayType(counter, currArr.getDatatype());
+			String varName = em.get(currArr.getVarName());			
+			for (int i = 0; i < counter; i++) {
+				arrVar = getVarName("arr_access");
+				pw.write(load(space, varName, getLLVMType(type2), loadVar));						
+				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());	
+				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar));
+				loadVar = getVarName("arr_load");
+				//pw.write(load(space, arrVar, getLLVMType(type1), loadVar));
+				varName = arrVar;
+				type2 = type1;				
+			}
+			Type type = currArr.getDatatype();
+			String value = visitExpression(currArr.getValue(), space);
+			String llVar = em.get(currArr.getVarName());
+			pw.write(store(space, type, value, arrVar));
 		} else if (n instanceof VarAssignStatement) {
 			//TODO falta em.set?
 			VarAssignStatement curr = (VarAssignStatement) n;
@@ -378,18 +395,37 @@ public class Codegenator {
 					sb.append(", ");
 				}
 			}
-			pw.write(call(space, funcVar, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));
+			if (funcInvExpr.getResType() instanceof VoidType) {
+				pw.write(call_void(space, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));
+			} else {
+				pw.write(call(space, funcVar, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));		
+			}
 			return funcVar;
 		} else if (expr instanceof ArrayAcessFuncExpression) {
 			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
-
+			/*String funcVar = getVarName("func_arr_call");
+			StringBuilder sb = new StringBuilder();
+			int c = 0;
+			for (Expression currExpr : arrAcFuncExpr.getArguments()) {
+				sb.append(getLLVMType(currExpr.getResType()));
+				sb.append(" ");
+				sb.append(visitExpression(currExpr, space));
+				//--------------
+				c++;	
+				if(c != arrAcFuncExpr.getArguments().size() ) {
+					sb.append(", ");
+				}
+			}
+			pw.write(call(space, funcVar, new ArrayType(arrAcFuncExpr.getIndexes().size(), arrAcFuncExpr.getResType()), arrAcFuncExpr.getVarName(), sb.toString()));
+			return funcVar;*/
+			//TODO
 		} else if (expr instanceof ArrayAcessVarExpression) {
 			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
 			String arrVar = getVarName("arr_access");
 			String loadVar = getVarName("arr_load");
 			int counter = arrExpr.getIndexes().size();
 			ArrayType type2 = new ArrayType(counter, arrExpr.getResType());
-			
+
 			pw.write(load(space, em.get(arrExpr.getVarName()), getLLVMType(type2), loadVar));
 			for (int i = 0; i < counter; i++) {						
 				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());
