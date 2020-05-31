@@ -143,6 +143,7 @@ public class Codegenator {
 
 	private boolean isLibFunc(String funcName) {
 		if (funcName.equals(FunctionLib.DEF_NEW_INT_ARRAY) || 
+				funcName.equals(RES_NEW_INT_MATRIX) || 
 				funcName.equals(RES_NEW_INT_ARRAY) || 
 				funcName.equals(RES_NEW_FLOAT_ARRAY) || 
 				funcName.equals(RES_NEW_BOOL_ARRAY) || 
@@ -159,6 +160,7 @@ public class Codegenator {
 			CasualFile curr = (CasualFile) n;
 			pw.write(FunctionLib.DECL_CALLOC);
 			pw.write(FunctionLib.DEF_NEW_INT_ARRAY);
+			pw.write(FunctionLib.DEF_NEW_INT_MATRIX);
 			pw.write(FunctionLib.DEF_NEW_FLOAT_ARRAY);
 			pw.write(FunctionLib.DEF_NEW_BOOL_ARRAY);
 			pw.write(FunctionLib.DEF_NEW_STRING_ARRAY);
@@ -395,7 +397,7 @@ public class Codegenator {
 				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar));
 				loadVar = getVarName("arr_load");
 				pw.write(load(space, arrVar, getLLVMType(type1), loadVar));
-				type1 = type2;
+				type2 = type1;				
 			}
 			return loadVar;
 		} else if (expr instanceof BoolLit) {
