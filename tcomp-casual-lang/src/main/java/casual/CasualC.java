@@ -1,5 +1,6 @@
 package casual;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.CharStream;
@@ -38,17 +39,19 @@ public class CasualC {
 			Node ast = casualVisitor.visitCasualFile(tree);
 			ValidatorAST validatorAST = new ValidatorAST();
 			Codegenator codegen;
+			File casFile = new File(args[0]);
+			String fileName = casFile.getName().replaceAll("\\.[^.]*$", "");
 			if (args.length == 2) {
-				codegen = new Codegenator(ast, "file", args[1]);
+				codegen = new Codegenator(ast, fileName, args[1]);
 			} else {
-				codegen = new Codegenator(ast, "file");
+				codegen = new Codegenator(ast, fileName);
 			}
 			
 			try {
 				validatorAST.validateAST(ast);
 				codegen.generateLL();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println(e.toString());
 				System.err.println("Syntactic Verification found an error");
 				return;
