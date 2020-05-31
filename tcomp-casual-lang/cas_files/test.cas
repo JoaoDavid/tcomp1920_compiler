@@ -19,6 +19,27 @@ def arrayIntTest2(a:Int):Int {
 	return 1;
 }
 
+def arrayStringTest(a:Int):Int { 
+	arr1:[String] = new_string_array(3);
+	arr2:String = arr1[a];
+
+	return 1;
+}
+
+def arrayFloatTest(a:Int):Int { 
+	arr1:[Float] = new_float_array(3);
+	arr2:Float = arr1[a];
+
+	return 1;
+}
+
+def arrayBoolTest(a:Int):Int { 
+	arr1:[Bool] = new_bool_array(3);
+	arr2:Bool = arr1[a];
+
+	return 1;
+}
+
 
 def testWhile():Int {  
 	a:Int = 3;

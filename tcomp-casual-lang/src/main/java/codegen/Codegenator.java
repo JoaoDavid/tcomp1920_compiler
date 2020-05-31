@@ -387,16 +387,15 @@ public class Codegenator {
 			String loadVar = getVarName("arr_load");
 			int counter = arrExpr.getIndexes().size();
 			ArrayType type2 = new ArrayType(counter, arrExpr.getResType());
-			for (int i = 0; i < counter; i++) {
-				arrVar = getVarName("arr_access");
-				String prtVar = getVarName("arr_ptr");				
+			
+			pw.write(load(space, em.get(arrExpr.getVarName()), getLLVMType(type2), loadVar));
+			for (int i = 0; i < counter; i++) {						
 				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());
-				//String loadVar = getVarName("arr_load");
-				pw.write(load(space, em.get(arrExpr.getVarName()), getLLVMType(type2), loadVar));
-				String var = visitExpression(arrExpr.getIndexes().get(type1.getNumNestedArr()), space);
+				arrVar = getVarName("arr_access");	
 				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar));
 				loadVar = getVarName("arr_load");
-				pw.write(load(space, arrVar, getLLVMType(type2), loadVar));
+				pw.write(load(space, arrVar, getLLVMType(type1), loadVar));
+				type1 = type2;
 			}
 			return loadVar;
 		} else if (expr instanceof BoolLit) {
