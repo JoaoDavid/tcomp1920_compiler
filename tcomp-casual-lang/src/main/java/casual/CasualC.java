@@ -41,7 +41,7 @@ public class CasualC {
 			if (args.length == 2) {
 				codegen = new Codegenator(ast, "file", args[1]);
 			} else {
-				codegen = new Codegenator(ast,  args[0].replace(".cas", ""));
+				codegen = new Codegenator(ast, "file");
 			}
 			
 			try {

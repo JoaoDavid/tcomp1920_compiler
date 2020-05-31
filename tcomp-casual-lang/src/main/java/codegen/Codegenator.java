@@ -99,7 +99,7 @@ import codegen.exception.CompileException;
 
 public class Codegenator {
 
-	private final static String defaultPath = System.getProperty("user.home") + File.separator + "Desktop";
+	//private final static String defaultPath = System.getProperty("user.home") + File.separator + "Desktop";
 	private final static String sufix = ".ll";
 	private final static String identation = "    ";
 	private static final String RETURN_KW = "$return";
@@ -111,15 +111,18 @@ public class Codegenator {
 	private Emitter em;
 	private List<String> stringGlobal;
 
-	public Codegenator(Node root, String fileName, String path) {
-		file = new File(path + File.separator + fileName + sufix);
+	public Codegenator(Node root, String llFile, String llPathFile) {
+		this.file = new File(llPathFile + File.separator + llFile + sufix);
 		this.root = root;
 		this.em = new Emitter();
 		this.stringGlobal = new ArrayList<String>();
 	}
 
-	public Codegenator(Node n, String fileName) {
-		this(n, fileName, defaultPath);
+	public Codegenator(Node root, String llFile) {
+		this.file = new File(llFile + sufix);
+		this.root = root;
+		this.em = new Emitter();
+		this.stringGlobal = new ArrayList<String>();
 	}
 
 	public void generateLL() throws CompileException {
