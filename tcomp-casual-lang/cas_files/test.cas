@@ -17,15 +17,6 @@ def matrixAssign():Int {
 	return 1;
 }
 
-def arrAssignStr():Void { 
-	v:Int = 66;
-	arr:[String] = new_string_array(3);
-	arr[v] = "ola";
-	arr[0] = "adeus";
-	puts(arr[v]);
-	puts(arr[0]);
-	return;
-}
 
 
 def arrAssign():Int { 
@@ -155,7 +146,6 @@ def testIF2(a:Bool, b:Bool):Int {
 }
 
 def main(ar:[String]):Int {  
-    arrAssignStr();
 	matrixAssign();
 	arrAssign();
 	testWhile();

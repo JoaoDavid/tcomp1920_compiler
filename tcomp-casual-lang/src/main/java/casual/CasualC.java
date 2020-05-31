@@ -17,7 +17,7 @@ import visitor.CasualParseTreeVisitor;
 
 public class CasualC {
 	public static void main(String[] args) {
-		if(args.length == 2) {
+		if(args.length == 1 || args.length == 2) {
 			System.out.println("Analysing " + args[0]);
 			CharStream inputFromFile;
 			try {
@@ -37,7 +37,13 @@ public class CasualC {
 			CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
 			Node ast = casualVisitor.visitCasualFile(tree);
 			ValidatorAST validatorAST = new ValidatorAST();
-			Codegenator codegen = new Codegenator(ast, "file", args[1]);
+			Codegenator codegen;
+			if (args.length == 2) {
+				codegen = new Codegenator(ast, "file", args[1]);
+			} else {
+				codegen = new Codegenator(ast,  args[0].replace(".cas", ""));
+			}
+			
 			try {
 				validatorAST.validateAST(ast);
 				codegen.generateLL();
