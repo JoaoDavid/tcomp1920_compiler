@@ -29,7 +29,7 @@ import static codegen.ConfigLLVM.call;
 import static codegen.ConfigLLVM.floatToLLVM;
 import static codegen.ConfigLLVM.fneg;
 import static codegen.ConfigLLVM.getLLVMType;
-import static codegen.ConfigLLVM.getelementptr;
+import static codegen.ConfigLLVM.getelementptrStr;
 import static codegen.ConfigLLVM.globalStr;
 import static codegen.ConfigLLVM.load;
 import static codegen.ConfigLLVM.store;
@@ -303,11 +303,11 @@ public class Codegenator {
 				} else if(type instanceof StringType) {
 					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof ArrayType) {
-					//TODO
+					pw.write(store(space, type, value, llVar));//TODO
 				}
 			}
-		} else if (n instanceof VarAssignArrayStatement) {
-
+		} else if (n instanceof VarAssignArrayStatement) { //arr[x][y]...
+			VarAssignArrayStatement currArr = (VarAssignArrayStatement) n;	
 			//TODO
 
 		} else if (n instanceof VarAssignStatement) {
@@ -383,7 +383,22 @@ public class Codegenator {
 
 		} else if (expr instanceof ArrayAcessVarExpression) {
 			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
-
+			String arrVar = getVarName("arr_access");
+			String loadVar = getVarName("arr_load");
+			int counter = arrExpr.getIndexes().size();
+			ArrayType type2 = new ArrayType(counter, arrExpr.getResType());
+			for (int i = 0; i < counter; i++) {
+				arrVar = getVarName("arr_access");
+				String prtVar = getVarName("arr_ptr");				
+				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());
+				//String loadVar = getVarName("arr_load");
+				pw.write(load(space, em.get(arrExpr.getVarName()), getLLVMType(type2), loadVar));
+				String var = visitExpression(arrExpr.getIndexes().get(type1.getNumNestedArr()), space);
+				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar));
+				loadVar = getVarName("arr_load");
+				pw.write(load(space, arrVar, getLLVMType(type2), loadVar));
+			}
+			return loadVar;
 		} else if (expr instanceof BoolLit) {
 			BoolLit lit = (BoolLit) expr;
 			return lit.getValue();
@@ -399,10 +414,10 @@ public class Codegenator {
 			String stringLLVM = StringToLLVM(lit.getValue());
 			int len = lit.getValue().replace("\\", "").length()-1;
 			stringGlobal.add(globalStr(len, strGlobalVar, stringLLVM));
-			return getelementptr(len, strGlobalVar);
+			return getelementptrStr(len, strGlobalVar);
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
-			String loadVar = getVarName("load");	
+			String loadVar = getVarName("var_ref");	
 			//%b = load i32, i32* %p_a
 			pw.print(load(space, em.get(varExpr.getVarName()), llvmResType, loadVar));
 			return loadVar;

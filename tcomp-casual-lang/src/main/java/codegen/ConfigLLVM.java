@@ -147,9 +147,17 @@ public class ConfigLLVM {
 		return String.format("%s = protected unnamed_addr constant [%d x i8] c%s%n", strGlobalVar, len, strLit);
 	}
 	
-	protected static String getelementptr(int len, String strGlobalVar) {
+	protected static String getelementptrStr(int len, String strGlobalVar) {
 		//getelementptr inbounds ([15 x i8], [15 x i8]* @.str.1, i64 0, i64 0)
 		return String.format("getelementptr inbounds ([%d x i8], [%d x i8]* %s, i64 0, i64 0)", len, len, strGlobalVar);
+	}
+	
+	protected static String getelementptrArr(String space, String newVar, Type type1, Type type2, String var) {
+		//getelementptr inbounds i32, i32* %4, i64 2
+		//getelementptr inbounds float, float* %4, i64 2
+		//getelementptr inbounds i8*, i8** %4, i64 2
+		//getelementptr inbounds %s, %s* %s
+		return String.format("%s%s = getelementptr inbounds %s, %s %s%n", space, newVar, getLLVMType(type1), getLLVMType(type2), var);
 	}
 	
 	protected static String br(String space, String condRes, String labelTrue, String labelFalse) {

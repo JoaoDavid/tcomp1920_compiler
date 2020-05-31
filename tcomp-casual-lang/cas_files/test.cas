@@ -12,6 +12,13 @@ def arrayIntTest():Int {
 	return 1;
 }
 
+def arrayIntTest2(a:Int):Int { 
+	arr1:[Int] = new_int_array(3);
+	arr2:Int = arr1[a];
+
+	return 1;
+}
+
 
 def testWhile():Int {  
 	a:Int = 3;
