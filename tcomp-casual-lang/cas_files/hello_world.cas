@@ -1,9 +1,7 @@
-decl printLine(str:String):Void
-decl printInt(i:Int):Int
+decl puts(s:String):Int
+
 
 def main(ar:[String]):Int {
-	printLine("Hello World");
-	printInt(1 + 2 * 3);
-	ola:Int = 5;
+	puts("Hello World");
 	return 0;
 }

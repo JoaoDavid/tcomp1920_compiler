@@ -17,7 +17,6 @@ public class CasFilesTest {
 	@ParameterizedTest(name = "check if file {0} is Valid")
 	@ValueSource(strings = { 
 			"hello_world.cas",
-			"benchmark.cas",
 			"valid_example1.cas",
 			"valid_example2.cas",
 			"valid_example3.cas",

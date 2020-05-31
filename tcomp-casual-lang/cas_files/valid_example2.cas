@@ -1,36 +1,67 @@
-#quicksort implementation
+decl puts(s:String):Int
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
 
-def quickSort(arr:[Int], low:Int, high:Int):Void	{
-		if (low < high) {
-			#fp represents the index of the pivot chosen in partition
-			#that is in the correct final position
-			fp:Int = partition(arr, low, high);
 
-			quickSort(arr, low, fp - 1);  # Before fp
-			quickSort(arr, fp + 1, high); # After fp
-		}
-	}
+def main():Void	{
 
-def partition(arr:[Int], low:Int, high:Int):Int {
-	# pivot (Element to be placed at right position)
-	pivot:Int = arr[high];  
+	return;
+}
 
-	i:Int = (low - 1);  # Index of smaller element
-		
-		j:Int = low;
-		#for (int j = low; j <= high- 1; j++) {
-		while j <= (high - 1) {
-			# If current element is smaller than the pivot
-			if (arr[j] < pivot){
-				i = i+   1;    # increment index of smaller element
-				temp:Int = arr[i];
-				arr[i] = arr[j];
-				arr[j] = temp;
-			}
-			j=j+1;
-		}
-		temp2:Int = arr[i + 1];
-		arr[i + 1] = arr[high];
-		arr[high] = temp2;
-		return (i + 1);
-	}
+def assign(a:Int, b:Float, c:Bool):Void {
+	var1:Int = 3;
+	var2:Int = a;
+	
+	var3:Float = 3.2;
+	var4:Float = b;
+	
+	var5:Bool = true;
+	var6:Bool = c;
+	return;
+}
+
+def simpleInt(a:Int, b:Int):Int {
+	c:Int = a + b;
+	d:Int = a - b;
+	e:Int = a * b;
+	f:Int = a / b;
+	g:Int = a % b;
+	return g; 
+}	
+
+def simpleFloat(a:Float, b:Float):Float {
+	c:Float = a + b;
+	d:Float = a - b;
+	e:Float = a * b;
+	f:Float = a / b;
+	return c;
+}
+
+def simpleBool():Bool {
+
+	return true && true || !false;
+}
+
+def unaryOpe(a:Int):Void {
+	var1:Int = 3;
+	var2:Int = 9;
+	var3:Int = -var2;
+	
+	var4:Float = 3.0;
+	var5:Float = 9.6;
+	var6:Float = -var4;
+	return;
+}
+
+def testCall(a:Int, b:Float, c:Bool):Void {
+    d:Int = 3;
+    e:Float = 333.3;
+    f:Bool = false;
+	var1:Int = simpleInt(a, a) + simpleInt(d, a);
+	var2:Float = -simpleFloat(e, 3.77);
+	var3:Bool = !simpleBool();
+	return;
+}

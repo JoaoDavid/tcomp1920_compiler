@@ -30,7 +30,6 @@ valid_example2.cas
 valid_example3.cas
 valid_example4.cas
 valid_example5.cas
-benchmark.cas
 hello_world.cas
 
 --- INvalid Example Files ---

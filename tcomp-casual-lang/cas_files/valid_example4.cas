@@ -1,31 +1,73 @@
-#varying number of args
-
-decl noArgsFunc     ()                                       :Int
-decl oneArgFunc     (ola:Float)                              :String
-decl twoArgsFunc    (ola:Float,ola:Float)                    :Float
-decl threeArgsFunc  (ola:Float,var:Int,ola:Float)     :Bool
-decl fourArgsFunc   (ola:String,ola:Float,ola:Int,ola:Bool)  :Void
-
+decl puts(s:String):Int
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
 
 
+def main(ar:[String]):Int { 
+	testWhile();
+    testIfElse(true, true);
+    onlyIf(false, true);
 
-
-def oneArgFuncA     (ola:Float)                              :String {
-
-	return "gewg" + "aegeag" + "gesgeg";
+	return 3;
 }
 
-def twoArgsFuncB    (ola:Float,olaB:Float)                    :Float {
 
-	return 3245e35;
+def testWhile():Int {  
+	a:Int = 3;
+	str1:String = "estamos no ciclo";
+	str2:String = "o a e 2";
+	while(a > 0) {
+		puts(str1);
+		a = a - 1;
+		if(a == 2) {
+			puts(str2);
+		}
+	}
+	a = 3;
+	b:Int = 3;
+	while(a > 0) {
+		while(b > 0) {
+			puts(str1);
+			b = b - 1;
+			if(b == 2) {
+				puts(str2);
+			}
+		}
+		a = a - 1;
+		
+	}
+	puts("fiM");
+	return 2;
 }
 
-def threeArgsFuncC  (ola:Float,variable:Bool,adeus:Float)      :Bool {
-
-	return 235E234 == 34.7;
+def onlyIf(a:Bool, b:Bool):Int {  
+	str1:String = "foi no then";
+	str2:String = "foi para o else";
+	if(a != b) {
+		puts(str1);
+		if(a != b) {
+		puts(str1);
+	}
+	if(a != b) {
+		puts(str1);
+	}
+	}
+	return 2;
 }
 
-def fourArgsFuncD   (ola:String,ola2:Float,ola3:Int,ola4:Bool)  :Void {
 
-	return ;
+def testIfElse(a:Bool, b:Bool):Int {  
+	if(a == b) {
+		if(a != b) {
+			var1:Int = 3;
+		} else {
+			var2:Int = 5;
+		}
+	} else {
+		var2:Int = 5;
+	}
+	return 2;
 }

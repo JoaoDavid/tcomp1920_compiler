@@ -1,28 +1,52 @@
-#wrong array indexing
-decl matrix():[[Int]]
-decl arr3d():[[[Int]]]
+decl puts(s:String):Int
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+
+
 
 def main (arg:[String]) :Int {
 
 
 
-	var1:Int = matrix()[4][4];
-	var2:[Int] = matrix()[4];
-	
-	var3:Int = arr3d()[1][12][4];	
-	var4:[Int] = arr3d()[1][12];
-	var5:[[Int]] = arr3d()[1];
-	var6:[[[Int]]] = arr3d();
-	
-	
-	var7:Int = var6[1][12][4];	
-	var8:[Int] = var6[1][12];
-	var9:[[Int]] = var6[1];
-	var10:[[[Int]]] = var6;
-	
-	
-	
-
 	return 3;
 
+}
+
+def arrayIntTest():Int { 
+	arr1:[Int] = new_int_array(3);
+	arr2:[Float] = new_float_array(3);
+	arr3:[Bool] = new_bool_array(3);
+	arr4:[String] = new_string_array(3);
+	return 1;
+}
+
+def arrayIntTest2(a:Int):Int { 
+	arr1:[Int] = new_int_array(3);
+	arr2:Int = arr1[a];
+
+	return 1;
+}
+
+def arrayStringTest(a:Int):Int { 
+	arr1:[String] = new_string_array(3);
+	arr2:String = arr1[a];
+
+	return 1;
+}
+
+def arrayFloatTest(a:Int):Int { 
+	arr1:[Float] = new_float_array(3);
+	arr2:Float = arr1[a];
+
+	return 1;
+}
+
+def arrayBoolTest(a:Int):Int { 
+	arr1:[Bool] = new_bool_array(3);
+	arr2:Bool = arr1[a];
+
+	return 1;
 }

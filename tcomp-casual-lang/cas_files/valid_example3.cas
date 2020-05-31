@@ -1,23 +1,52 @@
-#wrong array indexing
-decl func_matrix():[[Int]]
-decl arr3d():[[[Int]]]
+decl puts(s:String):Int
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
 
-def main (arg:[String]) :Int {
-
-	varA:[[[Int]]] = arr3d();
-	varB:[[[Int]]];
-	varC:[[Int]];
-	varD:[Int];
-	varE:Int;
-	
-	varB = varA;
-	varC[0] = varA[6][9];
-	varD[6] = varA[8][9][8];
-	varE = varA[5][8][7];
-	
-
-	
-
-	return 3;
-
+def matrixAssign():Int { 
+	m:[[Int]] = new_int_matrix(5,5);
+	m[0][0] = 4;
+	m[0][1] = 4;
+	if (m[0][0] == m[0][1]){
+		puts("matrix entrou");
+	} else {
+		puts("matrix NAO entrou");
+	}
+	return 1;
 }
+
+def arrAssign():Int { 
+	v:Int = 88;
+	arr:[Int] = new_int_array(3);
+	arr[v] = 4;
+	arr[0] = 4;
+	if (arr[v] != arr[0]){
+		puts("entrou");
+	} else {
+		puts("NAO entrou");
+	}
+	return 1;
+}
+
+def matrixIntTest():Int { 
+	arr1:[[Int]] = new_int_matrix(3, 3);
+	val:Int = arr1[1][3];
+	return 1;
+}
+
+
+def main(ar:[String]):Int {  
+	matrixAssign();
+	arrAssign();
+	
+	d4:String = "batata\n";
+	d5:String = d4;
+	puts(d4);
+	puts(d5);
+	return 3;
+}
+
+
+
