@@ -157,12 +157,12 @@ public class ConfigLLVM {
 		return String.format("getelementptr inbounds ([%d x i8], [%d x i8]* %s, i64 0, i64 0)", len, len, strGlobalVar);
 	}
 	
-	protected static String getelementptrArr(String space, String newVar, Type type1, Type type2, String var) {
+	protected static String getelementptrArr(String space, String newVar, Type type1, Type type2, String var, String index) {
 		//getelementptr inbounds i32, i32* %4, i64 2
 		//getelementptr inbounds float, float* %4, i64 2
 		//getelementptr inbounds i8*, i8** %4, i64 2
 		//getelementptr inbounds %s, %s* %s
-		return String.format("%s%s = getelementptr inbounds %s, %s %s%n", space, newVar, getLLVMType(type1), getLLVMType(type2), var);
+		return String.format("%s%s = getelementptr inbounds %s, %s %s, i32 %s%n", space, newVar, getLLVMType(type1), getLLVMType(type2), var, index);
 	}
 	
 	protected static String br(String space, String condRes, String labelTrue, String labelFalse) {

@@ -22,8 +22,10 @@ def main(ar:[String]):Int {
 	testBool();
 	printString("Array Bools");
 	testBool2();
-	printString("Var String");
+	printString("Var Strings");
 	testString();
+	printString("Array Strings");
+	testString2();
 	return 0;
 }
 
@@ -115,6 +117,19 @@ def testString():Void {
 	printString(a);
 	a = "kenobi";
 	printString(a);
+	return;
+}
+
+def testString2():Void {
+	arr1:[String] = new_string_array(3);
+	arr1[0] = "hello";
+	arr1[1] = "there";
+	arr1[2] = "general";
+	arr1[3] = "kenobi";
+	printString(arr1[0]);
+	printString(arr1[1]);
+	printString(arr1[2]);
+	printString(arr1[3]);
 	return;
 }
 

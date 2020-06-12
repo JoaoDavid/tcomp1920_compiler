@@ -320,7 +320,7 @@ public class Codegenator {
 				arrVar = getVarName("arr_access");
 				pw.write(load(space, varName, getLLVMType(type2), loadVar));						
 				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());	
-				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar));
+				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar, visitExpression(currArr.getIndexes().get(i), space)));
 				loadVar = getVarName("arr_load");
 				//pw.write(load(space, arrVar, getLLVMType(type1), loadVar));
 				varName = arrVar;
@@ -431,7 +431,7 @@ public class Codegenator {
 			for (int i = 0; i < counter; i++) {						
 				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());
 				arrVar = getVarName("arr_access");	
-				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar));
+				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar, visitExpression(arrExpr.getIndexes().get(i), space)));
 				loadVar = getVarName("arr_load");
 				pw.write(load(space, arrVar, getLLVMType(type1), loadVar));
 				type2 = type1;				
