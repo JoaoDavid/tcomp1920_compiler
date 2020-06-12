@@ -144,35 +144,33 @@ public class Codegenator {
 		this.pw.close();
 	}
 
-	private boolean isLibFunc(String funcName) {
-		if (funcName.equals(FunctionLib.DEF_NEW_INT_ARRAY) || 
-				funcName.equals(RES_NEW_INT_MATRIX) || 
-				funcName.equals(RES_NEW_INT_ARRAY) || 
-				funcName.equals(RES_NEW_FLOAT_ARRAY) || 
-				funcName.equals(RES_NEW_BOOL_ARRAY) || 
-				funcName.equals(RES_NEW_STRING_ARRAY) || 
-				funcName.equals(RES_CALLOC)) {
-			return true;
-		}
-		return false;
-	}
+	
 
 	private void writeStatements(Node n, String space) throws CompileException {
 		StringBuilder sb = new StringBuilder();
-		if (n instanceof CasualFile) {			
+		if (n instanceof CasualFile) {
+			stringGlobal.add(STR_PRINT_INT);
+			stringGlobal.add(STR_PRINT_FLOAT);
+			//stringGlobal.add(STR_PRINT_BOOL);
+			stringGlobal.add(STR_PRINT_STRING);
 			CasualFile curr = (CasualFile) n;
 			pw.write(FunctionLib.DECL_CALLOC);
+			pw.write(FunctionLib.DECL_PRINTF);
 			pw.write(FunctionLib.DEF_NEW_INT_ARRAY);
 			pw.write(FunctionLib.DEF_NEW_INT_MATRIX);
 			pw.write(FunctionLib.DEF_NEW_FLOAT_ARRAY);
 			pw.write(FunctionLib.DEF_NEW_BOOL_ARRAY);
 			pw.write(FunctionLib.DEF_NEW_STRING_ARRAY);
+			pw.write(FunctionLib.DEF_PRINT_INT);
+			pw.write(FunctionLib.DEF_PRINT_FLOAT);
+			pw.write(FunctionLib.DEF_PRINT_BOOL);
+			pw.write(FunctionLib.DEF_PRINT_STRING);
 			for (DefDecl currDefDecl : curr.getStatements()) {
 				writeStatements(currDefDecl, space);
 			}
 		} else if (n instanceof FunctionDefinition) {
 			FunctionDefinition curr = (FunctionDefinition) n;
-			if(isLibFunc(curr.getFuncName())) {
+			if(FunctionLib.isResLibFuncName(curr.getFuncName())) {
 				return;
 			}
 			em.enterScope();			
@@ -200,7 +198,7 @@ public class Codegenator {
 			em.exitScope();
 		} else if (n instanceof FunctionDeclaration) {
 			FunctionDeclaration curr = (FunctionDeclaration) n;	
-			if(isLibFunc(curr.getFuncName())) {
+			if(FunctionLib.isResLibFuncName(curr.getFuncName())) {
 				return;
 			}			
 			pw.printf("declare %s @%s (", getLLVMType(curr.getReturnType()), curr.getFuncName());
