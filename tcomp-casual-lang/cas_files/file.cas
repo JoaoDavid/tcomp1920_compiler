@@ -1,0 +1,120 @@
+decl puts(s:String):Int
+decl printInt(i:Int):Void
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl printString(s:String):Void
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+
+def main(ar:[String]):Int { 
+	printString("Var Ints");
+	testInt(); 
+	printString("Array Ints");
+	testInt2();
+	printString("Var Floats");
+	testFloat();
+	printString("Array Floats");
+	testFloat2();
+	printString("Var Bools");
+	testBool();
+	printString("Array Bools");
+	testBool2();
+	printString("Var String");
+	testString();
+	return 0;
+}
+
+def testInt():Void {
+	a:Int = 1;
+	printInt(a);
+	a = 2;
+	printInt(a);
+	a = 3;
+	printInt(a);
+	a = 4;
+	printInt(a);
+	printInt(a*2);
+	return;
+}
+
+def testInt2():Void {
+	arr1:[Int] = new_int_array(3);
+	arr1[0] = 1;
+	arr1[1] = 2;
+	arr1[2] = 3;
+	arr1[3] = 4;
+	printInt(arr1[0]);
+	printInt(arr1[1]);
+	printInt(arr1[2]);
+	printInt(arr1[3]);
+	return;
+}
+
+def testFloat():Void {
+	a:Float = 1.0;
+	printFloat(a);
+	a = 2.0;
+	printFloat(a);
+	a = 3.0;
+	printFloat(a);
+	a = 4.0;
+	printFloat(a);
+	printFloat(a*2.0);
+	return;
+}
+
+def testFloat2():Void {
+	arr1:[Float] = new_float_array(3);
+	arr1[0] = 1.0;
+	arr1[1] = 2.0;
+	arr1[2] = 3.0;
+	arr1[3] = 4.0;
+	printFloat(arr1[0]);
+	printFloat(arr1[1]);
+	printFloat(arr1[2]);
+	printFloat(arr1[3]);
+	return;
+}
+
+def testBool():Void {
+	a:Bool = true;
+	printBool(a);
+	a = false;
+	printBool(a);
+	a = true;
+	printBool(a);
+	a = true || true || false && false;
+	printBool(a);
+	printBool(a || true);
+	return;
+}
+
+def testBool2():Void {
+	arr1:[Bool] = new_bool_array(3);
+	arr1[0] = true;
+	arr1[1] = false;
+	arr1[2] = true;
+	arr1[3] = false;
+	printBool(arr1[0]);
+	printBool(arr1[1]);
+	printBool(arr1[2]);
+	printBool(arr1[3]);
+	return;
+}
+
+
+def testString():Void {
+	a:String = "hello";
+	printString(a);
+	a = "there";
+	printString(a);
+	a = "general";
+	printString(a);
+	a = "kenobi";
+	printString(a);
+	return;
+}
+
