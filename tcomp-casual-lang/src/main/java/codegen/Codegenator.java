@@ -530,9 +530,9 @@ public class Codegenator {
 			String lessVar = getVarName("cmp_leq");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, LESS_INT, getLLVMType(left.getResType()), leftLL, rightLL));
+				pw.write(writeCompExpr(space, lessVar, CMP_INT, LESS_EQUAL_INT, getLLVMType(left.getResType()), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, LESS_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL));
+				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, LESS_EQUAL_FLOAT, getLLVMType(left.getResType()), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof LessExpression) {
