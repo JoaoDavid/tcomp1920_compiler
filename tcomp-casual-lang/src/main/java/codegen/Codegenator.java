@@ -156,11 +156,14 @@ public class Codegenator {
 			CasualFile curr = (CasualFile) n;
 			pw.write(FunctionLib.DECL_CALLOC);
 			pw.write(FunctionLib.DECL_PRINTF);
-			pw.write(FunctionLib.DEF_NEW_INT_ARRAY);
-			pw.write(FunctionLib.DEF_NEW_INT_MATRIX);
+			pw.write(FunctionLib.DEF_NEW_INT_ARRAY);			
 			pw.write(FunctionLib.DEF_NEW_FLOAT_ARRAY);
 			pw.write(FunctionLib.DEF_NEW_BOOL_ARRAY);
 			pw.write(FunctionLib.DEF_NEW_STRING_ARRAY);
+			pw.write(FunctionLib.DEF_NEW_INT_MATRIX);
+			pw.write(FunctionLib.DEF_NEW_FLOAT_MATRIX);
+			pw.write(FunctionLib.DEF_NEW_BOOL_MATRIX);
+			pw.write(FunctionLib.DEF_NEW_STRING_MATRIX);
 			pw.write(FunctionLib.DEF_PRINT_INT);
 			pw.write(FunctionLib.DEF_PRINT_FLOAT);
 			pw.write(FunctionLib.DEF_PRINT_BOOL);

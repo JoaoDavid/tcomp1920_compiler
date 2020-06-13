@@ -1,0 +1,114 @@
+decl puts(s:String):Int
+decl printInt(i:Int):Void
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl printString(s:String):Void
+decl new_int_array(size:Int):[Int]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_matrix(size:Int, size2:Int):[[Float]]
+decl new_bool_matrix(size:Int, size2:Int):[[Bool]]
+decl new_string_matrix(size:Int, size2:Int):[[String]]
+
+def main(ar:[String]):Int { 
+	printString("Matrix Int");
+	testInt();
+	printString("Matrix Float");
+	testFloat();
+	printString("Matrix Bool");
+	testBool();
+	printString("Matrix String");
+	testString();
+	return 0;
+}
+
+
+def testInt():Void {
+	matrix:[[Int]] = new_int_matrix(2,2);
+	matrix[0][0] = 999;
+	printInt(matrix[0][0]);
+	matrix[0][0] = 0;
+	matrix[0][1] = 2;
+	matrix[1][0] = 3;
+	matrix[1][1] = 4;
+	printInt(matrix[0][0]*matrix[0][0]);
+	printInt(matrix[0][1]*matrix[0][1]);
+	printInt(matrix[1][0]*matrix[1][0]);
+	printInt(matrix[1][1]*matrix[1][1]);
+	arr:[Int] = new_int_array(2);
+	arr[0] = 77;
+	arr[1] = 78;
+	matrix[0] = arr;
+	arr[1] = 7362;
+	printInt(matrix[0][0]);
+	printInt(matrix[0][1]);
+	return;
+}
+
+def testFloat():Void {
+	matrix:[[Float]] = new_float_matrix(2,2);
+	matrix[0][0] = 999.0;
+	printFloat(matrix[0][0]);
+	matrix[0][0] = 0.0;
+	matrix[0][1] = 2.0;
+	matrix[1][0] = 3.0;
+	matrix[1][1] = 4.0;
+	printFloat(matrix[0][0]*matrix[0][0]);
+	printFloat(matrix[0][1]*matrix[0][1]);
+	printFloat(matrix[1][0]*matrix[1][0]);
+	printFloat(matrix[1][1]*matrix[1][1]);
+	arr:[Float] = new_float_array(2);
+	arr[0] = 77.0;
+	arr[1] = 78.0;
+	matrix[0] = arr;
+	arr[1] = 7362.0;
+	printFloat(matrix[0][0]);
+	printFloat(matrix[0][1]);
+	return;
+}
+
+def testBool():Void {
+	matrix:[[Bool]] = new_bool_matrix(2,2);
+	matrix[0][0] = true;
+	printBool(matrix[0][0]);
+	matrix[0][0] = false;
+	matrix[0][1] = true;
+	matrix[1][0] = true;
+	matrix[1][1] = false;
+	printBool(!matrix[0][0]);
+	printBool(!matrix[0][1]);
+	printBool(!matrix[1][0]);
+	printBool(!matrix[1][1]);
+	arr:[Bool] = new_bool_array(2);
+	arr[0] = true;
+	arr[1] = false;
+	matrix[0] = arr;
+	arr[1] = true;
+	printBool(matrix[0][0]);
+	printBool(matrix[0][1]);
+	return;
+}
+
+def testString():Void {
+	matrix:[[String]] = new_string_matrix(2,2);
+	matrix[0][0] = "Do.";
+	printString(matrix[0][0]);
+	matrix[0][0] = "Or";
+	matrix[0][1] = "do";
+	matrix[1][0] = "not.";
+	matrix[1][1] = "There";
+	printString(matrix[0][0]);
+	printString(matrix[0][1]);
+	printString(matrix[1][0]);
+	printString(matrix[1][1]);
+	arr:[String] = new_string_array(2);
+	arr[0] = "is";
+	arr[1] = "no";
+	matrix[0] = arr;
+	arr[1] = "no try";
+	printString(matrix[0][0]);
+	printString(matrix[0][1]);
+	return;
+}
