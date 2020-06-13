@@ -151,7 +151,7 @@ public class Codegenator {
 		if (n instanceof CasualFile) {
 			stringGlobal.add(STR_PRINT_INT);
 			stringGlobal.add(STR_PRINT_FLOAT);
-			//stringGlobal.add(STR_PRINT_BOOL);
+			//stringGlobal.add(STR_PRINT_BOOL);bool uses print int
 			stringGlobal.add(STR_PRINT_STRING);
 			CasualFile curr = (CasualFile) n;
 			pw.write(FunctionLib.DECL_CALLOC);
@@ -365,14 +365,11 @@ public class Codegenator {
 		} else if (expr instanceof NotExpression) {
 			NotExpression notExpr = (NotExpression) expr;
 			String operand = visitExpression(notExpr.getValue(), space);
-			//first writes cmp ne
-			String notVarAux = getVarName("cmp_ne_aux");
 			Type argType = notExpr.getResType();
-			pw.write(writeCompExpr(space, notVarAux, CMP_INT, EQUAL_INT, getLLVMType(argType), operand, "0"));
-			//then xor with the result from cmp
-			String notVarFinal = getVarName("xor");
-			pw.write(xor(space, notVarFinal, argType, notVarAux, "true"));
-			return notVarFinal;
+			//xor with true
+			String notVar = getVarName("xor");
+			pw.write(xor(space, notVar, argType, operand, "true"));
+			return notVar;
 		} else if (expr instanceof NegativeExpression) {
 			NegativeExpression negExpr = (NegativeExpression) expr;
 			String operand = visitExpression(negExpr.getValue(), space);
