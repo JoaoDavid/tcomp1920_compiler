@@ -173,6 +173,92 @@ define dso_local i8** @new_string_array(i32 %0) #0 {
 ; Function Attrs: nounwind
 declare dso_local noalias i8* @calloc(i64, i64) #2
 
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local float** @new_float_matrix(i32 %0, i32 %1) #0 {
+  %3 = alloca i32, align 4
+  %4 = alloca i32, align 4
+  %5 = alloca float**, align 8
+  %6 = alloca i32, align 4
+  store i32 %0, i32* %3, align 4
+  store i32 %1, i32* %4, align 4
+  %7 = load i32, i32* %3, align 4
+  %8 = sext i32 %7 to i64
+  %9 = call noalias i8* @calloc(i64 %8, i64 8) #3
+  %10 = bitcast i8* %9 to float**
+  store float** %10, float*** %5, align 8
+  store i32 0, i32* %6, align 4
+  br label %11
+
+11:                                               ; preds = %22, %2
+  %12 = load i32, i32* %6, align 4
+  %13 = load i32, i32* %3, align 4
+  %14 = icmp slt i32 %12, %13
+  br i1 %14, label %15, label %25
+
+15:                                               ; preds = %11
+  %16 = load i32, i32* %4, align 4
+  %17 = call float* @new_float_array(i32 %16)
+  %18 = load float**, float*** %5, align 8
+  %19 = load i32, i32* %6, align 4
+  %20 = sext i32 %19 to i64
+  %21 = getelementptr inbounds float*, float** %18, i64 %20
+  store float* %17, float** %21, align 8
+  br label %22
+
+22:                                               ; preds = %15
+  %23 = load i32, i32* %6, align 4
+  %24 = add nsw i32 %23, 1
+  store i32 %24, i32* %6, align 4
+  br label %11
+
+25:                                               ; preds = %11
+  %26 = load float**, float*** %5, align 8
+  ret float** %26
+}
+
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local i8*** @new_string_matrix(i32 %0, i32 %1) #0 {
+  %3 = alloca i32, align 4
+  %4 = alloca i32, align 4
+  %5 = alloca i8***, align 8
+  %6 = alloca i32, align 4
+  store i32 %0, i32* %3, align 4
+  store i32 %1, i32* %4, align 4
+  %7 = load i32, i32* %3, align 4
+  %8 = sext i32 %7 to i64
+  %9 = call noalias i8* @calloc(i64 %8, i64 8) #3
+  %10 = bitcast i8* %9 to i8***
+  store i8*** %10, i8**** %5, align 8
+  store i32 0, i32* %6, align 4
+  br label %11
+
+11:                                               ; preds = %22, %2
+  %12 = load i32, i32* %6, align 4
+  %13 = load i32, i32* %3, align 4
+  %14 = icmp slt i32 %12, %13
+  br i1 %14, label %15, label %25
+
+15:                                               ; preds = %11
+  %16 = load i32, i32* %4, align 4
+  %17 = call i8** @new_string_array(i32 %16)
+  %18 = load i8***, i8**** %5, align 8
+  %19 = load i32, i32* %6, align 4
+  %20 = sext i32 %19 to i64
+  %21 = getelementptr inbounds i8**, i8*** %18, i64 %20
+  store i8** %17, i8*** %21, align 8
+  br label %22
+
+22:                                               ; preds = %15
+  %23 = load i32, i32* %6, align 4
+  %24 = add nsw i32 %23, 1
+  store i32 %24, i32* %6, align 4
+  br label %11
+
+25:                                               ; preds = %11
+  %26 = load i8***, i8**** %5, align 8
+  ret i8*** %26
+}
+
 attributes #0 = { noinline nounwind optnone uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }

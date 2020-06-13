@@ -42,13 +42,6 @@ void arrIndex3() {
     char* a = arrString[2];
 }
 
-int** new_int_matrix(int size, int size2) {
-    int** m = (int**) calloc(size,sizeof(int*));
-    for(int i = 0; i < size; i++) {
-        m[i] = new_int_array(size2);
-    }
-    return m;
-}
 
 int* new_int_array(int size) {
     return (int*) calloc(size,sizeof(int));
@@ -62,3 +55,26 @@ char** new_string_array(int size) {
     return (char**) calloc(size,sizeof(char));
 }
 
+int** new_int_matrix(int size, int size2) {
+    int** m = (int**) calloc(size,sizeof(int*));
+    for(int i = 0; i < size; i++) {
+        m[i] = new_int_array(size2);
+    }
+    return m;
+}
+
+float** new_float_matrix(int size, int size2) {
+    float** m = (float**) calloc(size,sizeof(float*));
+    for(int i = 0; i < size; i++) {
+        m[i] = new_float_array(size2);
+    }
+    return m;
+}
+
+char*** new_string_matrix(int size, int size2) {
+    char*** m = (char***) calloc(size,sizeof(char**));
+    for(int i = 0; i < size; i++) {
+        m[i] = new_string_array(size2);
+    }
+    return m;
+}
