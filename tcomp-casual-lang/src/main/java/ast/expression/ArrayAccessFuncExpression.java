@@ -5,16 +5,16 @@ import java.util.List;
 import ast.Position;
 import ast.datatype.Type;
 
-public class ArrayAcessFuncExpression extends ArrayAcessVarExpression {
+public class ArrayAccessFuncExpression extends ArrayAccessVarExpression {
 
 	private List<Expression> arguments;
 	private Type funcResType;
 	
-	public ArrayAcessFuncExpression(String varName, List<Expression> indexes, List<Expression> arguments) {
+	public ArrayAccessFuncExpression(String varName, List<Expression> indexes, List<Expression> arguments) {
 		this(varName, indexes, arguments, null);
 	}
 
-	public ArrayAcessFuncExpression(String varName, List<Expression> indexes, List<Expression> arguments, Position pos) {
+	public ArrayAccessFuncExpression(String varName, List<Expression> indexes, List<Expression> arguments, Position pos) {
 		super(varName, indexes, pos);
 		this.arguments = arguments;
 	}

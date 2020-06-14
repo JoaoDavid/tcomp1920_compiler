@@ -66,8 +66,8 @@ import ast.datatype.IntType;
 import ast.datatype.StringType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
-import ast.expression.ArrayAcessFuncExpression;
-import ast.expression.ArrayAcessVarExpression;
+import ast.expression.ArrayAccessFuncExpression;
+import ast.expression.ArrayAccessVarExpression;
 import ast.expression.Expression;
 import ast.expression.FunctionInvocationExpression;
 import ast.expression.VarReferenceExpression;
@@ -406,8 +406,8 @@ public class Codegenator {
 				pw.write(call(space, funcVar, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));		
 			}
 			return funcVar;
-		} else if (expr instanceof ArrayAcessFuncExpression) {
-			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
+		} else if (expr instanceof ArrayAccessFuncExpression) {
+			ArrayAccessFuncExpression arrAcFuncExpr = (ArrayAccessFuncExpression) expr;
 			String funcVar = getVarName("arr_acc_func_call");
 			StringBuilder sb = new StringBuilder();
 			int c = 0;
@@ -443,8 +443,8 @@ public class Codegenator {
 			}
 			arrAcFuncExpr.setResType(type2);
 			return loadVar;
-		} else if (expr instanceof ArrayAcessVarExpression) {
-			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
+		} else if (expr instanceof ArrayAccessVarExpression) {
+			ArrayAccessVarExpression arrExpr = (ArrayAccessVarExpression) expr;
 			String arrVar = getVarName("arr_access");
 			String loadVar = getVarName("arr_load");
 			int counter = arrExpr.getIndexes().size();

@@ -4,17 +4,17 @@ import java.util.List;
 
 import ast.Position;
 
-public class ArrayAcessVarExpression extends Expression {
+public class ArrayAccessVarExpression extends Expression {
 
 	private String varName;
 	private List<Expression> indexes;
 	private Position pos;
 	
-	public ArrayAcessVarExpression(String varName, List<Expression> indexes) {
+	public ArrayAccessVarExpression(String varName, List<Expression> indexes) {
 		this(varName, indexes, null);
 	}
 	
-	public ArrayAcessVarExpression(String varName, List<Expression> indexes, Position pos) {
+	public ArrayAccessVarExpression(String varName, List<Expression> indexes, Position pos) {
 		this.varName = varName;
 		this.indexes = indexes;
 		this.pos = pos;

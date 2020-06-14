@@ -15,8 +15,8 @@ import ast.Position;
 import ast.datatype.ArrayType;
 import ast.datatype.PrimitiveDataTypes;
 import ast.datatype.Type;
-import ast.expression.ArrayAcessFuncExpression;
-import ast.expression.ArrayAcessVarExpression;
+import ast.expression.ArrayAccessFuncExpression;
+import ast.expression.ArrayAccessVarExpression;
 import ast.expression.Expression;
 import ast.expression.FunctionInvocationExpression;
 import ast.expression.VarReferenceExpression;
@@ -235,12 +235,12 @@ public class CasualParseTreeVisitor {
 			return visitFunctionInvocation(ctx.func_inv());
 		} else if(ctx.arr_r_value() != null) {
 			if (ctx.arr_r_value().arr_l_value() != null) {
-				return visitArrayAcessVarExpression(ctx.arr_r_value().arr_l_value());
+				return visitArrayAccessVarExpression(ctx.arr_r_value().arr_l_value());
 			} else {
-				return visitArrayAcessFuncExpression(ctx.arr_r_value());
+				return visitArrayAccessFuncExpression(ctx.arr_r_value());
 			}
 		} else if(ctx.arr_l_value() != null) {
-			return visitArrayAcessVarExpression(ctx.arr_l_value());
+			return visitArrayAccessVarExpression(ctx.arr_l_value());
 		} else if(ctx.BOOL() != null) {
 			return new BoolLit(ctx.BOOL().getText(), pos);
 		}else if(ctx.INT() != null) {
@@ -316,17 +316,17 @@ public class CasualParseTreeVisitor {
 						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 
-	private ArrayAcessVarExpression visitArrayAcessVarExpression(Arr_l_valueContext ctx) {
+	private ArrayAccessVarExpression visitArrayAccessVarExpression(Arr_l_valueContext ctx) {
 		List<Expression> indexes = new ArrayList<>(ctx.expr().size());
 		for (ExprContext currIndex : ctx.expr()) {
 			indexes.add(visitExpression((currIndex)));
 		}
-		return new ArrayAcessVarExpression(ctx.ID().getText(),indexes,
+		return new ArrayAccessVarExpression(ctx.ID().getText(),indexes,
 				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 
-	private ArrayAcessFuncExpression visitArrayAcessFuncExpression(Arr_r_valueContext ctx) {
+	private ArrayAccessFuncExpression visitArrayAccessFuncExpression(Arr_r_valueContext ctx) {
 		List<Expression> indexes = new ArrayList<>(ctx.expr().size());
 		for (ExprContext currIndex : ctx.expr()) {
 			indexes.add(visitExpression((currIndex)));
@@ -335,7 +335,7 @@ public class CasualParseTreeVisitor {
 		for (ExprContext currArg : ctx.func_inv().expr()) {
 			arguments.add(visitExpression(currArg));
 		}
-		return new ArrayAcessFuncExpression(ctx.func_inv().ID().getText(), indexes, arguments,
+		return new ArrayAccessFuncExpression(ctx.func_inv().ID().getText(), indexes, arguments,
 				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}

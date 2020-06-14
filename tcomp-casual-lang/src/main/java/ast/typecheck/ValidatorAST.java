@@ -26,8 +26,8 @@ import ast.exception.MissingReturnStatementException;
 import ast.exception.SyntacticException;
 import ast.exception.TypeMismatchException;
 import ast.exception.VarNotDeclaredException;
-import ast.expression.ArrayAcessFuncExpression;
-import ast.expression.ArrayAcessVarExpression;
+import ast.expression.ArrayAccessFuncExpression;
+import ast.expression.ArrayAccessVarExpression;
 import ast.expression.Expression;
 import ast.expression.FunctionInvocationExpression;
 import ast.expression.VarReferenceExpression;
@@ -342,8 +342,8 @@ public class ValidatorAST {
 			}
 			funcInvExpr.setResType(funcSignCtx.getRetType(funcInvExpr.getFuncName()));
 			return funcInvExpr.getResType();
-		} else if (expr instanceof ArrayAcessFuncExpression) {
-			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
+		} else if (expr instanceof ArrayAccessFuncExpression) {
+			ArrayAccessFuncExpression arrAcFuncExpr = (ArrayAccessFuncExpression) expr;
 			Type[] datatypes = funcSignCtx.getDataTypes(arrAcFuncExpr.getVarName());
 			if (datatypes.length != arrAcFuncExpr.getArguments().size()) {
 				throw new FunctiontArgumentsException(arrAcFuncExpr.getPosition().toString());
@@ -378,8 +378,8 @@ public class ValidatorAST {
 				}
 			}
 			throw new TypeMismatchException(arrAcFuncExpr.getPosition().toString());
-		} else if (expr instanceof ArrayAcessVarExpression) {
-			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
+		} else if (expr instanceof ArrayAccessVarExpression) {
+			ArrayAccessVarExpression arrExpr = (ArrayAccessVarExpression) expr;
 			Type type = ctx.get(arrExpr.getVarName());
 			if (type == null) {
 				throw new VarNotDeclaredException(arrExpr.getPosition().toString());
