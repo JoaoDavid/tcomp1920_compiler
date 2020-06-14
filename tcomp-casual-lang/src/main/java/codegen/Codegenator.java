@@ -138,7 +138,6 @@ public class Codegenator {
 			file.createNewFile();
 			this.pw = new PrintWriter(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		writeStatements(root, "");
@@ -314,7 +313,7 @@ public class Codegenator {
 				} else if(type instanceof StringType) {
 					pw.write(store(space, type, value, llVar));
 				} else if(type instanceof ArrayType) {
-					pw.write(store(space, type, value, llVar));//TODO
+					pw.write(store(space, type, value, llVar));
 				}
 			}
 		} else if (n instanceof VarAssignArrayStatement) { //arr[x][y]...
@@ -338,7 +337,6 @@ public class Codegenator {
 			String value = visitExpression(currArr.getValue(), space);
 			pw.write(store(space, type, value, arrVar));
 		} else if (n instanceof VarAssignStatement) {
-			//TODO falta em.set?
 			VarAssignStatement curr = (VarAssignStatement) n;
 			Type type = curr.getDatatype();
 			String value = visitExpression(curr.getValue(), space);
@@ -353,7 +351,7 @@ public class Codegenator {
 			} else if(type instanceof StringType) {
 				pw.write(store(space, type, value, llVar));
 			} else if(type instanceof ArrayType) {
-				//IMPOSSIBLE, its treated in VarAssignArrayStatement
+				//never reached because it is treated in VarAssignArrayStatement
 			}
 		} else if (n instanceof ExprStatement) {
 			ExprStatement curr = (ExprStatement) n;
