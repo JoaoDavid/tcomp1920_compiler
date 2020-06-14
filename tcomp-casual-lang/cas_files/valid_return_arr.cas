@@ -1,0 +1,123 @@
+decl puts(s:String):Int
+decl printInt(i:Int):Void
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl printString(s:String):Void
+decl new_int_array(size:Int):[Int]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_matrix(size:Int, size2:Int):[[Float]]
+decl new_bool_matrix(size:Int, size2:Int):[[Bool]]
+decl new_string_matrix(size:Int, size2:Int):[[String]]
+
+def main(ar:[String]):Int { 
+	printInt(retInt());
+	printFloat(retFloat());
+	printBool(retBool());
+	printString(retString());
+	
+	printString("--Array Int--");	
+	arrInt:[Int] = retIntArr();
+	printString("---");
+	printInt(arrInt[0]);
+	printInt(arrInt[1]);
+	printInt(arrInt[2]);
+	printInt(arrInt[3]);
+	
+	printString("--Array Float--");
+	arrFloat:[Float] = retFloatArr();
+	printString("---");
+	printFloat(arrFloat[0]);
+	printFloat(arrFloat[1]);
+	printFloat(arrFloat[2]);
+	printFloat(arrFloat[3]);
+	
+	printString("--Array Bool--");
+	arrBool:[Bool] = retBoolArr();
+	printString("---");
+	printBool(arrBool[0]);
+	printBool(arrBool[1]);
+	printBool(arrBool[2]);
+	printBool(arrBool[3]);
+	
+	printString("--Array String--");
+	arrString:[String] = retStrArr();
+	printString("---");
+	printString(arrString[0]);
+	printString(arrString[1]);
+	printString(arrString[2]);
+	
+	return 0;
+}
+
+def retInt():Int { 
+	a:Int = 10;
+	return a;
+}
+
+def retFloat():Float { 
+	return 345.6;
+}
+
+def retBool():Bool { 
+	a:Bool = true;
+	return a;
+}
+
+def retString():String { 
+	return "My Eyes! The Goggles Do Nothing!";
+}
+
+def retIntArr():[Int] {
+	arr:[Int] = new_int_array(4);
+	arr[0] = 1;
+	arr[1] = 2;
+	arr[2] = 3;
+	arr[3] = 4;
+	printInt(arr[0]);
+	printInt(arr[1]);
+	printInt(arr[2]);
+	printInt(arr[3]);
+	return arr;
+}
+
+def retFloatArr():[Float] {
+	arr:[Float] = new_float_array(4);
+	arr[0] = 1.0;
+	arr[1] = 2.0;
+	arr[2] = 3.0;
+	arr[3] = 4.0;
+	printFloat(arr[0]);
+	printFloat(arr[1]);
+	printFloat(arr[2]);
+	printFloat(arr[3]);
+	return arr;
+}
+
+def retBoolArr():[Bool] {
+	arr:[Bool] = new_bool_array(4);
+	arr[0] = true;
+	arr[1] = false;
+	arr[2] = true;
+	arr[3] = false;
+	printBool(arr[0]);
+	printBool(arr[1]);
+	printBool(arr[2]);
+	printBool(arr[3]);
+	return arr;
+}
+
+
+
+def retStrArr():[String] {
+	arr:[String] = new_string_array(3);
+	arr[0] = "RUN,";
+	arr[1] = "FORREST.";
+	arr[2] = "RUN!";
+	printString(arr[0]);
+	printString(arr[1]);
+	printString(arr[2]);
+	return arr;
+}
