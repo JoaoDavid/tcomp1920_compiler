@@ -1,0 +1,46 @@
+decl puts(s:String):Int
+decl printInt(i:Int):Void
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl printString(s:String):Void
+decl new_int_array(size:Int):[Int]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_matrix(size:Int, size2:Int):[[Float]]
+decl new_bool_matrix(size:Int, size2:Int):[[Bool]]
+decl new_string_matrix(size:Int, size2:Int):[[String]]
+
+def main(ar:[String]):Int { 
+	while1();
+	while2();
+	return 0;
+}
+
+def while1():Void { 
+	a:Int = 10;
+	while ( a > 0 ) {
+		if (a%2 == 0) {
+			printString("even");
+		} else {
+			printString("odd");
+		}
+		printInt(a);
+		a = a - 1;
+	}	
+	return;
+}
+
+def while2():Void { 
+	a:Int = 10;
+	b:Bool = true;
+	while ( b ) {
+		if (a == 5) {
+			b = false;
+		} 
+		printInt(a);
+		a = a - 1;
+	}	
+	return;
+}
