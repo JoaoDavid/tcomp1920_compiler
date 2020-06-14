@@ -356,6 +356,7 @@ public class ValidatorAST {
 				i++;
 			}
 			Type type = funcSignCtx.getRetType(arrAcFuncExpr.getVarName());
+			arrAcFuncExpr.setFuncResType(type);
 			for (Expression currIndex : arrAcFuncExpr.getIndexes()) {
 				if(!(validExpression(currIndex) instanceof IntType)) {
 					throw new TypeMismatchException(expr.getPosition().toString());

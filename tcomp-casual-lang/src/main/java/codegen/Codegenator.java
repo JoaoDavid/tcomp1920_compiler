@@ -1,6 +1,6 @@
 package codegen;
 
-import static codegen.ConfigLLVM.*;
+import static codegen.ConfigLLVM.AND;
 import static codegen.ConfigLLVM.CMP_FLOAT;
 import static codegen.ConfigLLVM.CMP_INT;
 import static codegen.ConfigLLVM.DIV_FLOAT;
@@ -11,6 +11,8 @@ import static codegen.ConfigLLVM.GREATER_EQUAL_FLOAT;
 import static codegen.ConfigLLVM.GREATER_EQUAL_INT;
 import static codegen.ConfigLLVM.GREATER_FLOAT;
 import static codegen.ConfigLLVM.GREATER_INT;
+import static codegen.ConfigLLVM.LESS_EQUAL_FLOAT;
+import static codegen.ConfigLLVM.LESS_EQUAL_INT;
 import static codegen.ConfigLLVM.LESS_FLOAT;
 import static codegen.ConfigLLVM.LESS_INT;
 import static codegen.ConfigLLVM.MOD_INT;
@@ -25,10 +27,14 @@ import static codegen.ConfigLLVM.SUM_FLOAT;
 import static codegen.ConfigLLVM.SUM_INT;
 import static codegen.ConfigLLVM.StringToLLVM;
 import static codegen.ConfigLLVM.alloca;
+import static codegen.ConfigLLVM.br;
+import static codegen.ConfigLLVM.br_unconditional;
 import static codegen.ConfigLLVM.call;
+import static codegen.ConfigLLVM.call_void;
 import static codegen.ConfigLLVM.floatToLLVM;
 import static codegen.ConfigLLVM.fneg;
 import static codegen.ConfigLLVM.getLLVMType;
+import static codegen.ConfigLLVM.getelementptrArr;
 import static codegen.ConfigLLVM.getelementptrStr;
 import static codegen.ConfigLLVM.globalStr;
 import static codegen.ConfigLLVM.load;
@@ -37,16 +43,15 @@ import static codegen.ConfigLLVM.writeArithmeticExpr;
 import static codegen.ConfigLLVM.writeCompExpr;
 import static codegen.ConfigLLVM.writeLogicExpr;
 import static codegen.ConfigLLVM.xor;
-
-import static codegen.FunctionLib.*;
+import static codegen.FunctionLib.STR_PRINT_FLOAT;
+import static codegen.FunctionLib.STR_PRINT_INT;
+import static codegen.FunctionLib.STR_PRINT_STRING;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
 
 import ast.CasualFile;
 import ast.DefDecl;
@@ -144,7 +149,7 @@ public class Codegenator {
 		this.pw.close();
 	}
 
-	
+
 
 	private void writeStatements(Node n, String space) throws CompileException {
 		StringBuilder sb = new StringBuilder();
@@ -331,7 +336,6 @@ public class Codegenator {
 			}
 			Type type = currArr.getDatatype();
 			String value = visitExpression(currArr.getValue(), space);
-			String llVar = em.get(currArr.getVarName());
 			pw.write(store(space, type, value, arrVar));
 		} else if (n instanceof VarAssignStatement) {
 			//TODO falta em.set?
@@ -404,7 +408,7 @@ public class Codegenator {
 			return funcVar;
 		} else if (expr instanceof ArrayAcessFuncExpression) {
 			ArrayAcessFuncExpression arrAcFuncExpr = (ArrayAcessFuncExpression) expr;
-			/*String funcVar = getVarName("func_arr_call");
+			String funcVar = getVarName("arr_acc_func_call");
 			StringBuilder sb = new StringBuilder();
 			int c = 0;
 			for (Expression currExpr : arrAcFuncExpr.getArguments()) {
@@ -417,9 +421,28 @@ public class Codegenator {
 					sb.append(", ");
 				}
 			}
-			pw.write(call(space, funcVar, new ArrayType(arrAcFuncExpr.getIndexes().size(), arrAcFuncExpr.getResType()), arrAcFuncExpr.getVarName(), sb.toString()));
-			return funcVar;*/
-			//TODO
+			pw.write(call(space, funcVar, arrAcFuncExpr.getFuncResType(), arrAcFuncExpr.getVarName(), sb.toString()));		
+			//array indexing; call saves return value in funcVar
+			String auxVar = getVarName("arr_aux");
+			pw.write(alloca(space, auxVar, arrAcFuncExpr.getFuncResType()));
+			pw.write(store(space, arrAcFuncExpr.getFuncResType(), funcVar, auxVar));
+
+			String arrVar = auxVar;
+			String loadVar = getVarName("arr_load");
+			int counter = arrAcFuncExpr.getIndexes().size();
+			ArrayType type2 = (ArrayType) arrAcFuncExpr.getFuncResType();
+
+			pw.write(load(space, auxVar, getLLVMType(arrAcFuncExpr.getFuncResType()), loadVar));
+			for (int i = 0; i < counter; i++) {						
+				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());
+				arrVar = getVarName("arr_access");	
+				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar, visitExpression(arrAcFuncExpr.getIndexes().get(i), space)));
+				loadVar = getVarName("arr_load");
+				pw.write(load(space, arrVar, getLLVMType(type1), loadVar));
+				type2 = type1;				
+			}
+			arrAcFuncExpr.setResType(type2);
+			return loadVar;
 		} else if (expr instanceof ArrayAcessVarExpression) {
 			ArrayAcessVarExpression arrExpr = (ArrayAcessVarExpression) expr;
 			String arrVar = getVarName("arr_access");
