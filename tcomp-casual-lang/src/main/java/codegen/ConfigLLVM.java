@@ -99,18 +99,18 @@ public class ConfigLLVM {
 		return buffer.toString();
 	}
 	
-	protected static String writeArithmeticExpr(String space, String llVar, String op, String llvmType, String leftLL, String rightLL) {
-		return String.format("%s%s = %s %s %s, %s%n", space, llVar, op, llvmType, leftLL, rightLL);
+	protected static String writeArithmeticExpr(String space, String llVar, String op, Type llvmType, String leftLL, String rightLL) {
+		return String.format("%s%s = %s %s %s, %s%n", space, llVar, op, getLLVMType(llvmType), leftLL, rightLL);
 	}
 	
-	protected static String writeCompExpr(String space, String llVar, String cmp, String op, String llvmType, String leftLL, String rightLL) {
+	protected static String writeCompExpr(String space, String llVar, String cmp, String op, Type llvmType, String leftLL, String rightLL) {
 		//icmp <comp> <tipo> op1, op2
-		return String.format("%s%s = %s %s %s %s, %s%n", space, llVar, cmp, op, llvmType, leftLL, rightLL);
+		return String.format("%s%s = %s %s %s %s, %s%n", space, llVar, cmp, op, getLLVMType(llvmType), leftLL, rightLL);
 	}
 	
-	protected static String writeLogicExpr(String space, String llVar, String cmp, String llvmType, String leftLL, String rightLL) {
+	protected static String writeLogicExpr(String space, String llVar, String cmp, Type llvmType, String leftLL, String rightLL) {
 		//<result> = or <ty> <op1>, <op2>
-		return String.format("%s%s = %s %s %s, %s%n", space, llVar, cmp, llvmType, leftLL, rightLL);
+		return String.format("%s%s = %s %s %s, %s%n", space, llVar, cmp, getLLVMType(llvmType), leftLL, rightLL);
 	}
 
 	protected static String alloca(String space, String llVar, Type type) {
@@ -121,8 +121,8 @@ public class ConfigLLVM {
 		return String.format("%sstore %s %s, %s* %s%n", space, getLLVMType(type) , value, getLLVMType(type), llVar);
 	}
 	
-	protected static String load(String space, String llvmVar, String llvmResType, String loadVar) {
-		return String.format("%s%s = load %s, %s* %s%n", space, loadVar, llvmResType, llvmResType, llvmVar);
+	protected static String load(String space, String llvmVar, Type llvmResType, String loadVar) {
+		return String.format("%s%s = load %s, %s* %s%n", space, loadVar, getLLVMType(llvmResType), getLLVMType(llvmResType), llvmVar);
 	}
 	
 	protected static String fneg(String space, String newVar, String llVar, Type type, String value) {
