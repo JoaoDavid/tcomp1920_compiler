@@ -99,16 +99,16 @@ public class ConfigLLVM {
 		return buffer.toString();
 	}
 	
-	protected static String writeArithmeticExpr(String space, String llVar, String op, Type llvmType, String leftLL, String rightLL) {
+	protected static String arithmetic(String space, String llVar, String op, Type llvmType, String leftLL, String rightLL) {
 		return String.format("%s%s = %s %s %s, %s%n", space, llVar, op, getLLVMType(llvmType), leftLL, rightLL);
 	}
 	
-	protected static String writeCompExpr(String space, String llVar, String cmp, String op, Type llvmType, String leftLL, String rightLL) {
+	protected static String cmp(String space, String llVar, String cmp, String op, Type llvmType, String leftLL, String rightLL) {
 		//icmp <comp> <tipo> op1, op2
 		return String.format("%s%s = %s %s %s %s, %s%n", space, llVar, cmp, op, getLLVMType(llvmType), leftLL, rightLL);
 	}
 	
-	protected static String writeLogicExpr(String space, String llVar, String cmp, Type llvmType, String leftLL, String rightLL) {
+	protected static String logic(String space, String llVar, String cmp, Type llvmType, String leftLL, String rightLL) {
 		//<result> = or <ty> <op1>, <op2>
 		return String.format("%s%s = %s %s %s, %s%n", space, llVar, cmp, getLLVMType(llvmType), leftLL, rightLL);
 	}
@@ -140,7 +140,7 @@ public class ConfigLLVM {
 		return String.format("%s%s = call %s @%s(%s)%n", space, resVar, getLLVMType(type), funcName, args);
 	}
 	
-	protected static String call_void(String space, Type type, String funcName, String args) {
+	protected static String callVoid(String space, Type type, String funcName, String args) {
 		//<result> = call <ty> @<funcName>(<ty_ar> <ar>, ...)
 		return String.format("%scall %s @%s(%s)%n", space, getLLVMType(type), funcName, args);
 	}
@@ -150,12 +150,12 @@ public class ConfigLLVM {
 		return String.format("%s = protected unnamed_addr constant [%d x i8] c%s%n", strGlobalVar, len, strLit);
 	}
 	
-	protected static String getelementptrStr(int len, String strGlobalVar) {
+	protected static String getElementPtrStr(int len, String strGlobalVar) {
 		//getelementptr inbounds ([15 x i8], [15 x i8]* @.str.1, i64 0, i64 0)
 		return String.format("getelementptr inbounds ([%d x i8], [%d x i8]* %s, i64 0, i64 0)", len, len, strGlobalVar);
 	}
 	
-	protected static String getelementptrArr(String space, String newVar, Type type1, Type type2, String var, String index) {
+	protected static String getElementPtrArr(String space, String newVar, Type type1, Type type2, String var, String index) {
 		//getelementptr inbounds i32, i32* %4, i64 2
 		//getelementptr inbounds float, float* %4, i64 2
 		//getelementptr inbounds i8*, i8** %4, i64 2
@@ -169,7 +169,7 @@ public class ConfigLLVM {
 		return String.format("%sbr i1 %s, label %%%s, label %%%s%n", space, condRes, labelTrue, labelFalse);
 	}
 
-	protected static String br_unconditional(String space, String label) {
+	protected static String brUnconditional(String space, String label) {
 		//br label <dest>  
 		//%sbr label %s
 		return String.format("%sbr label %%%s%n", space, label);

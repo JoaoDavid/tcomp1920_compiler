@@ -29,20 +29,20 @@ import static codegen.ConfigLLVM.StringToLLVM;
 import static codegen.ConfigLLVM.alloca;
 import static codegen.ConfigLLVM.ret;
 import static codegen.ConfigLLVM.br;
-import static codegen.ConfigLLVM.br_unconditional;
+import static codegen.ConfigLLVM.brUnconditional;
 import static codegen.ConfigLLVM.call;
-import static codegen.ConfigLLVM.call_void;
+import static codegen.ConfigLLVM.callVoid;
 import static codegen.ConfigLLVM.floatToLLVM;
 import static codegen.ConfigLLVM.fneg;
 import static codegen.ConfigLLVM.getLLVMType;
-import static codegen.ConfigLLVM.getelementptrArr;
-import static codegen.ConfigLLVM.getelementptrStr;
+import static codegen.ConfigLLVM.getElementPtrArr;
+import static codegen.ConfigLLVM.getElementPtrStr;
 import static codegen.ConfigLLVM.globalStr;
 import static codegen.ConfigLLVM.load;
 import static codegen.ConfigLLVM.store;
-import static codegen.ConfigLLVM.writeArithmeticExpr;
-import static codegen.ConfigLLVM.writeCompExpr;
-import static codegen.ConfigLLVM.writeLogicExpr;
+import static codegen.ConfigLLVM.arithmetic;
+import static codegen.ConfigLLVM.cmp;
+import static codegen.ConfigLLVM.logic;
 import static codegen.ConfigLLVM.xor;
 import static codegen.FunctionLib.STR_PRINT_FLOAT;
 import static codegen.FunctionLib.STR_PRINT_INT;
@@ -255,7 +255,7 @@ public class Codegenator {
 				writeStatements(currStat, space);
 			}
 			em.exitScope();
-			pw.write(br_unconditional(space, contLabel));
+			pw.write(brUnconditional(space, contLabel));
 
 			//-------------Else--------------
 			pw.write(String.format("%n%s:%n", elseLabel));
@@ -265,7 +265,7 @@ public class Codegenator {
 			}
 			em.exitScope();
 			//------------------------------
-			pw.write(br_unconditional(space, contLabel));
+			pw.write(brUnconditional(space, contLabel));
 			pw.write(String.format("%n%s:%n", contLabel));
 		} else if (n instanceof IfStatement) {
 			IfStatement curr = (IfStatement) n;
@@ -281,7 +281,7 @@ public class Codegenator {
 				writeStatements(currStat, space);
 			}
 			em.exitScope();
-			pw.write(br_unconditional(space, contLabel));
+			pw.write(brUnconditional(space, contLabel));
 			pw.write(String.format("%n%s:%n", contLabel));
 		} else if (n instanceof WhileStatement) {
 			WhileStatement curr = (WhileStatement) n;
@@ -290,7 +290,7 @@ public class Codegenator {
 			String bodyLabel = "while_body_" + num;
 			String contLabel = "while_cont_" + num;
 			//condition
-			pw.write(br_unconditional(space, conditionLabel));
+			pw.write(brUnconditional(space, conditionLabel));
 			pw.write(String.format("%n%s:%n", conditionLabel));
 			String condVarResLLVM = visitExpression(curr.getCondition(), space);
 			pw.write(br(space, condVarResLLVM, bodyLabel, contLabel));
@@ -301,7 +301,7 @@ public class Codegenator {
 				writeStatements(currStat, space);
 			}
 			em.exitScope();
-			pw.write(br_unconditional(space, conditionLabel));
+			pw.write(brUnconditional(space, conditionLabel));
 			//cont
 			pw.write(String.format("%n%s:%n", contLabel));
 		} else if (n instanceof ReturnStatement) {
@@ -340,7 +340,7 @@ public class Codegenator {
 				arrVar = getVarName("arr_access");
 				pw.write(load(space, varName, type2, loadVar));						
 				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());	
-				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar, visitExpression(currArr.getIndexes().get(i), space)));
+				pw.write(getElementPtrArr(space, arrVar, type1, type2, loadVar, visitExpression(currArr.getIndexes().get(i), space)));
 				loadVar = getVarName("arr_load");
 				varName = arrVar;
 				type2 = type1;				
@@ -389,7 +389,7 @@ public class Codegenator {
 			String subVar = getVarName("neg");								
 			Type argType = negExpr.getResType();
 			if(expr.getResType() instanceof IntType) {
-				pw.write(writeArithmeticExpr(space, subVar, SUB_INT, expr.getResType(), "0", operand));
+				pw.write(arithmetic(space, subVar, SUB_INT, expr.getResType(), "0", operand));
 			} else if(expr.getResType() instanceof FloatType) {
 				pw.write(fneg(space, subVar, visitExpression(negExpr.getValue(), space), argType, operand));
 			}
@@ -410,7 +410,7 @@ public class Codegenator {
 				}
 			}
 			if (funcInvExpr.getResType() instanceof VoidType) {
-				pw.write(call_void(space, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));
+				pw.write(callVoid(space, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));
 			} else {
 				pw.write(call(space, funcVar, funcInvExpr.getResType(), funcInvExpr.getFuncName(), sb.toString()));		
 			}
@@ -445,7 +445,7 @@ public class Codegenator {
 			for (int i = 0; i < counter; i++) {						
 				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());
 				arrVar = getVarName("arr_access");	
-				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar, visitExpression(arrAcFuncExpr.getIndexes().get(i), space)));
+				pw.write(getElementPtrArr(space, arrVar, type1, type2, loadVar, visitExpression(arrAcFuncExpr.getIndexes().get(i), space)));
 				loadVar = getVarName("arr_load");
 				pw.write(load(space, arrVar, type1, loadVar));
 				type2 = type1;				
@@ -463,7 +463,7 @@ public class Codegenator {
 			for (int i = 0; i < counter; i++) {						
 				ArrayType type1 = new ArrayType(type2.getNumNestedArr()-1, type2.getInside());
 				arrVar = getVarName("arr_access");	
-				pw.write(getelementptrArr(space, arrVar, type1, type2, loadVar, visitExpression(arrExpr.getIndexes().get(i), space)));
+				pw.write(getElementPtrArr(space, arrVar, type1, type2, loadVar, visitExpression(arrExpr.getIndexes().get(i), space)));
 				loadVar = getVarName("arr_load");
 				pw.write(load(space, arrVar, type1, loadVar));
 				type2 = type1;				
@@ -484,7 +484,7 @@ public class Codegenator {
 			String stringLLVM = StringToLLVM(lit.getValue());
 			int len = lit.getValue().replace("\\", "").length()-1;
 			stringGlobal.add(globalStr(len, strGlobalVar, stringLLVM));
-			return getelementptrStr(len, strGlobalVar);
+			return getElementPtrStr(len, strGlobalVar);
 		} else if (expr instanceof VarReferenceExpression) {
 			VarReferenceExpression varExpr = (VarReferenceExpression) expr;
 			String loadVar = getVarName("var_ref");	
@@ -507,62 +507,62 @@ public class Codegenator {
 			//<result> = and <ty> <op1>, <op2>
 			String andVar = getVarName("and");
 			Type argType = left.getResType();
-			pw.write(writeLogicExpr(space, andVar, AND, argType, leftLL, rightLL));
+			pw.write(logic(space, andVar, AND, argType, leftLL, rightLL));
 			return andVar;
 		} else if (expr instanceof OrExpression) {
 			//<result> = or <ty> <op1>, <op2>
 			String orVar = getVarName("or");
 			Type argType = left.getResType();
-			pw.write(writeLogicExpr(space, orVar, OR, argType, leftLL, rightLL));
+			pw.write(logic(space, orVar, OR, argType, leftLL, rightLL));
 			return orVar;
 		} else if (expr instanceof EqualExpression) {
 			//<result> = <fcmp/icmp> <cond> <ty> <op1>, <op2> 
 			String lessVar = getVarName("cmp_eq");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, EQUAL_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, EQUAL_INT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_FLOAT, EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof BoolType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, EQUAL_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, EQUAL_INT, left.getResType(), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof NotEqualExpression) {
 			String lessVar = getVarName("cmp_neq");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, NOT_EQUAL_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, NOT_EQUAL_INT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, NOT_EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_FLOAT, NOT_EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof BoolType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, NOT_EQUAL_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, NOT_EQUAL_INT, left.getResType(), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof GreaterOrEqualExpression) {
 			String lessVar = getVarName("cmp_geq");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, GREATER_EQUAL_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, GREATER_EQUAL_INT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, GREATER_EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_FLOAT, GREATER_EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof GreaterExpression) {
 			String lessVar = getVarName("cmp_grt");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, GREATER_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, GREATER_INT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, GREATER_FLOAT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_FLOAT, GREATER_FLOAT, left.getResType(), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof LessOrEqualExpression) {
 			String lessVar = getVarName("cmp_leq");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, LESS_EQUAL_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, LESS_EQUAL_INT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, LESS_EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_FLOAT, LESS_EQUAL_FLOAT, left.getResType(), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof LessExpression) {
@@ -570,47 +570,47 @@ public class Codegenator {
 			String lessVar = getVarName("cmp_less");
 			Type argType = left.getResType();
 			if(argType instanceof IntType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_INT, LESS_INT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_INT, LESS_INT, left.getResType(), leftLL, rightLL));
 			} else if(argType instanceof FloatType) {
-				pw.write(writeCompExpr(space, lessVar, CMP_FLOAT, LESS_FLOAT, left.getResType(), leftLL, rightLL));
+				pw.write(cmp(space, lessVar, CMP_FLOAT, LESS_FLOAT, left.getResType(), leftLL, rightLL));
 			}
 			return lessVar;
 		} else if (expr instanceof SumExpression) {
 			String sumVar = getVarName("sum");								
 			if(expr.getResType() instanceof IntType) {
-				pw.write(writeArithmeticExpr(space, sumVar, SUM_INT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, sumVar, SUM_INT, llvmResType, leftLL, rightLL));
 			} else if(expr.getResType() instanceof FloatType) {
-				pw.write(writeArithmeticExpr(space, sumVar, SUM_FLOAT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, sumVar, SUM_FLOAT, llvmResType, leftLL, rightLL));
 			}
 			return sumVar;
 		} else if (expr instanceof SubtractionExpression) {
 			String subVar = getVarName("sub");								
 			if(expr.getResType() instanceof IntType) {
-				pw.write(writeArithmeticExpr(space, subVar, SUB_INT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, subVar, SUB_INT, llvmResType, leftLL, rightLL));
 			} else if(expr.getResType() instanceof FloatType) {
-				pw.write(writeArithmeticExpr(space, subVar, SUB_FLOAT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, subVar, SUB_FLOAT, llvmResType, leftLL, rightLL));
 			}
 			return subVar;
 		} else if (expr instanceof MultiplicationExpression) {
 			String mulVar = getVarName("sub");								
 			if(expr.getResType() instanceof IntType) {
-				pw.write(writeArithmeticExpr(space, mulVar, MUL_INT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, mulVar, MUL_INT, llvmResType, leftLL, rightLL));
 			} else if(expr.getResType() instanceof FloatType) {
-				pw.write(writeArithmeticExpr(space, mulVar, MUL_FLOAT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, mulVar, MUL_FLOAT, llvmResType, leftLL, rightLL));
 			}
 			return mulVar;
 		} else if (expr instanceof DivisionExpression) {
 			String divVar = getVarName("sub");								
 			if(expr.getResType() instanceof IntType) {
-				pw.write(writeArithmeticExpr(space, divVar, DIV_INT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, divVar, DIV_INT, llvmResType, leftLL, rightLL));
 			} else if(expr.getResType() instanceof FloatType) {
-				pw.write(writeArithmeticExpr(space, divVar, DIV_FLOAT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, divVar, DIV_FLOAT, llvmResType, leftLL, rightLL));
 			}
 			return divVar;
 		} else if (expr instanceof ModuloExpression) {
 			String modVar = getVarName("sub");								
 			if(expr.getResType() instanceof IntType) {
-				pw.write(writeArithmeticExpr(space, modVar, MOD_INT, llvmResType, leftLL, rightLL));
+				pw.write(arithmetic(space, modVar, MOD_INT, llvmResType, leftLL, rightLL));
 			}
 			return modVar;
 		} 
