@@ -27,6 +27,7 @@ import static codegen.ConfigLLVM.SUM_FLOAT;
 import static codegen.ConfigLLVM.SUM_INT;
 import static codegen.ConfigLLVM.StringToLLVM;
 import static codegen.ConfigLLVM.alloca;
+import static codegen.ConfigLLVM.ret;
 import static codegen.ConfigLLVM.br;
 import static codegen.ConfigLLVM.br_unconditional;
 import static codegen.ConfigLLVM.call;
@@ -105,8 +106,8 @@ import codegen.exception.CompileException;
 public class Codegenator {
 
 	//private final static String defaultPath = System.getProperty("user.home") + File.separator + "Desktop";
-	private final static String sufix = ".ll";
-	private final static String identation = "    ";
+	private final static String SUFIX = ".ll";
+	private final static String IDENTATION = "    ";
 	private static final String RETURN_KW = "$return";
 
 
@@ -117,14 +118,14 @@ public class Codegenator {
 	private List<String> stringGlobal;
 
 	public Codegenator(Node root, String llFile, String llPathFile) {
-		this.file = new File(llPathFile + File.separator + llFile + sufix);
+		this.file = new File(llPathFile + File.separator + llFile + SUFIX);
 		this.root = root;
 		this.em = new Emitter();
 		this.stringGlobal = new ArrayList<String>();
 	}
 
 	public Codegenator(Node root, String llFile) {
-		this.file = new File(llFile + sufix);
+		this.file = new File(llFile + SUFIX);
 		this.root = root;
 		this.em = new Emitter();
 		this.stringGlobal = new ArrayList<String>();
@@ -186,8 +187,8 @@ public class Codegenator {
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
 				String llVar = getVarName(currFuncParam.getVarName());
 				String newVar = getVarName(currFuncParam.getVarName());
-				sb.append(alloca(identation, newVar, currFuncParam.getDatatype()));
-				sb.append(store(identation, currFuncParam.getDatatype(), llVar, newVar));
+				sb.append(alloca(IDENTATION, newVar, currFuncParam.getDatatype()));
+				sb.append(store(IDENTATION, currFuncParam.getDatatype(), llVar, newVar));
 				em.set(currFuncParam.getVarName(), newVar);
 				pw.printf("%s %s", getLLVMType(currFuncParam.getDatatype()), llVar);
 				//--------------
@@ -198,9 +199,28 @@ public class Codegenator {
 			}
 			pw.print(") {\n");
 			pw.write(sb.toString());
-			for (Statement currStat : curr.getStatements()) {
-				writeStatements(currStat, space + identation);
+
+			if (!(curr.getReturnType() instanceof VoidType)) {
+				String llVar = getVarName(RETURN_KW);
+				em.set(RETURN_KW, llVar);
+				Type type = curr.getReturnType();
+				pw.write(alloca(IDENTATION, llVar, type));
 			}
+
+
+			for (Statement currStat : curr.getStatements()) {
+				writeStatements(currStat, space + IDENTATION);
+			}
+			
+			if (curr.getReturnType() instanceof VoidType) {
+				pw.write(ret(IDENTATION, curr.getReturnType(), ""));
+			} else {
+				String valueRet = em.get(RETURN_KW);
+				String loadRet = getVarName(RETURN_KW + "_load");
+				pw.write(load(IDENTATION, valueRet, getLLVMType(curr.getReturnType()), loadRet));
+				pw.write(ret(IDENTATION, curr.getReturnType(), loadRet));
+			}
+
 			pw.println("\n}");
 			em.exitScope();
 		} else if (n instanceof FunctionDeclaration) {
@@ -286,16 +306,9 @@ public class Codegenator {
 			pw.write(String.format("%n%s:%n", contLabel));
 		} else if (n instanceof ReturnStatement) {
 			ReturnStatement curr = (ReturnStatement) n;
-			sb.append(space);
-			sb.append("ret ");
-			sb.append(getLLVMType(curr.getRetType()));
-			sb.append(" ");
 			if (!(curr.getRetType() instanceof VoidType)) {
-				sb.append(visitExpression(curr.getValue(), space));
+				pw.write(store(space, curr.getRetType(), visitExpression(curr.getValue(), space), em.get(RETURN_KW)));
 			}
-			pw.print(sb.toString());
-			//TODO
-
 		} else if (n instanceof VarDeclarationStatement) {
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
 			String llVar = getVarName(curr.getVarName());

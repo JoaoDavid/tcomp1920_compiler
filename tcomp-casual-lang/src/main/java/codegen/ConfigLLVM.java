@@ -1,7 +1,5 @@
 package codegen;
 
-import static codegen.ConfigLLVM.getLLVMType;
-
 import ast.datatype.ArrayType;
 import ast.datatype.BoolType;
 import ast.datatype.FloatType;
@@ -175,6 +173,11 @@ public class ConfigLLVM {
 		//br label <dest>  
 		//%sbr label %s
 		return String.format("%sbr label %%%s%n", space, label);
+	}
+	
+	protected static String ret(String space, Type type, String value) {
+		//ret <type> <value>
+		return String.format("%sret %s %s%n", space, getLLVMType(type), value);
 	}
 	
 }
