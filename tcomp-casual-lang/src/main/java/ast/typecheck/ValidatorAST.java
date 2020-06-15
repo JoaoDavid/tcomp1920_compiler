@@ -25,6 +25,7 @@ import ast.exception.InvalidTypeException;
 import ast.exception.MissingReturnStatementException;
 import ast.exception.SyntacticException;
 import ast.exception.TypeMismatchException;
+import ast.exception.UnreachableStatementException;
 import ast.exception.VarNotDeclaredException;
 import ast.expression.ArrayAccessFuncExpression;
 import ast.expression.ArrayAccessVarExpression;
@@ -119,14 +120,13 @@ public class ValidatorAST {
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
 				validate(currFuncParam);
 			}
-			boolean hasSeenRet = false;
+			
+			boolean isReturnCovered = returnCovered(curr.getStatements());
+			
 			for (Statement currStat : curr.getStatements()) {
 				validate(currStat);
-				if(currStat instanceof ReturnStatement) {
-					hasSeenRet = true;
-				}
 			}
-			if (!hasSeenRet && !(curr.getReturnType() instanceof VoidType)) {
+			if (!isReturnCovered && !(curr.getReturnType() instanceof VoidType)) {
 				throw new MissingReturnStatementException(curr.getPosition().toString());
 			}
 			ctx.exitScope();			
@@ -238,6 +238,29 @@ public class ValidatorAST {
 			validExpression(curr.getValue());
 		}
 	}
+	
+	private boolean returnCovered(List<Statement> statements) throws SyntacticException {
+		int i = 0;
+		for (Statement currStat : statements) {
+			i++;
+			if (currStat instanceof IfElseStatement) {
+				IfElseStatement ifElse = (IfElseStatement) currStat;
+				if (returnCovered(ifElse.getBody()) && returnCovered(ifElse.getBodyElse())) {
+					if (i < statements.size()) {
+						throw new UnreachableStatementException(statements.get(i).getPosition().toString());
+					}
+					return true;
+				}
+			} else if (currStat instanceof ReturnStatement) {
+				if (i < statements.size()) {
+					throw new UnreachableStatementException(statements.get(i).getPosition().toString());
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
 
 	private void validBody(List<Statement> statements) throws SyntacticException {
 		for (Statement currStat : statements) {

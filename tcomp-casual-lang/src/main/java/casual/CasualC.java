@@ -19,7 +19,7 @@ import visitor.CasualParseTreeVisitor;
 public class CasualC {
 	public static void main(String[] args) {
 		if(args.length == 1 || args.length == 2) {
-			System.out.println("Analysing " + args[0]);
+			System.out.println("Compiling " + args[0]);
 			CharStream inputFromFile;
 			try {
 				inputFromFile = CharStreams.fromFileName(args[0]);
@@ -56,7 +56,7 @@ public class CasualC {
 				System.err.println("Syntactic Verification found an error");
 				return;
 			}
-			System.out.println("\nFinished Execution Successfully");
+			System.out.println("\nFinished Compilation Successfully");
 		}else {
 			System.out.println("Your args are not correct");
 			System.out.println("Valid args: <sourceFile>");
