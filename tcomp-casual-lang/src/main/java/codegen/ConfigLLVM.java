@@ -180,4 +180,9 @@ public class ConfigLLVM {
 		return String.format("%sret %s %s%n", space, getLLVMType(type), value);
 	}
 	
+	protected static String label(String label) {
+		//label:
+		return String.format("%n%s:%n", label);
+	}
+	
 }

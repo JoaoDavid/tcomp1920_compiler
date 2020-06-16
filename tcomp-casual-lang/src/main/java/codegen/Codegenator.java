@@ -32,6 +32,7 @@ import static codegen.ConfigLLVM.br;
 import static codegen.ConfigLLVM.brUnconditional;
 import static codegen.ConfigLLVM.call;
 import static codegen.ConfigLLVM.callVoid;
+import static codegen.ConfigLLVM.label;
 import static codegen.ConfigLLVM.floatToLLVM;
 import static codegen.ConfigLLVM.fneg;
 import static codegen.ConfigLLVM.getLLVMType;
@@ -108,7 +109,10 @@ public class Codegenator {
 	//private final static String defaultPath = System.getProperty("user.home") + File.separator + "Desktop";
 	private final static String SUFIX = ".ll";
 	private final static String IDENTATION = "    ";
-	private static final String RETURN_KW = "$return";
+	private static final String RETURN_VAR = "$return";
+	private static final String RETURN_LBL = "$return_label";
+	
+	private String currRetLbl = null;
 
 
 	private Node root;
@@ -201,8 +205,8 @@ public class Codegenator {
 			pw.write(sb.toString());
 
 			if (!(curr.getReturnType() instanceof VoidType)) {
-				String llVar = getVarName(RETURN_KW);
-				em.set(RETURN_KW, llVar);
+				String llVar = getVarName(RETURN_VAR);
+				em.set(RETURN_VAR, llVar);
 				Type type = curr.getReturnType();
 				pw.write(alloca(IDENTATION, llVar, type));
 			}
@@ -211,14 +215,23 @@ public class Codegenator {
 			for (Statement currStat : curr.getStatements()) {
 				writeStatements(currStat, space + IDENTATION);
 			}
-			
+
 			if (curr.getReturnType() instanceof VoidType) {
 				pw.write(ret(IDENTATION, curr.getReturnType(), ""));
 			} else {
-				String valueRet = em.get(RETURN_KW);
-				String loadRet = getVarName(RETURN_KW + "_load");
-				pw.write(load(IDENTATION, valueRet, curr.getReturnType(), loadRet));
-				pw.write(ret(IDENTATION, curr.getReturnType(), loadRet));
+				String retLabel = em.get(RETURN_LBL);
+				if (retLabel == null) {					
+					String valueRet = em.get(RETURN_VAR);
+					String loadRet = getVarName(RETURN_VAR + "_load");
+					pw.write(load(IDENTATION, valueRet, curr.getReturnType(), loadRet));
+					pw.write(ret(IDENTATION, curr.getReturnType(), loadRet));
+				} else {
+					pw.write(label(retLabel));
+					String valueRet = em.get(RETURN_VAR);
+					String loadRet = getVarName(RETURN_VAR + "_load");
+					pw.write(load(IDENTATION, valueRet, curr.getReturnType(), loadRet));
+					pw.write(ret(IDENTATION, curr.getReturnType(), loadRet));
+				}
 			}
 
 			pw.println("\n}");
@@ -248,8 +261,8 @@ public class Codegenator {
 			String elseLabel = "else_" + num;
 			String contLabel = "cont_" + num;
 			String condVarResLLVM = visitExpression(curr.getCondition(), space);
-			pw.write(ConfigLLVM.br(space, condVarResLLVM, thenLabel, elseLabel));
-			pw.write(String.format("%n%s:%n", thenLabel));
+			pw.write(br(space, condVarResLLVM, thenLabel, elseLabel));
+			pw.write(label(thenLabel));
 			em.enterScope();
 			for (Statement currStat : curr.getBody()) {
 				writeStatements(currStat, space);
@@ -258,7 +271,7 @@ public class Codegenator {
 			pw.write(brUnconditional(space, contLabel));
 
 			//-------------Else--------------
-			pw.write(String.format("%n%s:%n", elseLabel));
+			pw.write(label(elseLabel));
 			em.enterScope();
 			for (Statement currStat : curr.getBodyElse()) {
 				writeStatements(currStat, space);
@@ -266,7 +279,7 @@ public class Codegenator {
 			em.exitScope();
 			//------------------------------
 			pw.write(brUnconditional(space, contLabel));
-			pw.write(String.format("%n%s:%n", contLabel));
+			pw.write(label(contLabel));
 		} else if (n instanceof IfStatement) {
 			IfStatement curr = (IfStatement) n;
 			int num = em.getCount();
@@ -275,14 +288,23 @@ public class Codegenator {
 			String contLabel = "cont_" + num;
 			String condVarResLLVM = visitExpression(curr.getCondition(), space);
 			pw.write(ConfigLLVM.br(space, condVarResLLVM, thenLabel, contLabel));
-			pw.write(String.format("%n%s:%n", thenLabel));
+			pw.write(label(thenLabel));
 			em.enterScope();
+			boolean hasRet = false;
 			for (Statement currStat : curr.getBody()) {
 				writeStatements(currStat, space);
+				hasRet = currStat instanceof ReturnStatement;
 			}
 			em.exitScope();
-			pw.write(brUnconditional(space, contLabel));
-			pw.write(String.format("%n%s:%n", contLabel));
+			String retLabel = "ret_" + num;
+			if (hasRet) {
+				pw.write(brUnconditional(space, retLabel));
+				em.set(RETURN_LBL, retLabel);
+				pw.write(label(contLabel));
+			} else {
+				pw.write(brUnconditional(space, contLabel));
+				pw.write(label(contLabel));
+			}
 		} else if (n instanceof WhileStatement) {
 			WhileStatement curr = (WhileStatement) n;
 			int num = em.getCount();
@@ -307,7 +329,13 @@ public class Codegenator {
 		} else if (n instanceof ReturnStatement) {
 			ReturnStatement curr = (ReturnStatement) n;
 			if (!(curr.getRetType() instanceof VoidType)) {
-				pw.write(store(space, curr.getRetType(), visitExpression(curr.getValue(), space), em.get(RETURN_KW)));
+				pw.write(store(space, curr.getRetType(), visitExpression(curr.getValue(), space), em.get(RETURN_VAR)));
+			}
+			String retLabel = em.get(RETURN_LBL);
+			if (retLabel == null) {					
+
+			} else {
+				pw.write(brUnconditional(space, retLabel));
 			}
 		} else if (n instanceof VarDeclarationStatement) {
 			VarDeclarationStatement curr = (VarDeclarationStatement) n;
