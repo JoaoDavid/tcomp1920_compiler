@@ -16,5 +16,4 @@ import util.cas
 
 def printHello():Void {
 	printString("HELLO");
-	#printUtil();
 }

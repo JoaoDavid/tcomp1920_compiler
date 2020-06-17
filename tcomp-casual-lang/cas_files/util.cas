@@ -12,8 +12,17 @@ decl new_float_matrix(size:Int, size2:Int):[[Float]]
 decl new_bool_matrix(size:Int, size2:Int):[[Bool]]
 decl new_string_matrix(size:Int, size2:Int):[[String]]
 
-#import util.cas
+import file.cas
 
 def printUtil():Void {
 	printInt(1337);
+	printHello();
+}
+
+def printBye():Void {
+	printString("Bye");
+}
+
+def printQuote():Void {
+	printString("Hello there, general kennobi");
 }

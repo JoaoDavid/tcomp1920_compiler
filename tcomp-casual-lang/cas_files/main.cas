@@ -20,3 +20,8 @@ def main():Int {
 	printUtil();
 	return 0;
 }
+
+def printQuote():Void {
+	printString("Hello there, general kennobi");
+}
+

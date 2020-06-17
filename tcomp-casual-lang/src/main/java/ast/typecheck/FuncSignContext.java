@@ -2,6 +2,7 @@ package ast.typecheck;
 
 import java.util.HashMap;
 
+import ast.DefDecl;
 import ast.datatype.Type;
 import ast.exception.DuplicateFunctionException;
 import ast.exception.FunctionNotDefinedException;
@@ -33,11 +34,12 @@ public class FuncSignContext {
 		}
 	}
 
-	public void newFunc(String funcName, Type retType, Type[] datatypes) throws SyntacticException {
+	public void newFunc(DefDecl curr, Type[] datatypes) throws SyntacticException {
+		String funcName = curr.getFuncName();
 		if(map.containsKey(funcName)) {
-			throw new DuplicateFunctionException(funcName);
+			throw new DuplicateFunctionException(curr.getPosition().toString());
 		}
-		map.put(funcName, new FuncSignatureScope(funcName, retType, datatypes));
+		map.put(funcName, new FuncSignatureScope(funcName, curr.getReturnType(), datatypes));
 	}
 
 

@@ -85,7 +85,7 @@ public class ValidatorAST {
 		validateFuncSign(root);
 		validate(root);
 	}
-	
+
 	private void validateImport() throws SyntacticException {
 		for (ImportDefinition currImport : root.getImports()) {
 			CasualFile importedFile = casTree.get(currImport.getImportName());
@@ -94,10 +94,11 @@ public class ValidatorAST {
 			}
 			for (DefDecl currDefDecl : importedFile.getStatements()) {
 				if (!root.getStatements().contains(currDefDecl)) {
-					root.getStatements().add(currDefDecl);
+					Type[] datatypes = loadParamTypes(currDefDecl);
+					funcSignCtx.newFunc(currDefDecl, datatypes);
 				}
 			}
-		}	
+		}
 	}
 
 	private void validateFuncSign(Node n) throws SyntacticException {
@@ -108,25 +109,24 @@ public class ValidatorAST {
 			}
 		} else if (n instanceof FunctionDefinition) {
 			FunctionDefinition curr = (FunctionDefinition) n;
-			Type[] datatypes = new Type[curr.getParameters().size()];			
-			int i = 0;
-			for (FunctionParameter currFuncParam : curr.getParameters()) {
-				validType(currFuncParam.getDatatype(), currFuncParam.getPosition());
-				datatypes[i] = currFuncParam.getDatatype();
-				i++;
-			}			
-			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType(), datatypes);
+			Type[] datatypes = loadParamTypes(curr);		
+			funcSignCtx.newFunc(curr, datatypes);
 		} else if (n instanceof FunctionDeclaration) {			
 			FunctionDeclaration curr = (FunctionDeclaration) n;
-			Type[] datatypes = new Type[curr.getParameters().size()];			
-			int i = 0;
-			for (FunctionParameter currFuncParam : curr.getParameters()) {
-				validType(currFuncParam.getDatatype(), currFuncParam.getPosition());
-				datatypes[i] = currFuncParam.getDatatype();
-				i++;
-			}
-			funcSignCtx.newFunc(curr.getFuncName(), curr.getReturnType(), datatypes);
+			Type[] datatypes = loadParamTypes(curr);
+			funcSignCtx.newFunc(curr, datatypes);
 		}
+	}
+
+	private Type[] loadParamTypes(DefDecl defDecl) throws InvalidTypeException {
+		Type[] datatypes = new Type[defDecl.getParameters().size()];	
+		int i = 0;
+		for (FunctionParameter currFuncParam : defDecl.getParameters()) {
+			validType(currFuncParam.getDatatype(), currFuncParam.getPosition());
+			datatypes[i] = currFuncParam.getDatatype();
+			i++;
+		}
+		return datatypes;
 	}
 
 	private void validate(Node n) throws SyntacticException {
@@ -142,9 +142,9 @@ public class ValidatorAST {
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
 				validate(currFuncParam);
 			}
-			
+
 			boolean isReturnCovered = returnCovered(curr.getStatements());
-			
+
 			for (Statement currStat : curr.getStatements()) {
 				validate(currStat);
 			}
@@ -260,7 +260,7 @@ public class ValidatorAST {
 			validExpression(curr.getValue());
 		}
 	}
-	
+
 	private boolean returnCovered(List<Statement> statements) throws SyntacticException {
 		int i = 0;
 		for (Statement currStat : statements) {
@@ -282,7 +282,7 @@ public class ValidatorAST {
 		}
 		return false;
 	}
-	
+
 
 	private void validBody(List<Statement> statements) throws SyntacticException {
 		for (Statement currStat : statements) {
