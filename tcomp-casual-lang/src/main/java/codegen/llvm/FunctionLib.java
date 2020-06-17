@@ -1,30 +1,30 @@
-package codegen;
+package codegen.llvm;
 
 public class FunctionLib {
 	
-	protected static final String RES_CALLOC = "calloc";
+	public static final String RES_CALLOC = "calloc";
 	
-	protected static final String RES_NEW_INT_ARRAY = "new_int_array";	
-	protected static final String RES_NEW_FLOAT_ARRAY = "new_float_array";
-	protected static final String RES_NEW_BOOL_ARRAY = "new_bool_array";
-	protected static final String RES_NEW_STRING_ARRAY = "new_string_array";
+	public static final String RES_NEW_INT_ARRAY = "new_int_array";	
+	public static final String RES_NEW_FLOAT_ARRAY = "new_float_array";
+	public static final String RES_NEW_BOOL_ARRAY = "new_bool_array";
+	public static final String RES_NEW_STRING_ARRAY = "new_string_array";
 	
-	protected static final String RES_NEW_INT_MATRIX = "new_int_matrix";
-	protected static final String RES_NEW_FLOAT_MATRIX = "new_float_matrix";
-	protected static final String RES_NEW_BOOL_MATRIX = "new_bool_matrix";
-	protected static final String RES_NEW_STRING_MATRIX = "new_string_matrix";
+	public static final String RES_NEW_INT_MATRIX = "new_int_matrix";
+	public static final String RES_NEW_FLOAT_MATRIX = "new_float_matrix";
+	public static final String RES_NEW_BOOL_MATRIX = "new_bool_matrix";
+	public static final String RES_NEW_STRING_MATRIX = "new_string_matrix";
 	
-	protected static final String RES_PRINT_INT = "printInt";
-	protected static final String RES_PRINT_FLOAT = "printFloat";
-	protected static final String RES_PRINT_BOOL = "printBool";
-	protected static final String RES_PRINT_STRING = "printString";
+	public static final String RES_PRINT_INT = "printInt";
+	public static final String RES_PRINT_FLOAT = "printFloat";
+	public static final String RES_PRINT_BOOL = "printBool";
+	public static final String RES_PRINT_STRING = "printString";
 	
-	protected static final String STR_PRINT_INT = "@.str.1 = private unnamed_addr constant [4 x i8] c\"%d\\0A\\00\"\n";
-	protected static final String STR_PRINT_FLOAT = "@.str.2 = private unnamed_addr constant [4 x i8] c\"%f\\0A\\00\"\n";
-	//protected static final String STR_PRINT_BOOL = "@.str.1 = private unnamed_addr constant [4 x i8] c\"%d\\0A\\00\"\n";
-	protected static final String STR_PRINT_STRING = "@.str.3 = private unnamed_addr constant [4 x i8] c\"%s\\0A\\00\"\n";
+	public static final String STR_PRINT_INT = "@.str.1 = private unnamed_addr constant [4 x i8] c\"%d\\0A\\00\"\n";
+	public static final String STR_PRINT_FLOAT = "@.str.2 = private unnamed_addr constant [4 x i8] c\"%f\\0A\\00\"\n";
+	//public static final String STR_PRINT_BOOL = "@.str.1 = private unnamed_addr constant [4 x i8] c\"%d\\0A\\00\"\n";
+	public static final String STR_PRINT_STRING = "@.str.3 = private unnamed_addr constant [4 x i8] c\"%s\\0A\\00\"\n";
 	
-	protected static boolean isResLibFuncName(String funcName) {
+	public static boolean isResLibFuncName(String funcName) {
 		if (funcName.equals(RES_NEW_INT_ARRAY) || 
 				funcName.equals(RES_NEW_FLOAT_ARRAY) || 
 				funcName.equals(RES_NEW_BOOL_ARRAY) || 
@@ -43,10 +43,10 @@ public class FunctionLib {
 		return false;
 	}
 	
-	protected static final String DECL_CALLOC = "declare dso_local noalias i8* @calloc(i64, i64) #2\n";
-	protected static final String DECL_PRINTF = "declare dso_local i32 @printf(i8*, ...) #1\n";
+	public static final String DECL_CALLOC = "declare dso_local noalias i8* @calloc(i64, i64) #2\n";
+	public static final String DECL_PRINTF = "declare dso_local i32 @printf(i8*, ...) #1\n";
 
-	protected static final String DEF_NEW_INT_ARRAY = "define dso_local i32* @new_int_array(i32 %0) #0 {\n" + 
+	public static final String DEF_NEW_INT_ARRAY = "define dso_local i32* @new_int_array(i32 %0) #0 {\n" + 
 			"  %2 = alloca i32, align 4\r\n" + 
 			"  store i32 %0, i32* %2, align 4\r\n" + 
 			"  %3 = load i32, i32* %2, align 4\r\n" + 
@@ -56,7 +56,7 @@ public class FunctionLib {
 			"  ret i32* %6\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_NEW_INT_MATRIX = "define dso_local i32** @new_int_matrix(i32 %0, i32 %1) #0 {\r\n" + 
+	public static final String DEF_NEW_INT_MATRIX = "define dso_local i32** @new_int_matrix(i32 %0, i32 %1) #0 {\r\n" + 
 			"  %3 = alloca i32, align 4\r\n" + 
 			"  %4 = alloca i32, align 4\r\n" + 
 			"  %5 = alloca i32**, align 8\r\n" + 
@@ -98,7 +98,7 @@ public class FunctionLib {
 			"  ret i32** %26\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_NEW_FLOAT_ARRAY = "define dso_local float* @new_float_array(i32 %0) #0 {\r\n" + 
+	public static final String DEF_NEW_FLOAT_ARRAY = "define dso_local float* @new_float_array(i32 %0) #0 {\r\n" + 
 			"  %2 = alloca i32, align 4\r\n" + 
 			"  store i32 %0, i32* %2, align 4\r\n" + 
 			"  %3 = load i32, i32* %2, align 4\r\n" + 
@@ -108,7 +108,7 @@ public class FunctionLib {
 			"  ret float* %6\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_NEW_FLOAT_MATRIX = "define dso_local float** @new_float_matrix(i32 %0, i32 %1) #0 {\r\n" + 
+	public static final String DEF_NEW_FLOAT_MATRIX = "define dso_local float** @new_float_matrix(i32 %0, i32 %1) #0 {\r\n" + 
 			"  %3 = alloca i32, align 4\r\n" + 
 			"  %4 = alloca i32, align 4\r\n" + 
 			"  %5 = alloca float**, align 8\r\n" + 
@@ -150,7 +150,7 @@ public class FunctionLib {
 			"  ret float** %26\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_NEW_BOOL_ARRAY = "define dso_local i1* @new_bool_array(i32 %0) #0 {\r\n" + 
+	public static final String DEF_NEW_BOOL_ARRAY = "define dso_local i1* @new_bool_array(i32 %0) #0 {\r\n" + 
 			"  %2 = alloca i32, align 4\r\n" + 
 			"  store i32 %0, i32* %2, align 4\r\n" + 
 			"  %3 = load i32, i32* %2, align 4\r\n" + 
@@ -160,7 +160,7 @@ public class FunctionLib {
 			"  ret i1* %6\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_NEW_BOOL_MATRIX = "define dso_local i1** @new_bool_matrix(i32 %0, i32 %1) #0 {\r\n" + 
+	public static final String DEF_NEW_BOOL_MATRIX = "define dso_local i1** @new_bool_matrix(i32 %0, i32 %1) #0 {\r\n" + 
 			"  %3 = alloca i32, align 4\r\n" + 
 			"  %4 = alloca i32, align 4\r\n" + 
 			"  %5 = alloca i1**, align 8\r\n" + 
@@ -202,7 +202,7 @@ public class FunctionLib {
 			"  ret i1** %26\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_NEW_STRING_ARRAY = "define dso_local i8** @new_string_array(i32 %0) #0 {\r\n" + 
+	public static final String DEF_NEW_STRING_ARRAY = "define dso_local i8** @new_string_array(i32 %0) #0 {\r\n" + 
 			"  %2 = alloca i32, align 4\r\n" + 
 			"  store i32 %0, i32* %2, align 4\r\n" + 
 			"  %3 = load i32, i32* %2, align 4\r\n" + 
@@ -212,7 +212,7 @@ public class FunctionLib {
 			"  ret i8** %6\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_NEW_STRING_MATRIX = "define dso_local i8*** @new_string_matrix(i32 %0, i32 %1) #0 {\r\n" + 
+	public static final String DEF_NEW_STRING_MATRIX = "define dso_local i8*** @new_string_matrix(i32 %0, i32 %1) #0 {\r\n" + 
 			"  %3 = alloca i32, align 4\r\n" + 
 			"  %4 = alloca i32, align 4\r\n" + 
 			"  %5 = alloca i8***, align 8\r\n" + 
@@ -254,7 +254,7 @@ public class FunctionLib {
 			"  ret i8*** %26\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_PRINT_INT = "define dso_local void @printInt(i32 %0) #0 {\r\n" + 
+	public static final String DEF_PRINT_INT = "define dso_local void @printInt(i32 %0) #0 {\r\n" + 
 			"  %2 = alloca i32, align 4\r\n" + 
 			"  store i32 %0, i32* %2, align 4\r\n" + 
 			"  %3 = load i32, i32* %2, align 4\r\n" + 
@@ -262,7 +262,7 @@ public class FunctionLib {
 			"  ret void\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_PRINT_FLOAT = "define dso_local void @printFloat(float %0) #0 {\r\n" + 
+	public static final String DEF_PRINT_FLOAT = "define dso_local void @printFloat(float %0) #0 {\r\n" + 
 			"  %2 = alloca float, align 4\r\n" + 
 			"  store float %0, float* %2, align 4\r\n" + 
 			"  %3 = load float, float* %2, align 4\r\n" + 
@@ -271,7 +271,7 @@ public class FunctionLib {
 			"  ret void\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_PRINT_BOOL = "define dso_local void @printBool(i1 %0) #0 {\r\n" + 
+	public static final String DEF_PRINT_BOOL = "define dso_local void @printBool(i1 %0) #0 {\r\n" + 
 			"  %2 = alloca i1, align 4\r\n" + 
 			"  store i1 %0, i1* %2, align 4\r\n" + 
 			"  %3 = load i1, i1* %2, align 4\r\n" + 
@@ -279,7 +279,7 @@ public class FunctionLib {
 			"  ret void\r\n" + 
 			"}\n";
 	
-	protected static final String DEF_PRINT_STRING = "define dso_local void @printString(i8* %0) #0 {\r\n" + 
+	public static final String DEF_PRINT_STRING = "define dso_local void @printString(i8* %0) #0 {\r\n" + 
 			"  %2 = alloca i8*, align 8\r\n" + 
 			"  store i8* %0, i8** %2, align 8\r\n" + 
 			"  %3 = load i8*, i8** %2, align 8\r\n" + 
