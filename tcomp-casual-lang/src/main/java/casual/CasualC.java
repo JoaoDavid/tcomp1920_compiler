@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import ast.CasualFile;
 import ast.DefDecl;
+import ast.exception.DuplicateCasFileException;
 import ast.typecheck.ValidatorAST;
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;
@@ -47,7 +48,11 @@ public class CasualC {
 
 				CasualParseTreeVisitor casualVisitor = new CasualParseTreeVisitor();
 				arrCas[i] = casualVisitor.visitCasualFile(tree);
-				casTree.put(casFile.getName(), arrCas[i]);
+				CasualFile temp = casTree.put(casFile.getName(), arrCas[i]);
+				if (temp != null) {
+					System.err.println("Duplicate Cas File " + args[i]);
+					return;
+				}
 			}
 			List<DefDecl> defDecls = new ArrayList<DefDecl>();
 			for (int i = 0; i < arrCas.length; i++) {

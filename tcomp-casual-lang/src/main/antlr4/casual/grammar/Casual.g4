@@ -16,11 +16,12 @@ IMPORT : 'import' ;
 ELSE   : 'else' ;
 WHILE  : 'while' ;
 RETURN : 'return' ;
+CAS    : '.cas' ;
 
 
 // ------------------------- STATEMENTS -------------------------
 import_def : IMPORT import_name ;
-import_name: ID ('.'ID)? ;
+import_name: ID CAS ;
 
 // ------------------------- STATEMENTS -------------------------
 
