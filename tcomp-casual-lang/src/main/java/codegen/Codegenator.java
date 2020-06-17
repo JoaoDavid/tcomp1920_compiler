@@ -110,7 +110,6 @@ public class Codegenator {
 	private final static String SUFIX = ".ll";
 	private final static String IDENTATION = "    ";
 	private static final String RETURN_VAR = "$return";
-	private static final String RETURN_LBL = "$return_label";
 	
 	private String currRetLbl = null;
 
@@ -185,7 +184,8 @@ public class Codegenator {
 			if(FunctionLib.isResLibFuncName(curr.getFuncName())) {
 				return;
 			}
-			em.enterScope();			
+			em.enterScope();
+			currRetLbl = null;	
 			pw.printf("define %s @%s (", getLLVMType(curr.getReturnType()), curr.getFuncName());
 			int c = 0;
 			for (FunctionParameter currFuncParam : curr.getParameters()) {
@@ -219,7 +219,7 @@ public class Codegenator {
 			if (curr.getReturnType() instanceof VoidType) {
 				pw.write(ret(IDENTATION, curr.getReturnType(), ""));
 			} else {
-				String retLabel = em.get(RETURN_LBL);
+				String retLabel = currRetLbl;
 				if (retLabel == null) {					
 					String valueRet = em.get(RETURN_VAR);
 					String loadRet = getVarName(RETURN_VAR + "_load");
@@ -278,8 +278,16 @@ public class Codegenator {
 			}
 			em.exitScope();
 			//------------------------------
-			pw.write(brUnconditional(space, contLabel));
-			pw.write(label(contLabel));
+			/*pw.write(brUnconditional(space, contLabel));
+			pw.write(label(contLabel));*/
+			String retLabel = currRetLbl;
+			if (retLabel != null) {
+				pw.write(label(contLabel));
+				pw.write(brUnconditional(space, retLabel));
+			} else {
+				pw.write(brUnconditional(space, contLabel));
+				pw.write(label(contLabel));
+			}
 		} else if (n instanceof IfStatement) {
 			IfStatement curr = (IfStatement) n;
 			int num = em.getCount();
@@ -296,10 +304,10 @@ public class Codegenator {
 				hasRet = currStat instanceof ReturnStatement;
 			}
 			em.exitScope();
-			String retLabel = "ret_" + num;
+			String retLabel = currRetLbl==null?"ret_" + num:currRetLbl;
 			if (hasRet) {
 				pw.write(brUnconditional(space, retLabel));
-				em.set(RETURN_LBL, retLabel);
+				currRetLbl = retLabel;
 				pw.write(label(contLabel));
 			} else {
 				pw.write(brUnconditional(space, contLabel));
@@ -331,7 +339,7 @@ public class Codegenator {
 			if (!(curr.getRetType() instanceof VoidType)) {
 				pw.write(store(space, curr.getRetType(), visitExpression(curr.getValue(), space), em.get(RETURN_VAR)));
 			}
-			String retLabel = em.get(RETURN_LBL);
+			String retLabel = currRetLbl;
 			if (retLabel == null) {					
 
 			} else {

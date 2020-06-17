@@ -39,29 +39,81 @@ def Fibonacci(n:Int):Int {
 
 def Fibonacci2(n:Int):Int { 
 	if (n<0){
+		#then_37
 		printString("Incorrect input");
 		return -1;
 	} else {
+		#else_37
 		if (n==0) {
-			# First Fibonacci number is 0 
+			# First Fibonacci number is 0  then_43
 			return 0;
 		} else {
+			#else_43
 			if (n==1) {
+				#then_46
 				# Second Fibonacci number is 1 
 				return 1;
 			} 
+			#cont_46
 			return Fibonacci(n-1)+Fibonacci(n-2);
 		}
 	}
+}
+
+def Fibonacci3(n:Int):Int { 
+	if (n<0){
+		#then_37
+		printString("Incorrect input");
+		return -1;
+	}
+		#else_37
+		if (n==0) {
+			# First Fibonacci number is 0  then_43
+			return 0;
+		} else {
+			#else_43
+			if (n==1) {
+				#then_46
+				# Second Fibonacci number is 1 
+				return 1;
+			} 
+			#cont_46
+			return Fibonacci(n-1)+Fibonacci(n-2);
+		}
+
+}
+
+def Fibonacci4(n:Int):Int { 
+	if (n<0){
+		#then_37
+		printString("Incorrect input");
+		return -1;
+	}
+		#else_37
+		if (n==0) {
+			# First Fibonacci number is 0  then_43
+			return 0;
+		}
+			#else_43
+			if (n==1) {
+				#then_46
+				# Second Fibonacci number is 1 
+				return 1;
+			} 
+			#cont_46
+			return Fibonacci(n-1)+Fibonacci(n-2);
+		
+
 }
 
 def callFib(n:Int):Void {
 	printString("---");
 	printInt(Fibonacci(n));
 	printInt(Fibonacci2(n));
+	printInt(Fibonacci3(n));
+	printInt(Fibonacci4(n));
 	printInt(fib(n));
 	printInt(fibTwo(n));
-	printString("---");
 }
 
 def fib(n:Int):Int {

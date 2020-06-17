@@ -1,0 +1,71 @@
+decl puts(s:String):Int
+decl printInt(i:Int):Void
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl printString(s:String):Void
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+
+def main():Int {
+	n:Int = 5; 
+	arr:[Int] = new_int_array(n);
+	#{10, 7, 8, 9, 1, 5}; 
+	arr[0] = 10;
+	arr[1] = 7;
+	arr[2] = 8;
+	arr[3] = 9;
+	arr[4] = 1;
+	arr[5] = 5;
+	printString("--Before sorting--");
+	printInt(arr[0]);
+	printInt(arr[1]);
+	printInt(arr[2]);
+	printInt(arr[3]);
+	printInt(arr[4]);
+	printInt(arr[5]);
+	quickSort(arr, 0, 3);  
+	printString("--After sorting--");
+	printInt(arr[0]);
+	printInt(arr[1]);
+	printInt(arr[2]);
+	printInt(arr[3]);
+	printInt(arr[4]);
+	printInt(arr[5]);
+	return 0;
+}
+
+
+def quickSort(arr:[Int], low:Int, high:Int):Void	{
+	printInt(low);
+		if (low < high) {
+			fp:Int = partition(arr, low, high);
+
+			quickSort(arr, low, fp - 1);
+			quickSort(arr, fp + 1, high);
+		}
+	}
+
+def partition(arr:[Int], low:Int, high:Int):Int {
+	# pivot (Element to be placed at right position)
+	pivot:Int = arr[high];  
+
+	i:Int = (low - 1);  # Index of smaller element
+		
+	j:Int = low;
+	while (j < high) {		
+		if (arr[j] < pivot) {
+			i = i + 1;    
+			temp:Int = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+		}
+		j=j+1;
+	}
+	temp:Int = arr[i + 1];
+	arr[i + 1] = arr[high];
+	arr[high] = temp;
+	return (i + 1);
+	}

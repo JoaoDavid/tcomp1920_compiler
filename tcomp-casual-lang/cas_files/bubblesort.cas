@@ -1,0 +1,72 @@
+decl puts(s:String):Int
+decl printInt(i:Int):Void
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl printString(s:String):Void
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+
+def main():Int {
+	n:Int = 7; 
+	arr:[Int] = new_int_array(n);
+	#{10, 7, 8, 9, 1, 5, -1}; 
+	arr[0] = 10;
+	arr[1] = 7;
+	arr[2] = 8;
+	arr[3] = 9;
+	arr[4] = 1;
+	arr[5] = 5;
+	arr[6] = -1;
+	printString("--Before sorting--");
+	printInt(arr[0]);
+	printInt(arr[1]);
+	printInt(arr[2]);
+	printInt(arr[3]);
+	printInt(arr[4]);
+	printInt(arr[5]);
+	printInt(arr[6]);
+	bubbleSort(arr, 7);  
+	printString("--After sorting--");
+	printInt(arr[0]);
+	printInt(arr[1]);
+	printInt(arr[2]);
+	printInt(arr[3]);
+	printInt(arr[4]);
+	printInt(arr[5]);
+	printInt(arr[6]);
+	return 0;
+}
+
+
+def bubbleSort(arr:[Int], n:Int):Void	{
+	printInt(arr[0]);
+	printInt(arr[1]);
+	printInt(arr[2]);
+	printInt(arr[3]);
+	printInt(arr[4]);
+	printInt(arr[5]);
+	printInt(arr[6]);
+	i:Int = 0;
+	while (i < (n-1)) {
+		j:Int = 0;
+		while (j <= (n-i-1)) {
+			if (arr[j] > arr[j+1]) {
+				temp:Int = arr[j];
+				arr[j] = arr[j+1];
+				arr[j+1] = temp;
+			}
+			j = j + 1;
+		}
+		i = i + 1;
+	}
+	printInt(arr[0]);
+	printInt(arr[1]);
+	printInt(arr[2]);
+	printInt(arr[3]);
+	printInt(arr[4]);
+	printInt(arr[5]);
+	printInt(arr[6]);
+}
