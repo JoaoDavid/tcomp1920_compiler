@@ -1,0 +1,8 @@
+
+decl printInt(i:Int):Void
+
+#import util.cas
+
+def printUtil():Void {
+	printInt(1337);
+}

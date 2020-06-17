@@ -4,7 +4,7 @@ grammar Casual;
 
 // ------------------------- PROGRAM -------------------------
 
-program: (func_decl | func_def)+ EOF ;
+program: (func_decl | func_def | import_def)+ EOF ;
 
 
 // ------------------------- KEYWORDS -------------------------
@@ -12,10 +12,15 @@ program: (func_decl | func_def)+ EOF ;
 DECL   : 'decl';
 DEF    : 'def';
 IF     : 'if' ;
+IMPORT : 'import' ;
 ELSE   : 'else' ;
 WHILE  : 'while' ;
 RETURN : 'return' ;
 
+
+// ------------------------- STATEMENTS -------------------------
+import_def : IMPORT import_name ;
+import_name: ID ('.'ID)? ;
 
 // ------------------------- STATEMENTS -------------------------
 

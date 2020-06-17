@@ -1,0 +1,17 @@
+decl puts(s:String):Int
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+
+import file.cas
+import util.cas
+
+def main():Int {
+	printHello();
+	printUtil();
+	return 0;
+}

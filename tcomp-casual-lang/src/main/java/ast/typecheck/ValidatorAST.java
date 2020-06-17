@@ -1,6 +1,7 @@
 package ast.typecheck;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 import ast.CasualFile;
@@ -8,6 +9,7 @@ import ast.DefDecl;
 import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
+import ast.ImportDefinition;
 import ast.Node;
 import ast.Position;
 import ast.datatype.ArrayType;
@@ -22,6 +24,7 @@ import ast.exception.DuplicateVarAssignException;
 import ast.exception.FunctiontArgumentsException;
 import ast.exception.InvalidOperandException;
 import ast.exception.InvalidTypeException;
+import ast.exception.MissingImportFileException;
 import ast.exception.MissingReturnStatementException;
 import ast.exception.SyntacticException;
 import ast.exception.TypeMismatchException;
@@ -65,17 +68,36 @@ import ast.statement.WhileStatement;
 public class ValidatorAST {
 
 	private static final String RETURN_KW = "$return";
+	private HashMap<String,CasualFile> casTree;
+	private CasualFile root;
 	private Context ctx;
 	private FuncSignContext funcSignCtx;
 
-	public ValidatorAST() {
-		ctx = new Context();
-		funcSignCtx = new FuncSignContext();
+	public ValidatorAST(CasualFile root, HashMap<String,CasualFile> casTree) {
+		this.casTree = casTree;
+		this.root = root;
+		this.ctx = new Context();
+		this.funcSignCtx = new FuncSignContext();
 	}
 
-	public void validateAST(Node n) throws SyntacticException {
-		validateFuncSign(n);
-		validate(n);
+	public void validateAST() throws SyntacticException {
+		validateImport();
+		validateFuncSign(root);
+		validate(root);
+	}
+	
+	private void validateImport() throws SyntacticException {
+		for (ImportDefinition currImport : root.getImports()) {
+			CasualFile importedFile = casTree.get(currImport.getImportName());
+			if (importedFile == null) {
+				throw new MissingImportFileException(currImport.getPosition().toString());
+			}
+			for (DefDecl currDefDecl : importedFile.getStatements()) {
+				if (!root.getStatements().contains(currDefDecl)) {
+					root.getStatements().add(currDefDecl);
+				}
+			}
+		}	
 	}
 
 	private void validateFuncSign(Node n) throws SyntacticException {

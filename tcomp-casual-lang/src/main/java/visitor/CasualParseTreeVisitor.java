@@ -10,6 +10,7 @@ import ast.DefDecl;
 import ast.FunctionDeclaration;
 import ast.FunctionDefinition;
 import ast.FunctionParameter;
+import ast.ImportDefinition;
 import ast.Point;
 import ast.Position;
 import ast.datatype.ArrayType;
@@ -59,6 +60,7 @@ import casual.grammar.CasualParser.Func_declContext;
 import casual.grammar.CasualParser.Func_defContext;
 import casual.grammar.CasualParser.Func_invContext;
 import casual.grammar.CasualParser.If_statContext;
+import casual.grammar.CasualParser.Import_defContext;
 import casual.grammar.CasualParser.ProgramContext;
 import casual.grammar.CasualParser.Return_statContext;
 import casual.grammar.CasualParser.StatementContext;
@@ -70,18 +72,29 @@ import casual.grammar.CasualParser.While_statContext;
 public class CasualParseTreeVisitor {
 
 	public CasualFile visitCasualFile(ProgramContext ctx) {
-		List<DefDecl> statements = new ArrayList<>(ctx.getChildCount()-1);
+		List<DefDecl> statements = new ArrayList<>();
+		List<ImportDefinition> imports = new ArrayList<>();
 		for (ParseTree currChildren : ctx.children) {
 			if(currChildren instanceof Func_declContext) {
 				FunctionDeclaration funcDecl = visitFunctionDeclaration((Func_declContext)currChildren);
 				statements.add(funcDecl);
 			} else if(currChildren instanceof Func_defContext) {
-				FunctionDeclaration funcDecl = visitFunctionDefinition((Func_defContext)currChildren);
-				statements.add(funcDecl);
+				FunctionDeclaration funcDef = visitFunctionDefinition((Func_defContext)currChildren);
+				statements.add(funcDef);
+			} else if(currChildren instanceof Import_defContext) {
+				ImportDefinition importDef = visitImportDefinition((Import_defContext)currChildren);
+				imports.add(importDef);
 			}
 		}		
-		return new CasualFile(statements, new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+		return new CasualFile(imports, statements, 
+				new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
+	}
+		
+	private ImportDefinition visitImportDefinition(Import_defContext ctx) {		
+		String importName = ctx.import_name().getText();
+		return new ImportDefinition(importName, new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
+						new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine())));
 	}
 
 	private FunctionDeclaration visitFunctionDeclaration(Func_declContext ctx) {
