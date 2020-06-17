@@ -2,6 +2,7 @@ package ast;
 
 import java.util.List;
 
+import ast.datatype.ArrayType;
 import ast.datatype.Type;
 
 public abstract class DefDecl implements Node {
@@ -36,6 +37,18 @@ public abstract class DefDecl implements Node {
 
 	public Position getPosition() {
 		return pos;
+	}	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof DefDecl)) {
+			return false;
+		}
+		DefDecl other = (DefDecl) obj;		
+		return getFuncName().equals(other.getFuncName());
 	}	
 
 }
