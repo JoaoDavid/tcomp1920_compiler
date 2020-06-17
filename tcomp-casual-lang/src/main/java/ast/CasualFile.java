@@ -7,8 +7,11 @@ public class CasualFile implements Node {
 	
 	private List<ImportDefinition> imports;
 	private List<DefDecl> statements;
-	private Position pos;
+	private Position pos;	
 	
+	public CasualFile(List<DefDecl> statements) {
+		this(null, statements, null);
+	}
 	
 	public CasualFile(List<ImportDefinition> imports, List<DefDecl> statements) {
 		this(imports, statements, null);
