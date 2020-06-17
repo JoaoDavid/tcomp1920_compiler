@@ -14,7 +14,7 @@ import casual.CasualC;
 @DisplayName("Testing .cas files")
 public class CasFilesTest {
 
-	@ParameterizedTest(name = "check if file {0} is Valid")
+	/*@ParameterizedTest(name = "check if file {0} is Valid")
 	@ValueSource(strings = { 
 			"hello_world.cas",
 			"valid_example1.cas",
@@ -39,6 +39,6 @@ public class CasFilesTest {
 		assertThrows(SyntacticException.class, () -> {
 			CasualC.mainTest(".\\cas_files\\" + file);
 		});
-	}
+	}*/
 
 }

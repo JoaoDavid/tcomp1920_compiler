@@ -5,7 +5,7 @@ import java.util.List;
 import ast.datatype.Type;
 import ast.statement.Statement;
 
-public class FunctionDefinition extends FunctionDeclaration {
+public class FunctionDefinition extends DefDecl {
 	
 	private List<Statement> statements;
 	
@@ -19,7 +19,6 @@ public class FunctionDefinition extends FunctionDeclaration {
 		super(funcName, parameters, returnType, pos);
 		this.statements = statements;
 	}
-
 	
 	public List<Statement> getStatements() {
 		return statements;
