@@ -79,7 +79,7 @@ public class CasualParseTreeVisitor {
 				FunctionDeclaration funcDecl = visitFunctionDeclaration((Func_declContext)currChildren);
 				statements.add(funcDecl);
 			} else if(currChildren instanceof Func_defContext) {
-				FunctionDeclaration funcDef = visitFunctionDefinition((Func_defContext)currChildren);
+				FunctionDefinition funcDef = visitFunctionDefinition((Func_defContext)currChildren);
 				statements.add(funcDef);
 			} else if(currChildren instanceof Import_defContext) {
 				ImportDefinition importDef = visitImportDefinition((Import_defContext)currChildren);
