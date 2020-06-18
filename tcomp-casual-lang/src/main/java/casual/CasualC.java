@@ -21,15 +21,19 @@ import visitor.CasualParseTreeVisitor;
 
 public class CasualC {
 	public static void main(String[] args) {
-		if(args.length > 1) {
+		if(args.length >= 1) {
 			System.out.println("Compiling... ");
 			HashMap<String,CasualFile> casTree = new HashMap<String,CasualFile>();
 			CasualFile[] arrCas = new CasualFile[args.length];
+			String outputName = "out";
 			for (int i = 0; i < args.length; i++) {
 				CharStream inputFromFile;
 				File casFile;
 				try {
 					casFile = new File(args[i]);
+					if(i == 0) {
+						outputName = casFile.getName().replaceAll("\\.[^.]*$", "");
+					}
 					inputFromFile = CharStreams.fromFileName(casFile.getPath());
 					System.out.println(args[i]);
 				} catch (IOException e) {
@@ -64,17 +68,17 @@ public class CasualC {
 						}
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println(e.toString());
+					//e.printStackTrace();
+					System.out.println(e.toString() + " FILE: " + args[i]);
 					System.err.println("Syntactic Verification found an error");
 					return;
 				}
 			}
 			CasualFile resCas = new CasualFile(defDecls);
 
-			String fileName = "out";//new File(args[i]).getName().replaceAll("\\.[^.]*$", "");
+			
 			try {
-				Codegenator codegen = new Codegenator(resCas, fileName, "C:" + File.separator + "Users"+ File.separator +"PC"+ File.separator +"Desktop"+ File.separator +"SharedFolder");
+				Codegenator codegen = new Codegenator(resCas, outputName, "C:" + File.separator + "Users"+ File.separator +"PC"+ File.separator +"Desktop"+ File.separator +"SharedFolder");
 				codegen.generateLL();
 			} catch (Exception e) {
 				e.printStackTrace();
