@@ -147,7 +147,7 @@ public class Instruction {
 	
 	public static String globalStr(int len, String strGlobalVar, String strLit) {
 		//@.str = public unnamed_addr constant [13 x i8] c"sumLitVar: \0A\00"
-		return String.format("%s = public unnamed_addr constant [%d x i8] c%s%n", strGlobalVar, len, strLit);
+		return String.format("%s = protected unnamed_addr constant [%d x i8] c%s%n", strGlobalVar, len, strLit);
 	}
 	
 	public static String getElementPtrStr(int len, String strGlobalVar) {

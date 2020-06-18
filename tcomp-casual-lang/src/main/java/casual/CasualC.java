@@ -64,7 +64,7 @@ public class CasualC {
 						}
 					}
 				} catch (Exception e) {
-					//e.printStackTrace();
+					e.printStackTrace();
 					System.out.println(e.toString());
 					System.err.println("Syntactic Verification found an error");
 					return;
@@ -77,7 +77,7 @@ public class CasualC {
 				Codegenator codegen = new Codegenator(resCas, fileName, "C:" + File.separator + "Users"+ File.separator +"PC"+ File.separator +"Desktop"+ File.separator +"SharedFolder");
 				codegen.generateLL();
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 				System.out.println(e.toString());
 				System.err.println("Syntactic Verification found an error");
 				return;

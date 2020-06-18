@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ast.CasualFile;
@@ -103,6 +104,7 @@ import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
 import codegen.exception.CompileException;
+import codegen.exception.ReservedFunctionNameException;
 import codegen.llvm.Instruction;
 import codegen.llvm.FunctionLib;
 
@@ -112,28 +114,31 @@ public class Codegenator {
 	private final static String SUFIX = ".ll";
 	private final static String IDENTATION = "    ";
 	private static final String RETURN_VAR = "$return";
-	
+
 	private String currRetLbl = null;
 
 
-	private Node root;
+	private CasualFile root;
 	private File file;
 	private PrintWriter pw;
 	private Emitter em;
 	private List<String> stringGlobal;
+	private FunctionLib funcLib;
 
-	public Codegenator(Node root, String llFile, String llPathFile) {
+	public Codegenator(CasualFile root, String llFile, String llPathFile) {
 		this.file = new File(llPathFile + File.separator + llFile + SUFIX);
 		this.root = root;
 		this.em = new Emitter();
 		this.stringGlobal = new ArrayList<String>();
+		this.funcLib = new FunctionLib();
 	}
 
-	public Codegenator(Node root, String llFile) {
+	public Codegenator(CasualFile root, String llFile) {
 		this.file = new File(llFile + SUFIX);
 		this.root = root;
 		this.em = new Emitter();
 		this.stringGlobal = new ArrayList<String>();
+		this.funcLib = new FunctionLib();
 	}
 
 	public void generateLL() throws CompileException {
@@ -164,27 +169,20 @@ public class Codegenator {
 			//stringGlobal.add(STR_PRINT_BOOL);bool uses print int
 			stringGlobal.add(STR_PRINT_STRING);
 			CasualFile curr = (CasualFile) n;
-			pw.write(FunctionLib.DECL_CALLOC);
-			pw.write(FunctionLib.DECL_PRINTF);
-			pw.write(FunctionLib.DEF_NEW_INT_ARRAY);			
-			pw.write(FunctionLib.DEF_NEW_FLOAT_ARRAY);
-			pw.write(FunctionLib.DEF_NEW_BOOL_ARRAY);
-			pw.write(FunctionLib.DEF_NEW_STRING_ARRAY);
-			pw.write(FunctionLib.DEF_NEW_INT_MATRIX);
-			pw.write(FunctionLib.DEF_NEW_FLOAT_MATRIX);
-			pw.write(FunctionLib.DEF_NEW_BOOL_MATRIX);
-			pw.write(FunctionLib.DEF_NEW_STRING_MATRIX);
-			pw.write(FunctionLib.DEF_PRINT_INT);
-			pw.write(FunctionLib.DEF_PRINT_FLOAT);
-			pw.write(FunctionLib.DEF_PRINT_BOOL);
-			pw.write(FunctionLib.DEF_PRINT_STRING);
 			for (DefDecl currDefDecl : curr.getStatements()) {
 				writeStatements(currDefDecl, space);
 			}
+			Iterator<String> decls = funcLib.getDecls();
+			while (decls.hasNext()) {
+				pw.write(decls.next());				
+			}
+		} else if (n instanceof FunctionDeclaration) {
+			FunctionDeclaration curr = (FunctionDeclaration) n;
+			funcLib.addDecl(curr.getFuncName());
 		} else if (n instanceof FunctionDefinition) {
 			FunctionDefinition curr = (FunctionDefinition) n;
 			if(FunctionLib.isResLibFuncName(curr.getFuncName())) {
-				return;
+				throw new ReservedFunctionNameException(curr.getPosition().toString());
 			}
 			em.enterScope();
 			currRetLbl = null;	
