@@ -164,10 +164,10 @@ public class Codegenator {
 	private void writeStatements(Node n, String space) throws CompileException {
 		StringBuilder sb = new StringBuilder();
 		if (n instanceof CasualFile) {
-			stringGlobal.add(STR_PRINT_INT);
+			/*stringGlobal.add(STR_PRINT_INT);
 			stringGlobal.add(STR_PRINT_FLOAT);
 			//stringGlobal.add(STR_PRINT_BOOL);bool uses print int
-			stringGlobal.add(STR_PRINT_STRING);
+			stringGlobal.add(STR_PRINT_STRING);*/
 			CasualFile curr = (CasualFile) n;
 			for (DefDecl currDefDecl : curr.getStatements()) {
 				writeStatements(currDefDecl, space);

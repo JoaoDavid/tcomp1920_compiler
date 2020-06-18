@@ -339,19 +339,19 @@ public class FunctionLib {
 			break; 
 		case RES_PRINT_INT: 
 			set.add(RES_FUNCS.get(RES_PRINTF));
-			//set.add(STR_PRINT_INT);
+			set.add(STR_PRINT_INT);
 			break; 
 		case RES_PRINT_FLOAT: 
 			set.add(RES_FUNCS.get(RES_PRINTF));
-			//set.add(STR_PRINT_FLOAT);
+			set.add(STR_PRINT_FLOAT);
 			break; 
 		case RES_PRINT_BOOL: 
 			set.add(RES_FUNCS.get(RES_PRINTF));
-			//set.add(STR_PRINT_INT);
+			set.add(STR_PRINT_INT);
 			break; 
 		case RES_PRINT_STRING: 
 			set.add(RES_FUNCS.get(RES_PRINTF));
-			//set.add(STR_PRINT_STRING);
+			set.add(STR_PRINT_STRING);
 			break; 
 		default: 
 			

@@ -21,6 +21,7 @@ import ast.datatype.StringType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
 import ast.exception.DuplicateVarAssignException;
+import ast.exception.FunctionNotDefinedException;
 import ast.exception.FunctiontArgumentsException;
 import ast.exception.InvalidOperandException;
 import ast.exception.InvalidTypeException;
@@ -64,6 +65,8 @@ import ast.statement.VarAssignArrayStatement;
 import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
+import codegen.exception.ReservedFunctionNameException;
+import codegen.llvm.FunctionLib;
 
 public class ValidatorAST {
 
@@ -113,6 +116,9 @@ public class ValidatorAST {
 			funcSignCtx.newFunc(curr, datatypes);
 		} else if (n instanceof FunctionDeclaration) {			
 			FunctionDeclaration curr = (FunctionDeclaration) n;
+			if(!FunctionLib.isResLibFuncName(curr.getFuncName())) {
+				throw new FunctionNotDefinedException(curr.getPosition().toString());
+			}
 			Type[] datatypes = loadParamTypes(curr);
 			funcSignCtx.newFunc(curr, datatypes);
 		}
