@@ -1,4 +1,3 @@
-decl puts(s:String):Int
 decl printInt(i:Int):Void
 decl printFloat(f:Float):Void
 decl printBool(b:Bool):Void
