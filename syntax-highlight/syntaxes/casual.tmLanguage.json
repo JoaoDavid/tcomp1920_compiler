@@ -1,15 +1,25 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Casual",
+	"scopeName": "source.cas",
 	"patterns": [
-		{
-			"include": "#comment"
-		},
 		{
 			"include": "#keywords"
 		},
 		{
-			"include": "#strings"
+			"include": "#comment"
+		},
+		{
+			"include": "#int"
+		},
+		{
+			"include": "#float"
+		},
+		{
+			"include": "#bool"
+		},
+		{
+			"include": "#string"
 		}
 	],
 	"repository": {
@@ -22,14 +32,33 @@
 		"comment": {
 			"name": "comment.line.number-sign",
 			"begin": "#",
-			"end": "$",
+			"end": "$"
+		},
+		"int": {
 			"patterns": [
 				{
-					"name": "constant.character.escape.casual"
+					"match": "\\b((0x[0-9a-fA-F]+)|(0[0-7]+i?)|(\\d+([Ee]\\d+)?i?)|(\\d+[Ee][-+]\\d+i?))\\b",
+					"name": "constant.numeric.integer.casual"
 				}
 			]
 		},
-		"strings": {
+		"float": {			
+			"patterns": [
+				{
+					"match": "(\\.\\d+([Ee][-+]\\d+)?i?)\\b|\\b\\d+\\.\\d*(([Ee][-+]\\d+)?i?\\b)?",
+					"name": "constant.numeric.float.casual"
+				}
+			]
+		},
+		"bool": {			
+			"patterns": [
+				{
+					"match": "\\b(true|false)\\b",
+					"name": "constant.language.casual"   				
+				}
+			]
+		},
+		"string": {
 			"name": "string.quoted.double.casual",
 			"begin": "\"",
 			"end": "\"",
@@ -40,6 +69,5 @@
 				}
 			]
 		}
-	},
-	"scopeName": "source.cas"
+	}
 }
