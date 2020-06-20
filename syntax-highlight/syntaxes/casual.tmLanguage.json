@@ -3,6 +3,9 @@
 	"name": "Casual",
 	"patterns": [
 		{
+			"include": "#comment"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
@@ -13,8 +16,18 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.casual",
-				"match": "\\b(if|while|for|return)\\b"
+				"match": "\\b(if|else|while|while|return|import|decl|def)\\b"
 			}]
+		},
+		"comment": {
+			"name": "comment.line.number-sign",
+			"begin": "#",
+			"end": "$",
+			"patterns": [
+				{
+					"name": "constant.character.escape.casual"
+				}
+			]
 		},
 		"strings": {
 			"name": "string.quoted.double.casual",
