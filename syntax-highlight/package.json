@@ -1,0 +1,25 @@
+{
+    "name": "casual-lang",
+    "displayName": "Casual Lang",
+    "description": "Syntax highlighting for casual lang",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.46.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "casual",
+            "aliases": ["Casual", "casual"],
+            "extensions": [".cas"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "casual",
+            "scopeName": "source.cas",
+            "path": "./syntaxes/casual.tmLanguage.json"
+        }]
+    }
+}
