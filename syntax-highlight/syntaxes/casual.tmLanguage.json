@@ -1,7 +1,26 @@
 {
-	"name": "Casual",
 	"scopeName": "source.cas",
+	"name": "Casual",
+	"comment": "Casual language",
+	"fileTypes": [
+		"cas"
+	],
 	"patterns": [
+		{
+			"include": "#storage_types"
+		},
+		{
+			"include": "#brackets"
+		},
+		{
+			"include": "#delimiters"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#operators"
+		},
 		{
 			"comment": "Line comments",
 			"begin": "#",
@@ -54,12 +73,12 @@
 		},
 		{
 			"comment": "Floating-point literals",
-			"match": "\\b(-?[0-9]*\\.?[0-9]+|[0-9]+\\.?[0-9]*[eE][0-9]+)\\b",
+			"match": "\\b([0-9]*\\.?[0-9]+|[0-9]+\\.?[0-9]*[eE][0-9]+)\\b",
 			"name": "constant.numeric.floating-point.casual"
 		},
 		{
 			"comment": "Integers",
-			"match": "\\b(-?[0-9](_*[0-9])*)\\b",
+			"match": "\\b([0-9](_*[0-9])*)\\b",
 			"name": "constant.numeric.integer.casual"
 		},
 		{
@@ -92,19 +111,38 @@
 			]
 		},
 		{
-			"include": "#brackets"
+			"comment": "Shorthand variable declaration and assignments",
+			"match": "[a-zA-Z_]\\w*(?=\\s*)",
+			"captures": {
+				"0": {
+					"patterns": [
+						{
+							"match": "[a-zA-Z_]\\w*",
+							"name": "variable.other.assignment.casual"
+						},
+						{
+							"include": "#delimiters"
+						}
+					]
+				}
+			}
 		},
 		{
-			"include": "#delimiters"
-		},
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#operators"
-		},
-		{
-			"include": "#storage_types"
+			"comment": "Assignments to existing variables",
+			"match": "(?<!: )\\s*([a-zA-Z_]\\w*(?:,\\s*[a-zA-Z_]\\w*)*)(?=\\s*=[^=])",
+			"captures": {
+				"1": {
+					"patterns": [
+						{
+							"match": "[a-zA-Z_]\\w*",
+							"name": "variable.other.assignment.casual"
+						},
+						{
+							"include": "#delimiters"
+						}
+					]
+				}
+			}
 		}
 	],
 	"repository": {
@@ -182,15 +220,15 @@
 			"patterns": [
 				{
 					"match": "\\bBool\\b",
-					"name": "storage.type.boolean.casual"
+					"name": "storage.type.boolean.go"
 				},
 				{
-					"match": "\\b(Float|Int)\\b",
-					"name": "storage.type.numeric.casual"
+					"match": "\\b(Int|Float)\\b",
+					"name": "storage.type.numeric.go"
 				},
 				{
 					"match": "\\bString\\b",
-					"name": "storage.type.string.casual"
+					"name": "storage.type.string.go"
 				},
 				{
 					"match": "\\bVoid\\b",
@@ -218,38 +256,84 @@
 				}
 			]
 		},
-		"int": {
+		"variables": {
+			"comment": "First add tests and make sure existing tests still pass when changing anything here!",
 			"patterns": [
 				{
-					"match": "\\b(-?[0-9](_*[0-9])*)\\b",
-					"name": "constant.numeric.integer.casual"
-				}
-			]
-		},
-		"float": {
-			"patterns": [
+					"match": "([a-zA-Z_]\\w*(?:\\:\\s*[a-zA-Z_]\\w*)*)\\s*(=.*)",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"match": "[a-zA-Z_]\\w*",
+									"name": "variable.other.assignment.casual"
+								},
+								{
+									"include": "#delimiters"
+								}
+							]
+						},
+						"2": {
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						}
+					}
+				},
 				{
-					"match": "\\b(-?[0-9]*\\.?[0-9]+|[0-9]+\\.?[0-9]*[eE][0-9]+)\\b",
-					"name": "constant.numeric.float.casual"
-				}
-			]
-		},
-		"bool": {
-			"patterns": [
+					"match": "([a-zA-Z_]\\w*(?:,\\s*[a-zA-Z_]\\w*)*)(\\s+[\\*]?[a-zA-Z_]\\w*\\s*)(=.*)",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"match": "[a-zA-Z_]\\w*",
+									"name": "variable.other.assignment.casual"
+								},
+								{
+									"include": "#delimiters"
+								}
+							]
+						},
+						"2": {
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						}
+					}
+				},
 				{
-					"match": "\\b(true|false)\\b",
-					"name": "constant.language.casual"
-				}
-			]
-		},
-		"string": {
-			"name": "string.quoted.double.casual",
-			"begin": "\"",
-			"end": "\"",
-			"patterns": [
-				{
-					"name": "constant.character.escape.casual",
-					"match": "\\\\."
+					"match": "([a-zA-Z_]\\w*(?:,\\s*[a-zA-Z_]\\w*)*)(\\s+[\\*]?[a-zA-Z_]\\w*\\s*[^=].*)",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"match": "[a-zA-Z_]\\w*",
+									"name": "variable.other.declaration.casual"
+								},
+								{
+									"include": "#delimiters"
+								}
+							]
+						},
+						"2": {
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
