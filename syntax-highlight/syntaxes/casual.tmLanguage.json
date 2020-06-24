@@ -14,6 +14,45 @@
 			"name": "comment.line.number-sign.casual"
 		},
 		{
+			"comment": "Built-in functions",
+			"match": "\\b(printInt|printFloat|printBool|printString|new_int_array|new_float_array|new_bool_array|new_string_array|new_int_matrix|new_float_matrix|new_bool_matrix|new_string_matrix)\\b(?=\\()",
+			"name": "support.function.builtin.casual"
+		},
+		{
+			"comment": "Function declarations",
+			"match": "^(\\bdef\\b)(?:\\s+(\\([^\\)]+\\)\\s+)?([a-zA-Z_]\\w*)(?=\\())?",
+			"captures": {
+				"1": {
+					"name": "keyword.function.casual"
+				},
+				"2": {
+					"patterns": [
+						{
+							"include": "#brackets"
+						},
+						{
+							"include": "#operators"
+						}
+					]
+				},
+				"3": {
+					"name": "entity.name.function"
+				}
+			}
+		},
+		{
+			"comment": "Functions Use",
+			"match": "(\\bdef\\b)|([a-zA-Z_]\\w*)(?=\\()",
+			"captures": {
+				"1": {
+					"name": "keyword.function.casual"
+				},
+				"2": {
+					"name": "support.function.casual"
+				}
+			}
+		},
+		{
 			"comment": "Floating-point literals",
 			"match": "\\b(-?[0-9]*\\.?[0-9]+|[0-9]+\\.?[0-9]*[eE][0-9]+)\\b",
 			"name": "constant.numeric.floating-point.casual"
