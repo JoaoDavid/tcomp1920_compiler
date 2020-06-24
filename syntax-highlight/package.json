@@ -1,14 +1,19 @@
 {
-    "name": "casual-lang",
-    "displayName": "Casual Lang",
-    "description": "Syntax highlighting for casual lang",
+    "name": "casual-syntax-highlighter",
+    "displayName": "Casual Syntax Highlighter",
+    "description": "Syntax Highlighter for the Casual Language",
     "version": "0.0.1",
+    "publisher": "DI-FCUL",
+    "author": {
+        "name": "João David"
+    },
     "engines": {
         "vscode": "^1.46.0"
     },
     "categories": [
         "Programming Languages"
     ],
+    "icon": "images/icon.png",
     "contributes": {
         "languages": [{
             "id": "casual",
