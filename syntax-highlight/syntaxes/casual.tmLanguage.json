@@ -191,6 +191,10 @@
 				{
 					"match": "\\bString\\b",
 					"name": "storage.type.string.casual"
+				},
+				{
+					"match": "\\bVoid\\b",
+					"name": "storage.type.void.casual"
 				}
 			]
 		},
