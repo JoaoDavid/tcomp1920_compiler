@@ -1,60 +1,201 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Casual",
 	"scopeName": "source.cas",
 	"patterns": [
 		{
+			"comment": "Line comments",
+			"begin": "#",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.comment.casual"
+				}
+			},
+			"end": "$",
+			"name": "comment.line.number-sign.casual"
+		},
+		{
+			"comment": "Floating-point literals",
+			"match": "\\b(-?[0-9]*\\.?[0-9]+|[0-9]+\\.?[0-9]*[eE][0-9]+)\\b",
+			"name": "constant.numeric.floating-point.casual"
+		},
+		{
+			"comment": "Integers",
+			"match": "\\b(-?[0-9](_*[0-9])*)\\b",
+			"name": "constant.numeric.integer.casual"
+		},
+		{
+			"comment": "Language constants",
+			"match": "\\b(true|false)\\b",
+			"name": "constant.language.casual"
+		},
+		{
+			"comment": "Interpreted string literals",
+			"begin": "\"",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.casual"
+				}
+			},
+			"end": "\"",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.casual"
+				}
+			},
+			"name": "string.quoted.double.casual",
+			"patterns": [
+				{
+					"include": "#string_escaped_char"
+				},
+				{
+					"include": "#string_placeholder"
+				}
+			]
+		},
+		{
+			"include": "#brackets"
+		},
+		{
+			"include": "#delimiters"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
-			"include": "#comment"
+			"include": "#operators"
 		},
 		{
-			"include": "#int"
-		},
-		{
-			"include": "#float"
-		},
-		{
-			"include": "#bool"
-		},
-		{
-			"include": "#string"
+			"include": "#storage_types"
 		}
 	],
 	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.casual",
-				"match": "\\b(if|else|while|while|return|import|decl|def)\\b"
-			}]
+		"brackets": {
+			"patterns": [
+				{
+					"match": "\\{|\\}",
+					"name": "punctuation.other.bracket.curly.casual"
+				},
+				{
+					"match": "\\(|\\)",
+					"name": "punctuation.other.bracket.round.casual"
+				},
+				{
+					"match": "\\[|\\]",
+					"name": "punctuation.other.bracket.square.casual"
+				}
+			]
 		},
-		"comment": {
-			"name": "comment.line.number-sign",
-			"begin": "#",
-			"end": "$"
+		"delimiters": {
+			"patterns": [
+				{
+					"match": ",",
+					"name": "punctuation.other.comma.casual"
+				},
+				{
+					"match": "\\.(?!\\.\\.)",
+					"name": "punctuation.other.period.casual"
+				},
+				{
+					"match": ":(?!=)",
+					"name": "punctuation.other.colon.casual"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"comment": "Flow control keywords",
+					"match": "\\b(if|else|return|while)\\b",
+					"name": "keyword.control.casual"
+				},
+				{
+					"match": "\\bdef\\b",
+					"name": "keyword.function.casual"
+				},
+				{
+					"match": "\\bimport\\b",
+					"name": "keyword.import.casual"
+				},
+				{
+					"match": "\\bdecl\\b",
+					"name": "keyword.declaration.casual"
+				}
+			]
+		},
+		"operators": {
+			"comment": "Note that the order here is very important!",
+			"patterns": [
+				{
+					"match": "(==|!=|<=|<|>=|>)",
+					"name": "keyword.operator.comparison.casual"
+				},
+				{
+					"match": "(&&|\\|\\||!)",
+					"name": "keyword.operator.logical.casual"
+				},
+				{
+					"match": "(\\+|\\-|\\*|/|%)",
+					"name": "keyword.operator.arithmetic.casual"
+				}
+			]
+		},
+		"storage_types": {
+			"patterns": [
+				{
+					"match": "\\bBool\\b",
+					"name": "storage.type.boolean.casual"
+				},
+				{
+					"match": "\\b(Float|Int)\\b",
+					"name": "storage.type.numeric.casual"
+				},
+				{
+					"match": "\\bString\\b",
+					"name": "storage.type.string.casual"
+				}
+			]
+		},
+		"string_escaped_char": {
+			"patterns": [
+				{
+					"match": "\\\\([0-7]{3}|[abfnrtv\\\\'\"]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})",
+					"name": "constant.character.escape.casual"
+				},
+				{
+					"match": "\\\\[^0-7xuUabfnrtv\\'\"]",
+					"name": "invalid.illegal.unknown-escape.casual"
+				}
+			]
+		},
+		"string_placeholder": {
+			"patterns": [
+				{
+					"match": "%(\\[\\d+\\])?([\\+#\\-0\\x20]{,2}((\\d+|\\*)?(\\.?(\\d+|\\*|(\\[\\d+\\])\\*?)?(\\[\\d+\\])?)?))?[vT%tbcdoqxXUbeEfFgGsp]",
+					"name": "constant.other.placeholder.casual"
+				}
+			]
 		},
 		"int": {
 			"patterns": [
 				{
-					"match": "\\b((0x[0-9a-fA-F]+)|(0[0-7]+i?)|(\\d+([Ee]\\d+)?i?)|(\\d+[Ee][-+]\\d+i?))\\b",
+					"match": "\\b(-?[0-9](_*[0-9])*)\\b",
 					"name": "constant.numeric.integer.casual"
 				}
 			]
 		},
-		"float": {			
+		"float": {
 			"patterns": [
 				{
-					"match": "(\\.\\d+([Ee][-+]\\d+)?i?)\\b|\\b\\d+\\.\\d*(([Ee][-+]\\d+)?i?\\b)?",
+					"match": "\\b(-?[0-9]*\\.?[0-9]+|[0-9]+\\.?[0-9]*[eE][0-9]+)\\b",
 					"name": "constant.numeric.float.casual"
 				}
 			]
 		},
-		"bool": {			
+		"bool": {
 			"patterns": [
 				{
 					"match": "\\b(true|false)\\b",
-					"name": "constant.language.casual"   				
+					"name": "constant.language.casual"
 				}
 			]
 		},
