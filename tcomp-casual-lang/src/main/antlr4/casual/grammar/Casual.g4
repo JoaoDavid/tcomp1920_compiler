@@ -71,8 +71,13 @@ func_inv: ID L_RND_BR (expr (COMMA expr)*)? R_RND_BR ;
 
 // ------------------------- EXPRESSIONS -------------------------
 			
-expr:	expr binary_ope expr
-    |	unary_ope expr
+expr:	unary_ope expr
+	|   expr (TIMES | DIV | MOD) expr
+	|   expr (PLUS | MINUS) expr
+	|   expr (GREATER_EQ | GREATER | LESS_EQ | LESS) expr
+	|   expr (EQUAL | NOT_EQUAL) expr
+	|   expr AND expr
+	|   expr OR expr
     |   func_inv
     |   arr_r_value
     |   arr_l_value
@@ -84,7 +89,8 @@ expr:	expr binary_ope expr
     |	L_RND_BR expr R_RND_BR
     ;
     
-    
+
+
 // ------------------------- ARRAYS -------------------------
 
 arr_r_value : arr_l_value | (func_inv (L_SQR_BR expr R_SQR_BR)+) ;
@@ -142,21 +148,6 @@ GREATER_EQ :  '>=';
 GREATER    :  '>';
 LESS_EQ    :  '<=';
 LESS       :  '<';
-
-binary_ope  : AND 
-            | OR
-		 	| EQUAL
-		 	| NOT_EQUAL
-		 	| GREATER_EQ
-		 	| GREATER
-		 	| LESS_EQ
-		 	| LESS
-		 	| PLUS
-		 	| MINUS
-		 	| TIMES
-		 	| DIV
-		 	| MOD
-			;
 			
 unary_ope   : NOT 
             | MINUS;

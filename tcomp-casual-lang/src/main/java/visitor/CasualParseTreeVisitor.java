@@ -240,9 +240,7 @@ public class CasualParseTreeVisitor {
 	private Expression visitExpression(ExprContext ctx) {
 		Position pos = new Position(new Point(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()), 
 				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()));
-		if(ctx.binary_ope() != null) {
-			return visitBinaryExpression(ctx);
-		} else if(ctx.unary_ope() != null) {
+		if(ctx.unary_ope() != null) {
 			return visitUnaryExpression(ctx);
 		} else if(ctx.func_inv() != null) {
 			return visitFunctionInvocation(ctx.func_inv());
@@ -266,8 +264,9 @@ public class CasualParseTreeVisitor {
 			return new VarReferenceExpression(ctx.ID().getText(), pos);
 		}else if(ctx.L_RND_BR() != null) {
 			return visitExpression(ctx.expr(0));
+		} else {
+			return visitBinaryExpression(ctx);
 		}
-		return null;
 	}
 
 	private BinaryExpression visitBinaryExpression(ExprContext ctx) {
@@ -275,31 +274,31 @@ public class CasualParseTreeVisitor {
 				new Point(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine()));
 		Expression left = visitExpression(ctx.expr(0));
 		Expression right = visitExpression(ctx.expr(1));
-		if(ctx.binary_ope().AND() != null) {
+		if(ctx.AND() != null) {
 			return new AndExpression(left, right, pos);
-		} else if(ctx.binary_ope().OR() != null) {
+		} else if(ctx.OR() != null) {
 			return new OrExpression(left, right, pos);
-		} else if(ctx.binary_ope().EQUAL() != null) {
+		} else if(ctx.EQUAL() != null) {
 			return new EqualExpression(left, right, pos);
-		} else if(ctx.binary_ope().NOT_EQUAL() != null) {
+		} else if(ctx.NOT_EQUAL() != null) {
 			return new NotEqualExpression(left, right, pos);
-		} else if(ctx.binary_ope().GREATER_EQ() != null) {
+		} else if(ctx.GREATER_EQ() != null) {
 			return new GreaterOrEqualExpression(left, right, pos);
-		} else if(ctx.binary_ope().GREATER() != null) {
+		} else if(ctx.GREATER() != null) {
 			return new GreaterExpression(left, right, pos);
-		} else if(ctx.binary_ope().LESS_EQ() != null) {
+		} else if(ctx.LESS_EQ() != null) {
 			return new LessOrEqualExpression(left, right, pos);
-		} else if(ctx.binary_ope().LESS() != null) {
+		} else if(ctx.LESS() != null) {
 			return new LessExpression(left, right, pos);
-		} else if(ctx.binary_ope().PLUS() != null) {
+		} else if(ctx.PLUS() != null) {
 			return new SumExpression(left, right, pos);
-		} else if(ctx.binary_ope().MINUS() != null) {
+		} else if(ctx.MINUS() != null) {
 			return new SubtractionExpression(left, right, pos);
-		} else if(ctx.binary_ope().TIMES() != null) {
+		} else if(ctx.TIMES() != null) {
 			return new MultiplicationExpression(left, right, pos);
-		} else if(ctx.binary_ope().DIV() != null) {
+		} else if(ctx.DIV() != null) {
 			return new DivisionExpression(left, right, pos);
-		} else if(ctx.binary_ope().MOD() != null) {
+		} else if(ctx.MOD() != null) {
 			return new ModuloExpression(left, right, pos);
 		}
 		return null;
