@@ -24,6 +24,10 @@ public class VarReferenceExpression extends Expression {
 	@Override
 	public Position getPosition() {
 		return pos;
-	}	
+	}
+	
+	public String toString() {
+		return varName;
+	}
 
 }

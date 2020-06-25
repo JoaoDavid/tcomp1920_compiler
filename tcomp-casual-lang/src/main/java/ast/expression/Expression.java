@@ -15,4 +15,6 @@ public abstract class Expression implements Node {
 		this.resType = resType;
 	}
 	
+	public abstract String toString();
+	
 }

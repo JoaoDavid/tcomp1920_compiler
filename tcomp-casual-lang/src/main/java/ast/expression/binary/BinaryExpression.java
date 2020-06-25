@@ -5,8 +5,8 @@ import ast.expression.Expression;
 
 public abstract class BinaryExpression extends Expression {
 	
-	private Expression left;
-	private Expression right;
+	protected Expression left;
+	protected Expression right;
 	private Position pos;
 	
 	public BinaryExpression(Expression left, Expression right) {

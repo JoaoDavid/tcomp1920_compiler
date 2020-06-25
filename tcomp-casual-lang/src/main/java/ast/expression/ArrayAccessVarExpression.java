@@ -32,6 +32,17 @@ public class ArrayAccessVarExpression extends Expression {
 	@Override
 	public Position getPosition() {
 		return pos;
-	}	
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(varName);
+		for (Expression expression : indexes) {
+			sb.append("[");
+			sb.append(expression);
+			sb.append("]");
+		}
+		return sb.toString();
+	}
 	
 }

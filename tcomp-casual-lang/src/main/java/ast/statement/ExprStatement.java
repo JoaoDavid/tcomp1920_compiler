@@ -26,4 +26,9 @@ public class ExprStatement implements Statement {
 		return pos;
 	}
 	
+	@Override
+	public String toString() {
+		return value.toString();
+	}
+	
 }

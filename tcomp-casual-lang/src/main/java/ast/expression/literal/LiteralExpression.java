@@ -27,4 +27,8 @@ public abstract class LiteralExpression extends Expression {
 		return pos;
 	}
 	
+	public String toString() {
+		return value;
+	}
+	
 }

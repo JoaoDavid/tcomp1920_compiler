@@ -2,6 +2,7 @@ package ast.expression.binary;
 
 import ast.Position;
 import ast.expression.Expression;
+import ast.expression.OperatorConstant;
 
 public class SumExpression extends BinaryExpression {
 	
@@ -11,6 +12,10 @@ public class SumExpression extends BinaryExpression {
 
 	public SumExpression(Expression left, Expression right, Position pos) {
 		super(left, right, pos);
+	}
+	
+	public String toString() {
+		return left + OperatorConstant.SUM + right;
 	}
 
 }

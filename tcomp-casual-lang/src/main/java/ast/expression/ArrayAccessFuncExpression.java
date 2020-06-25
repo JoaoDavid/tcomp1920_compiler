@@ -1,5 +1,6 @@
 package ast.expression;
 
+import java.util.Iterator;
 import java.util.List;
 
 import ast.Position;
@@ -30,6 +31,22 @@ public class ArrayAccessFuncExpression extends ArrayAccessVarExpression {
 
 	public Type getFuncResType() {
 		return funcResType;
-	}	
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();		
+		sb.append(super.getVarName());
+		sb.append("(");
+		Iterator<Expression> iterator = arguments.iterator();
+		while (iterator.hasNext()) {
+			sb.append(iterator.next());
+	        if (iterator.hasNext()) {
+	        	sb.append(",");
+	        }
+	    }
+		sb.append(")");
+		sb.append(super.toString());
+		return sb.toString();
+	}
 			
 }

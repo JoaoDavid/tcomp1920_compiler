@@ -5,7 +5,7 @@ import ast.expression.Expression;
 
 public abstract class UnaryExpression extends Expression {
 	
-	private Expression value;
+	protected Expression value;
 	private Position pos;
 	
 	public UnaryExpression(Expression value) {
