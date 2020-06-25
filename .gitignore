@@ -48,3 +48,9 @@ hs_err_pid*
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+##ANTLR
+*.interp
+*.tokens
+CasualLexer.java
+CasualParser.java
