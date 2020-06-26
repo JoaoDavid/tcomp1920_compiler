@@ -45,9 +45,6 @@ import static codegen.llvm.Instruction.logic;
 import static codegen.llvm.Instruction.ret;
 import static codegen.llvm.Instruction.store;
 import static codegen.llvm.Instruction.xor;
-import static codegen.llvm.FunctionLib.STR_PRINT_FLOAT;
-import static codegen.llvm.FunctionLib.STR_PRINT_INT;
-import static codegen.llvm.FunctionLib.STR_PRINT_STRING;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,12 +102,11 @@ import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
 import codegen.exception.CompileException;
 import codegen.exception.ReservedFunctionNameException;
-import codegen.llvm.Instruction;
 import codegen.llvm.FunctionLib;
+import codegen.llvm.Instruction;
 
 public class Codegenator {
 
-	//private final static String defaultPath = System.getProperty("user.home") + File.separator + "Desktop";
 	private final static String SUFIX = ".ll";
 	private final static String IDENTATION = "    ";
 	private static final String RETURN_VAR = "$return";
@@ -159,15 +155,9 @@ public class Codegenator {
 		this.pw.close();
 	}
 
-
-
 	private void writeStatements(Node n, String space) throws CompileException {
 		StringBuilder sb = new StringBuilder();
 		if (n instanceof CasualFile) {
-			/*stringGlobal.add(STR_PRINT_INT);
-			stringGlobal.add(STR_PRINT_FLOAT);
-			//stringGlobal.add(STR_PRINT_BOOL);bool uses print int
-			stringGlobal.add(STR_PRINT_STRING);*/
 			CasualFile curr = (CasualFile) n;
 			for (DefDecl currDefDecl : curr.getStatements()) {
 				writeStatements(currDefDecl, space);
@@ -628,7 +618,7 @@ public class Codegenator {
 			}
 			return subVar;
 		} else if (expr instanceof MultiplicationExpression) {
-			String mulVar = getVarName("sub");								
+			String mulVar = getVarName("mul");								
 			if(expr.getResType() instanceof IntType) {
 				pw.write(arithmetic(space, mulVar, MUL_INT, llvmResType, leftLL, rightLL));
 			} else if(expr.getResType() instanceof FloatType) {
@@ -636,7 +626,7 @@ public class Codegenator {
 			}
 			return mulVar;
 		} else if (expr instanceof DivisionExpression) {
-			String divVar = getVarName("sub");								
+			String divVar = getVarName("div");								
 			if(expr.getResType() instanceof IntType) {
 				pw.write(arithmetic(space, divVar, DIV_INT, llvmResType, leftLL, rightLL));
 			} else if(expr.getResType() instanceof FloatType) {
@@ -644,7 +634,7 @@ public class Codegenator {
 			}
 			return divVar;
 		} else if (expr instanceof ModuloExpression) {
-			String modVar = getVarName("sub");								
+			String modVar = getVarName("mod");								
 			if(expr.getResType() instanceof IntType) {
 				pw.write(arithmetic(space, modVar, MOD_INT, llvmResType, leftLL, rightLL));
 			}
