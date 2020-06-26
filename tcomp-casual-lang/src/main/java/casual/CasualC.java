@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import ast.CasualFile;
 import ast.DefDecl;
+import ast.FunctionDefinition;
 import ast.typecheck.ValidatorAST;
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;
@@ -69,7 +70,7 @@ public class CasualC {
 					}
 				} catch (Exception e) {
 					//e.printStackTrace();
-					System.out.println(e.toString() + " FILE: " + args[i]);
+					System.out.println(e.toString() + " when validating: " + args[i] + " AST");
 					System.err.println("Syntactic Verification found an error");
 					return;
 				}

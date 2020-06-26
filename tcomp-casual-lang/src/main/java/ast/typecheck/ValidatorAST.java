@@ -20,6 +20,7 @@ import ast.datatype.IntType;
 import ast.datatype.StringType;
 import ast.datatype.Type;
 import ast.datatype.VoidType;
+import ast.exception.DuplicateFunctionException;
 import ast.exception.DuplicateVarAssignException;
 import ast.exception.FunctionNotDefinedException;
 import ast.exception.FunctiontArgumentsException;
@@ -99,7 +100,10 @@ public class ValidatorAST {
 				if (!root.getStatements().contains(currDefDecl)) {
 					Type[] datatypes = loadParamTypes(currDefDecl);
 					funcSignCtx.newFunc(currDefDecl, datatypes);
-				}
+				} else if (currDefDecl instanceof FunctionDefinition) {
+					throw new DuplicateFunctionException(currDefDecl.getFuncName() + " at "  + 
+							currImport.getImportName() + " " + currDefDecl.getPosition().toString());
+				}	
 			}
 		}
 	}
