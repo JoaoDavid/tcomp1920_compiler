@@ -82,6 +82,15 @@ The Casual language has 12 built-in functions that can be used by the programmer
 
 
 \section{Implementation Decisions}
+\subsection{Abstract Syntax Tree}
+In the early stages of development of the compiler, the nodes within the AST did not store any information regarding types. This meant that, when validating the AST, the types were checked without storing the information in the AST. In the codegen phase, the types of the nodes were necessary to properly write the LLVM code according to the source code.
+
+Since calculating the type of a certain node every time it was necessary would consume processor time, and it would repeat a computation previously done, the Visitor class that builds the AST was refactored in order to, whenever possible, store the type immediately, for instance, a function definition must always have the return type defined and as well as the types of the accepted parameters (var:type).
+
+Some Node classes were refactored in order to have type setter and getter methods, the AST validator was also refactored in order to use those methods. Every time the type of a node was validated, the type was stored in the node using the setter.
+For instance, the type of the root of the expression $3+4 <= 5*3$ would be set to Bool, and the roots of the expressions $3+4$ and $5*3$ would both be set to Int. Then, in the codegen phase, the getters were used to know the type of said expression and write the LLVM code accordingly.
+
+
 \subsection{Linking Source files}
 When passing more than one source file to the compiler, the type-checking must be done across all files, in order to verify that the functions invoked in a source file different from the one where they are defined, are respecting its signature. As well as, ensure that there are no function definitions with duplicate names across all source files.
 
