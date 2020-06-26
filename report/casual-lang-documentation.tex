@@ -49,7 +49,15 @@ The Casual Language has a syntax highlighter extension for Visual Studio Code. T
 The extension can be installed through the "casual-syntax-highlighter-0.0.1.vsix" file.
 
 \subsection{Running the compiler}
+The casualc script accepts as argument the casual source file that will be compiled and then creates the binary file with the same name of the source file (without the .cas). 
 
+Since this language supports imports, all the source files involved in the process must be passed as argument, so that the compiler may link them and output a single binary file, that will have the name of the first source code passed as argument.
+
+For instance, "casualc hello.cas math.cas util.cas" will output the binary hello.
+From all the source files passed to the compiler, there must be exactly one defined method with the name "main". This will be the method executed first by the binary file.
+
+\newpage
+%-------------------------------------------------------------------------
 
 \subsection{Writing Casual code}
 The Casual language has 12 built-in functions that can be used by the programmer, in order to use them, they have to be declared. The following list summarizes all existent declarable functions, they allow the user to print, create arrays, and matrixes for each data type (Int, Float, Bool and String). \\
@@ -117,7 +125,10 @@ Level & Operator & Description & Associativity        \\ \hline
 \end{tabular}
 \end{table}
 
+\newpage
+%-------------------------------------------------------------------------
 
+\subsection{Linking Source files}
 
 \bibliographystyle{plain}
 \end{document}
