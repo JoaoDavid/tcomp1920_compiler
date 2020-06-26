@@ -259,7 +259,7 @@ public class CasualParseTreeVisitor {
 		}else if(ctx.FLOAT() != null) {
 			return new FloatLit(ctx.FLOAT().getText(), pos);
 		}else if(ctx.STRING() != null) {
-			return new StringLit(ctx.STRING().getText(), pos);
+			return new StringLit(ctx.STRING().getText().substring(1,ctx.STRING().getText().length()-1), pos);
 		}else if(ctx.ID() != null) {
 			return new VarReferenceExpression(ctx.ID().getText(), pos);
 		}else if(ctx.L_RND_BR() != null) {
