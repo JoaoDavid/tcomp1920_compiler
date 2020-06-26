@@ -508,7 +508,7 @@ public class Codegenator {
 			StringLit lit = (StringLit) expr;
 			String strGlobalVar = getGlobalStrVarName();
 			String stringLLVM = StringToLLVM(lit.getValue());
-			int len = lit.getValue().replace("\\", "").length()-1;
+			int len = lit.getValue().replace("\\", "").length();
 			stringGlobal.add(globalStr(len, strGlobalVar, stringLLVM));
 			return getElementPtrStr(len, strGlobalVar);
 		} else if (expr instanceof VarReferenceExpression) {

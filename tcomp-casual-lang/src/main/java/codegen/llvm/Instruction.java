@@ -69,8 +69,16 @@ public class Instruction {
 	}
 	
 	public static String StringToLLVM(String s) {
-		String res = s.replace("\\n", "\\0A").replaceFirst(".$","") + "\\00\"";
-		return res;
+		String res = s.substring(1,s.length()-1)
+				.replace("\\b", "\\08")
+				.replace("\\t", "\\09")
+				.replace("\\n", "\\0A")
+				.replace("\\f", "\\0C")
+				.replace("\\r", "\\0D")
+				.replace("\\\"", "\\22")
+				.replace("\\\'", "'")
+				.replace("\\n\'", "'");
+		return "\"" + res+ "\\00\"";
 	}
 	
 	public static String floatToLLVM(float f) {
