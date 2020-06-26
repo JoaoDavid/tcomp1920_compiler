@@ -42,8 +42,33 @@
 \begin{document}
 \maketitle
 
-\section{Getting Started}
 
+\section{Getting Started}
+\subsection{Syntax Highlighter}
+The Casual Language has a syntax highlighter extension for Visual Studio Code. This tool also has auto-complete functionality, that can be used by pressing CTRL+SPACE after writing some characters, if there are any words previously written using those characters, they will appear (e.g. variable and function names).
+The extension can be installed through the "casual-syntax-highlighter-0.0.1.vsix" file.
+
+\subsection{Running the compiler}
+
+
+\subsection{Writing Casual code}
+The Casual language has 12 built-in functions that can be used by the programmer, in order to use them, they have to be declared. The following list summarizes all existent declarable functions, they allow the user to print, create arrays, and matrixes for each data type (Int, Float, Bool and String). \\
+
+\begin{itemize}
+		\item decl printInt(i:Int):Void
+        \item decl printFloat(f:Float):Void
+        \item decl printBool(b:Bool):Void
+        \item decl printString(s:String):Void
+        \item decl new\_int\_array(size:Int):[Int]
+        \item decl new\_float\_array(size:Int):[Float]
+        \item decl new\_bool\_array(size:Int):[Bool]
+        \item decl new\_string\_array(size:Int):[String]
+        \item decl new\_int\_matrix(size:Int, size2:Int):[[Int]]
+        \item decl new\_float\_matrix(size:Int, size2:Int):[[Float]]
+        \item decl new\_bool\_matrix(size:Int, size2:Int):[[Bool]]
+        \item decl new\_string\_matrix(size:Int, size2:Int):[[String]]       
+
+\end{itemize}
 
 \newpage
 
