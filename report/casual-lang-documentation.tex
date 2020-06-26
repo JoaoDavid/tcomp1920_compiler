@@ -11,11 +11,13 @@
 \usepackage[section]{placeins}
 \usepackage{multicol}
 \usepackage{tabularx}
+\usepackage{makecell}
 \usepackage{amsmath}
 \usepackage{tcolorbox}
 \usepackage{float}
 \graphicspath{ {../images/} }
 \sloppy
+\usepackage{geometry}
 
 \lstset{frame=tb,
   aboveskip=3mm,
@@ -46,12 +48,49 @@
 \newpage
 
 
+\section{Implementation Decisions}
+\subsection{Operator Precedence}
 
+\textbf{Precedence order.} When computing the expression $3 + 3 * 5$, the operator with higher precedence goes first, in this case its the multiplication, the expression is  evaluated as if it was $3 + (3 * 5)$. \\
 
+\textbf{Associativity.} When an expression has two operators with the same precedence, it is evaluated according to its associativity.  For instance, the expression $72 / 2 / 3$ is computed as if it was $(72 / 2) / 3$, because the division operator has left to right associativity. Other operators are not associative, therefore, they can't share the same operand with other operators in the same level of precedence. The expression $3 < 4 >= 4$ is invalid. \\
 
+The following table summarizes all the information regarding precedence and associativity in Casual, a higher level means higher precedence.
 
-
-
+\begin{table}[htb]
+\centering
+\begin{tabular}{| c | c | c | c |} 
+ \hline
+Level & Operator & Description & Associativity        \\ \hline
+ 9    & [ ]      & access array element & left to right \\ 
+      & ( )      & parentheses          &  \\ \hline\hline
+          
+ 8    & $- $     & unary minus          & right to left \\ 
+      & $!$      & unary logical NOT    & \\ \hline\hline
+      
+ 7    & $*$      &                      & \\ 
+      & /        & multiplicative       & left to right \\
+      & $\%$     &                      & \\ \hline\hline
+      
+ 6    & $+$      & additive             & left to right\\
+      & $-$      &                      & \\  \hline\hline
+ 
+ 5    & $< $     &                      & \\
+      & $<=$     & relational           & not associative\\
+      & $> $     &                      & \\
+      & $>=$     &                      &  \\  \hline\hline 
+      
+ 4    & $==$     & equality             & left to right\\
+      & $!=$     &                      & \\ \hline\hline
+      
+ 3    & $\&\&$   & logical AND          & left to right\\   \hline\hline
+ 
+ 2    & $||$     & logical OR           & left to right\\   \hline\hline
+ 
+ 1    & $=$      & assignment           & right to left \\   \hline
+ 
+\end{tabular}
+\end{table}
 
 
 
