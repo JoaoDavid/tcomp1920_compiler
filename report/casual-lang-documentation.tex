@@ -161,6 +161,17 @@ The second type of context was simply named Context, and it is responsible to co
 
 Casual has a semantic similar to the one used in java, where a variable declared in a block, can't be declared again in nested blocks.
 
+\subsection{Codegen}
+The Casual built-in functions, described in the Function declaration subsection, were written in C, and then compiled to LLVM using clang. Every time the programmer declares those functions in the casual source file, the casual compiler will add them to the ".ll" file, that will then be compiled by the llc. If they are not declared, they won't be added to the ".ll" file.
+
+All the instructions written into the ".ll" file in the codegen process, were also written with the help of auxiliary C files, this C files were written specifically with the purpose of understanding how LLVM handles certain instruction. This reverse engineer files can be found in the "./reverse\_eng\_files" directory.\\
+
+The codegen phase uses the Emitter data structure, which has a stack of ScopeLLVM, each ScopeLLVM has a hash-map, where the key is the variable name in the casual source file, and the value is the variable name used in the LLVM code. Every time the codegenerator enters an if then, if else or while blocks, a new ScopeLLVM is pushed into the stack.
+The emitter also has an int counter that is used to append to all names used in the LLVM file (variables, labels, etc). The value of the counter is incremented by one after each use, this way it is guaranteed to never exist repeated names within the LLVM file.\\
+
+The nomenclature used for the while statement is while\_cond\_x for the guard, while\_body\_x for the while's block and while\_cont\_x for the statements after the while statement.
+Regarding the if statement, they are then\_x for the then block, else\_x for the else block and cont\_x for the statements after the if statement. The x is the same for all labels regarding the same if or else statement. This way, when debugging the LLVM file, it is easier to understand which is which.
+
 \bibliographystyle{plain}
 \end{document}
 
