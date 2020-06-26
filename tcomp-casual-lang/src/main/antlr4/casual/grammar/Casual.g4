@@ -71,22 +71,22 @@ func_inv: ID L_RND_BR (expr (COMMA expr)*)? R_RND_BR ;
 
 // ------------------------- EXPRESSIONS -------------------------
 			
-expr:	unary_ope expr
+expr:	L_RND_BR expr R_RND_BR
+    |   arr_r_value
+    |   arr_l_value
+	|	unary_ope expr
+	|   func_inv
 	|   expr (TIMES | DIV | MOD) expr
 	|   expr (PLUS | MINUS) expr
 	|   expr (GREATER_EQ | GREATER | LESS_EQ | LESS) expr
 	|   expr (EQUAL | NOT_EQUAL) expr
 	|   expr AND expr
 	|   expr OR expr
-    |   func_inv
-    |   arr_r_value
-    |   arr_l_value
     |	BOOL
     |	INT
     |	FLOAT
     |	STRING
     |	ID
-    |	L_RND_BR expr R_RND_BR
     ;
     
 
