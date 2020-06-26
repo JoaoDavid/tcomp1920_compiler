@@ -82,11 +82,23 @@ The Casual language has 12 built-in functions that can be used by the programmer
 
 
 \section{Implementation Decisions}
+\subsection{Linking Source files}
+When passing more than one source file to the compiler, the type-checking must be done across all files, in order to verify that the functions invoked in a source file different from the one where they are defined, are respecting its signature. As well as, ensure that there are no function definitions with duplicate names across all source files.
+
+The way the compiler does this is by creating an AST for each source file. When verifying each AST, the compiler starts by adding all the function definitions of the imported source files to the function context of the current AST validator, this way the compiler can type-check the function invocations within the current AST. The is done through the use of a HashMap where the key is the source file name, and the value the corresponding AST.
+
+If no exceptions are raised, the compiler proceeds to create a new AST with all the functions defined and declared across all previous AST's (using aliasing), this new AST does not require to be validated, because this validation was done previously.
+
+The codegen phase is done using this new AST, and the LLVM code is written to a single ".ll" file with the same name as the first source file passed as argument. Hence the importance of avoiding duplicate function names across all source files.
+
+\newpage
+%-------------------------------------------------------------------------
+
 \subsection{Operator Precedence}
 
-\textbf{Precedence order.} When computing the expression $3 + 3 * 5$, the operator with higher precedence goes first, in this case its the multiplication, the expression is  evaluated as if it was $3 + (3 * 5)$. \\
+\textbf{Precedence order:} When computing the expression $3 + 3 * 5$, the operator with higher precedence goes first, in this case its the multiplication, the expression is  evaluated as if it was $3 + (3 * 5)$. 
 
-\textbf{Associativity.} When an expression has two operators with the same precedence, it is evaluated according to its associativity.  For instance, the expression $72 / 2 / 3$ is computed as if it was $(72 / 2) / 3$, because the division operator has left to right associativity. Other operators are not associative, therefore, they can't share the same operand with other operators in the same level of precedence. The expression $3 < 4 >= 4$ is invalid. \\
+\textbf{Associativity:} When an expression has two operators with the same precedence level, it is evaluated according to its associativity.  For instance, the expression $72 / 2 / 3$ is computed as if it was $(72 / 2) / 3$, because the division operator has left to right associativity. Some operators are not associative, therefore, they can't share the same operand with other operators in the same level of precedence. The expression $3 < 4 >= 4$ is invalid.
 
 The following table summarizes all the information regarding precedence and associativity in Casual, a higher level means higher precedence.
 
@@ -124,18 +136,8 @@ Level & Operator & Description & Associativity        \\ \hline
  
 \end{tabular}
 \end{table}
+This precedence hierarchy was defined in the "expr" rule, within the ANTLR4 grammar, operators with a higher level of precedence were written above the ones with lower precedence level. For instance, if the rule "unary\_ope expr" was defined last, the expression $-3 + 5$ would result in $-8$ instead of $2$.
 
-\newpage
-%-------------------------------------------------------------------------
-
-\subsection{Linking Source files}
-When passing more than one source file to the compiler, the type-checking must be done across all files, in order to verify that the functions invoked in a source file different from the one where they are defined, are respecting its signature. As well as, ensure that there are no function definitions with duplicate names across all source files.
-
-The way the compiler does this is by creating an AST for each source file. When verifying each AST, the compiler starts by adding all the function definitions of the imported source files to the function context of the current AST validator, this way the compiler can type-check the function invocations within the current AST. The is done through the use of a HashMap where the key is the source file name, and the value the corresponding AST.
-
-If no exceptions are raised, the compiler proceeds to create a new AST with all the functions defined and declared across all previous AST's (using aliasing), this new AST does not require to be validated, because this validation was done previously.
-
-The codegen phase is done using this new AST, and the LLVM code is written to a single ".ll" file with the same name as the first source file passed as argument. Hence the importance of avoiding duplicate function names across all source files.
 \bibliographystyle{plain}
 \end{document}
 
