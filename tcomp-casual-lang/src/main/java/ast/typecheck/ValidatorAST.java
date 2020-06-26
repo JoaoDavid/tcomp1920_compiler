@@ -66,7 +66,6 @@ import ast.statement.VarAssignArrayStatement;
 import ast.statement.VarAssignStatement;
 import ast.statement.VarDeclarationStatement;
 import ast.statement.WhileStatement;
-import codegen.exception.ReservedFunctionNameException;
 import codegen.llvm.FunctionLib;
 
 public class ValidatorAST {

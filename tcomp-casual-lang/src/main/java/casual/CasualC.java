@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import ast.CasualFile;
 import ast.DefDecl;
-import ast.FunctionDefinition;
 import ast.typecheck.ValidatorAST;
 import casual.grammar.CasualLexer;
 import casual.grammar.CasualParser;

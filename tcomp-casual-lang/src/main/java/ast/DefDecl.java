@@ -2,7 +2,6 @@ package ast;
 
 import java.util.List;
 
-import ast.datatype.ArrayType;
 import ast.datatype.Type;
 
 public abstract class DefDecl implements Node {
