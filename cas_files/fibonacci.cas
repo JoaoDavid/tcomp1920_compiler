@@ -2,111 +2,11 @@ decl printInt(i:Int):Void
 decl printString(s:String):Void
 
 def main():Int { 
-	n:Int = 10;
-	while (n > 0) {
-		callFib(n);
-		n = n - 1;
-	}	
+	n:Int = 30;
+	printInt(fib(n));
 	return 0;
 }
 
-def Fibonacci(n:Int):Int { 
-	if (n<0){
-		printString("Incorrect input");
-		return -1;
-	} else {
-		if (n==0) {
-			# First Fibonacci number is 0 
-			return 0;
-		} else {
-			if (n==1) {
-				# Second Fibonacci number is 1 
-				return 1;
-			} else {
-				return Fibonacci(n-1)+Fibonacci(n-2) ;
-			}
-		}
-	}
-}
-
-def Fibonacci2(n:Int):Int { 
-	if (n<0){
-		#then_37
-		printString("Incorrect input");
-		return -1;
-	} else {
-		#else_37
-		if (n==0) {
-			# First Fibonacci number is 0  then_43
-			return 0;
-		} else {
-			#else_43
-			if (n==1) {
-				#then_46
-				# Second Fibonacci number is 1 
-				return 1;
-			} 
-			#cont_46
-			return Fibonacci(n-1)+Fibonacci(n-2);
-		}
-	}
-}
-
-def Fibonacci3(n:Int):Int { 
-	if (n<0){
-		#then_37
-		printString("Incorrect input");
-		return -1;
-	}
-		#else_37
-		if (n==0) {
-			# First Fibonacci number is 0  then_43
-			return 0;
-		} else {
-			#else_43
-			if (n==1) {
-				#then_46
-				# Second Fibonacci number is 1 
-				return 1;
-			} 
-			#cont_46
-			return Fibonacci(n-1)+Fibonacci(n-2);
-		}
-
-}
-
-def Fibonacci4(n:Int):Int { 
-	if (n<0){
-		#then_37
-		printString("Incorrect input");
-		return -1;
-	}
-		#else_37
-		if (n==0) {
-			# First Fibonacci number is 0  then_43
-			return 0;
-		}
-			#else_43
-			if (n==1) {
-				#then_46
-				# Second Fibonacci number is 1 
-				return 1;
-			} 
-			#cont_46
-			return Fibonacci(n-1)+Fibonacci(n-2);
-		
-
-}
-
-def callFib(n:Int):Void {
-	printString("---");
-	printInt(Fibonacci(n));
-	printInt(Fibonacci2(n));
-	printInt(Fibonacci3(n));
-	printInt(Fibonacci4(n));
-	printInt(fib(n));
-	printInt(fibTwo(n));
-}
 
 def fib(n:Int):Int {
 	if (n <= 1) {
@@ -116,24 +16,3 @@ def fib(n:Int):Int {
    }
 } 
 
-def fibTwo(n:Int):Int {
-	if (n <= 1) {
-		return n; 
-	}
-	return fib(n-1) + fib(n-2);
-} 
-
-def myTest(n:Int):Void {
-	if (n > 0) {
-		printInt(n);
-		myTest(n-1);
-	}
-} 
-
-def simple_return_var2(a:Int):Int {
-	if (a == 1) {
-		return a; 
-	} 
-	return 0; 
-
-}

@@ -1,0 +1,23 @@
+decl printInt(i:Int):Void
+decl printFloat(f:Float):Void
+decl printBool(b:Bool):Void
+decl printString(s:String):Void
+
+
+
+def main():Int {
+	printBool(true && false || true);
+	printBool(true || false && true);
+	printInt(3 + 3 * 5);
+	printInt(3 + (3 * 5));
+	printInt(3 * 5 + 3);
+	printInt(-3 + 5);	
+	printInt(72 / 2 / 3);
+	printBool(3+4 <= 5*3 && true);
+	printString("\b\t\n\f\r\"\''\\\b\t\n\f\r\"\''\t\n\f\r\"\''\b\n\f\r\"\''\b\t\f\r\"\''\b\t\n\r\"\''\b\t\n\f\"\''\b\t\n\f\r\''\b\t\n\f\r\"'\b\t\n\f\r\"\'\b\t\n\f\r\"\''");
+	printString("\n\b\\");
+	printString("\b\t\n\f\r\"\''");
+	printString("");
+	return 0;
+}
+

@@ -22,10 +22,10 @@ def main(ar:[String]):Int {
 	
 	printString("----");
 	
-	c:Bool = (true && false);
-	d:Bool = (true || false);
-	e:Bool = (true && true);
-	f:Bool = (false || false);
+	c:Bool = (true && false || true);
+	d:Bool = (true || false && true);
+	e:Bool = (true && 4 < 4);
+	f:Bool = (true || false || 5 == -4);
 	
 	printBool(c);
 	printBool(d);
