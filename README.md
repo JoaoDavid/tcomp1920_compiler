@@ -11,11 +11,13 @@ For instance, casualc hello.cas math.cas util.cas will output the binary hello
 Syntax Highlighter
 ------------------
 
-1) Go to the extensions tab
+1) Install Visual Studio Code
 
-2) Click on the three dots, Install from VSIX...
+2) Go to the extensions tab
 
-3) Select the casual-syntax-highlighter-0.0.1.vsix file in the run directory
+3) Click on the three dots, Install from VSIX...
+
+4) Select the casual-syntax-highlighter-0.0.1.vsix file in the run directory
 
 
 Maven Project
