@@ -1,0 +1,59 @@
+decl new_int_array(size:Int):[Int]
+decl new_int_matrix(size:Int, size2:Int):[[Int]]
+decl new_float_array(size:Int):[Float]
+decl new_bool_array(size:Int):[Bool]
+decl new_string_array(size:Int):[String]
+
+decl batata(s:String):Int #invalid decl function, does not belong to the built-in list
+
+def main(ar:[Int]):Int {
+	a1:Int = 8;
+	a1 = 99 + 2;
+	a2:Int = 4;
+	a3:Int = a1 + a2 + 4 + 4 -2 + a1 +a1 +a1 * 3 /3;
+	a4:Int = a1 + 2;
+	b:Float = 3.2;
+	b = 7.9 - 4.2;
+	c:Bool = 5 < 5;
+	c = true;
+	c1:Bool = a1 < 5;	
+	c2:Bool = 5 < a2;	
+	c3:Bool = a1 < a2;	
+	c4:Bool = b < 2.0;
+	
+	c1 = a1 <= 5;	
+	c2 = 5 <= a2;	
+	c3 = a1 <= a2;	
+	c4 = b <= 2.0;
+	
+	c1 = a1 > 5;	
+	c2 = 5 > a2;	
+	c3 = a1 > a2;	
+	c4 = b > 2.0;
+	
+	c1 = a1 >= 5;	
+	c2 = 5 >= a2;	
+	c3 = a1 >= a2;	
+	c4 = b >= 2.0;
+	
+	c1 = a1 == 5;	
+	c2 = 5 == a2;	
+	c3 = a1 == a2;	
+	c4 = b == 2.0;
+	
+	c1 = a1 != 5;	
+	c2 = 5 != a2;	
+	c3 = a1 != a2;	
+	c4 = b != 2.0;
+	
+	c1 = c1 || true;	
+	c2 = false && false;	
+	c3 = c2 || c2 && c2;	
+	c4 = false || true && c2;
+	
+	c1 = !(c1 || true);	
+	c2 = !false ;	
+	c3 = !c2;	
+	c4 = !(false || !true && c2);
+	return 0;
+}

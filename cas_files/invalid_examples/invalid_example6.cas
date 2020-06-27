@@ -1,0 +1,11 @@
+
+#invalid arguments passed
+def main():Int	{
+	f:Int = helloThere(true);
+}
+
+
+def helloThere(a:Int):Int	{
+	return 4;
+}
+

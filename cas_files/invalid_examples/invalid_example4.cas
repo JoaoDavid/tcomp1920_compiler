@@ -1,0 +1,16 @@
+
+#unreachable code
+def main():Void	{
+	a:Int = 4;
+	if (true) {
+		c:Int = 35;
+		return;
+		
+	} else {
+		
+		return;
+	}
+	b:Bool = true;
+}
+
+

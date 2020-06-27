@@ -1,0 +1,11 @@
+
+#duplicate variable declaration
+def main():Void	{
+	a:Int = 4;
+	if (true) {
+		a:Int = 35;
+	}
+	return;
+}
+
+

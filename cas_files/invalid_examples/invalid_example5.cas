@@ -1,0 +1,13 @@
+
+#missing return statement
+def main():Int	{
+	f:Float = 4.4;
+	if (true) {
+		s:String = "ola";
+		return 4;
+		
+	} 
+	b:Bool = true;
+}
+
+
