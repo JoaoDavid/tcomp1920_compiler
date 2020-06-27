@@ -8,6 +8,7 @@ import file.cas
 def printUtil():Void {
 	printInt(1337);
 	printHello();
+	printQuote();
 }
 
 def printBye():Void {
@@ -15,5 +16,5 @@ def printBye():Void {
 }
 
 def printQuote():Void {
-	printString("Hello there, general kennobi");
+	printString("printQuote file.cas");
 }

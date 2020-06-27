@@ -17,10 +17,15 @@ import util.cas
 def main():Int {
 	printHello();
 	printUtil();
+	printQuote();
 	return 0;
 }
 
-def printQuote():Void {
-	printString("Hello there, general kennobi");
-}
+#uncomment to raise a DuplicateFunctionException
+#due to the fact that the file util.cas
+#also defines a function with the same name
+
+#def printQuote():Void {
+#	printString("printQuote main.cas");
+#}
 
