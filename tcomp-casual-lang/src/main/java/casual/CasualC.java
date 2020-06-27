@@ -69,7 +69,7 @@ public class CasualC {
 					}
 				} catch (Exception e) {
 					//e.printStackTrace();
-					System.out.println(e.toString() + " when validating: " + args[i] + " AST");
+					System.err.println(e.toString() + " when validating: " + args[i] + " AST");
 					System.err.println("Syntactic Verification found an error");
 					return;
 				}
@@ -78,20 +78,21 @@ public class CasualC {
 
 			
 			try {
-				Codegenator codegen = new Codegenator(resCas, outputName, "C:" + File.separator + "Users"+ File.separator +"PC"+ File.separator +"Desktop"+ File.separator +"SharedFolder");
+				//Codegenator codegen = new Codegenator(resCas, outputName, "C:" + File.separator + "Users"+ File.separator +"PC"+ File.separator +"Desktop"+ File.separator +"SharedFolder");
+				Codegenator codegen = new Codegenator(resCas, outputName);
 				codegen.generateLL();
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println(e.toString());
-				System.err.println("Syntactic Verification found an error");
+				//e.printStackTrace();
+				System.err.println(e.toString());
+				System.err.println("Error generating LLVM file");
 				return;
 			}
 
 			System.out.println("\nFinished Compilation Successfully");
 		}else {
-			System.out.println("Your args are not correct");
-			System.out.println("Valid args: <sourceFile>");
-			System.out.println("example: .\\cas_files\\hello_world.cas");
+			System.err.println("Your args are not correct");
+			System.err.println("Valid args: <sourceFile>");
+			System.err.println("example: ..\\cas_files\\hello_world.cas");
 		}
 	}
 
