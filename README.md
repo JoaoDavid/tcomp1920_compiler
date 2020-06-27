@@ -3,6 +3,7 @@ Install Instructions
 
 CasualC script
 --------------
+The script is in the run directory
 
 This script accepts one or more casual source files, all will output a binary with the same name as the first casual file passed
 For instance, casualc hello.cas math.cas util.cas will output the binary hello
@@ -48,7 +49,7 @@ All valid example files are located in the ./cas_files directory
 Some of those files have well known algorithms written in casual, such as fibonacci, quicksort and bubblesort.
 
 
-The invalid eExample files are located int the ./cas_files/invalid_examples directory
+The invalid example files are located int the ./cas_files/invalid_examples directory
 This source files will raise an exception when passed to the compiler
 The exception to be thrown is written in a comment file inside each file
 
