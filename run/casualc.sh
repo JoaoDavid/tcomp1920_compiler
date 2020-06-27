@@ -7,3 +7,6 @@ base=${fileComplete%.*}
 java -jar ./casualc.jar $@
 llc ${base}.ll
 clang -o $base $base.s
+
+rm ${base}.ll
+rm $base.s
