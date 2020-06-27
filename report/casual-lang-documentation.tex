@@ -15,7 +15,7 @@
 \usepackage{amsmath}
 \usepackage{tcolorbox}
 \usepackage{float}
-\graphicspath{ {../images/} }
+\graphicspath{ {./images/} }
 \sloppy
 \usepackage{geometry}
 
@@ -44,18 +44,29 @@
 
 
 \section{Getting Started}
-\subsection{Syntax Highlighter}
-The Casual Language has a syntax highlighter extension for Visual Studio Code. This tool also has auto-complete functionality, that can be used by pressing CTRL+SPACE after writing some characters, if there are any words previously written using those characters, they will appear (e.g. variable and function names).
-The extension can be installed through the "casual-syntax-highlighter-0.0.1.vsix" file.
-
 \subsection{Running the compiler}
-The casualc script accepts as argument the casual source file that will be compiled and then creates the binary file with the same name of the source file (without the .cas). 
+The casualc script accepts as argument the casual source file that will be compiled and then creates a binary file with the same name of the source file (without the .cas). 
 
 Since this language supports imports, all the source files involved in the process must be passed as argument, so that the compiler may link them and output a single binary file, that will have the name of the first source code passed as argument.
 
 For instance, "casualc hello.cas math.cas util.cas" will output the binary hello.
 From all the source files passed to the compiler, there must be exactly one defined method with the name "main". This will be the method executed first by the binary file.
 
+\subsection{Example files}
+The directory "./cas\_files" has several example casual files, ranging from basic var declaration, prints and matrix manipulation example files, to well known algorithms, such as fibonacci, quicksort and bubblesort.
+Compile the files main.cas, file.cas and util.cas together to see the import functionality working.
+
+\newpage
+%-------------------------------------------------------------------------
+
+\subsection{Syntax Highlighter}
+The Casual Language has a syntax highlighter extension for Visual Studio Code. This tool also has auto-complete functionality, that can be used by pressing CTRL+SPACE after writing some characters, if there are any words previously written using those characters, they will appear (e.g. variable and function names).
+The extension can be installed through the "casual-syntax-highlighter-0.0.1.vsix" file.\\
+
+\begin{figure}[htb]
+  	\centering
+  	\includegraphics[scale=0.9]{quicksort.png}
+\end{figure}
 \newpage
 %-------------------------------------------------------------------------
 
